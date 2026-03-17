@@ -270,13 +270,6 @@ const stepLightbox = (direction) => {
   preloadLightboxNeighbor(currentLightboxIndex);
 };
 
-const isUserCanceledSave = (error) => {
-  if (!error) return false;
-  const name = typeof error.name === 'string' ? error.name : '';
-  const message = typeof error.message === 'string' ? error.message.toLowerCase() : '';
-  return name === 'AbortError' || name === 'NotAllowedError' || message.includes('aborted') || message.includes('cancel');
-};
-
 const downloadCurrentImage = async (event) => {
   event.preventDefault();
   if (!allowDownloadInLightbox) return;
