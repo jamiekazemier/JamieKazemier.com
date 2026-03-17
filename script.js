@@ -288,33 +288,79 @@ const sanitizeAlbums = (data) => {
   );
 };
 
-const getHash = (value) => {
-  let hash = 0;
-  for (let i = 0; i < value.length; i += 1) hash = (hash * 31 + value.charCodeAt(i)) % 2147483647;
-  return Math.abs(hash);
-};
-
-const buildSequencedPhotos = (photos) => {
+const buildEditorialSequence = (photos) => {
   const uniquePhotos = [...new Set(photos)];
-  const ranked = uniquePhotos
-    .map((url, index) => ({ url, index, score: getHash(`${url}-${index}`) }))
-    .sort((a, b) => b.score - a.score);
-  const lead = ranked.filter((_, index) => index % 2 === 0).map((entry) => entry.url);
-  const support = ranked.filter((_, index) => index % 2 === 1).map((entry) => entry.url).reverse();
-  return [...lead, ...support];
-};
+  if (uniquePhotos.length < 4) return uniquePhotos;
 
-const photoLayoutClass = (index, total) => {
-  if (index === 0) return 'photo-item lead';
-  const pattern = ['wide', 'standard', 'standard', 'tall', 'standard', 'wide'];
-  const variant = pattern[index % pattern.length];
-  return `photo-item ${variant} ${index === total - 1 ? 'tail' : ''}`.trim();
+  const opener = uniquePhotos[0];
+  const body = uniquePhotos.slice(1);
+  const middle = Math.ceil(body.length / 2);
+  const firstHalf = body.slice(0, middle);
+  const secondHalf = body.slice(middle);
+  const woven = [];
+
+  for (let i = 0; i < Math.max(firstHalf.length, secondHalf.length); i += 1) {
+    if (firstHalf[i]) woven.push(firstHalf[i]);
+    if (secondHalf[i]) woven.push(secondHalf[i]);
+  }
+
+  return [opener, ...woven];
 };
 
 const getPhotoMarkup = (url, title, index, total, eager = false) => {
   const loading = eager || index < 2 ? 'eager' : 'lazy';
   const sizes = '(max-width: 700px) 100vw, (max-width: 1120px) 50vw, 33vw';
-  return `<figure class="${photoLayoutClass(index, total)}" data-photo-wrap="${url}" data-photo-index="${index}"><img loading="${loading}" decoding="async" sizes="${sizes}" src="${url}" alt="${title} photo ${index + 1}" /><figcaption>${String(index + 1).padStart(2, '0')}</figcaption></figure>`;
+  return `<figure class="photo-item" data-photo-wrap="${url}" data-photo-index="${index}"><img loading="${loading}" decoding="async" sizes="${sizes}" src="${url}" alt="${title} photo ${index + 1}" /><figcaption>${String(index + 1).padStart(2, '0')}</figcaption></figure>`;
+};
+
+const classifyShape = (img) => {
+  const ratio = img.naturalWidth / img.naturalHeight;
+  if (ratio >= 1.75) return 'shape-pano';
+  if (ratio <= 0.9) return 'shape-portrait';
+  return 'shape-landscape';
+};
+
+const applyEditorialLayout = (container) => {
+  const items = container.querySelectorAll('.photo-item');
+  const compact = window.matchMedia('(max-width: 980px)').matches;
+
+  items.forEach((item, index) => {
+    const img = item.querySelector('img');
+    if (!img || !img.naturalWidth || !img.naturalHeight) return;
+
+    item.classList.remove('is-lead', 'is-cinematic', 'shape-pano', 'shape-portrait', 'shape-landscape');
+    const shape = classifyShape(img);
+    item.classList.add(shape);
+
+    if (index === 0) item.classList.add('is-lead');
+    if (!compact && index > 0 && index % 5 === 0 && shape !== 'shape-portrait') item.classList.add('is-cinematic');
+
+    const base = 8;
+    const ratio = img.naturalWidth / img.naturalHeight;
+    const targetHeight = item.clientWidth / ratio;
+    const span = Math.max(18, Math.ceil((targetHeight + 8) / base));
+    item.style.gridRowEnd = `span ${span}`;
+  });
+};
+
+const queueEditorialLayout = (container) => {
+  const images = container.querySelectorAll('.photo-item img');
+  if (!images.length) return;
+
+  let remaining = images.length;
+  const done = () => {
+    remaining -= 1;
+    if (remaining <= 0) requestAnimationFrame(() => applyEditorialLayout(container));
+  };
+
+  images.forEach((img) => {
+    if (img.complete && img.naturalWidth) {
+      done();
+      return;
+    }
+    img.addEventListener('load', done, { once: true });
+    img.addEventListener('error', done, { once: true });
+  });
 };
 
 const refreshLightboxImage = () => {
@@ -438,6 +484,7 @@ const renderCaseStudy = (entry, elements, enableDownload = false) => {
   elements.outcome.textContent = `Outcome: ${entry.outcome}`;
   elements.gallery.innerHTML = entry.images.map((img, i) => getPhotoMarkup(img, entry.title, i, entry.images.length)).join('');
   attachPhotoClicks(elements.gallery, entry.images, enableDownload, `${entry.title} • 35mm equiv • ISO 800 • 1/1000`, entry.title);
+  queueEditorialLayout(elements.gallery);
 };
 
 const renderAlbumPreview = () => {
@@ -449,12 +496,13 @@ const renderAlbumPreview = () => {
     if (activeAlbumCount) activeAlbumCount.textContent = '';
     return;
   }
-  const sequencedPhotos = buildSequencedPhotos(activeAlbum.photos);
+  const sequencedPhotos = buildEditorialSequence(activeAlbum.photos);
   activeTitle.textContent = activeAlbum.title;
   activeMeta.textContent = activeAlbum.descriptor ? `${formatAlbumDate(activeAlbum.date)} • ${activeAlbum.descriptor}` : `${formatAlbumDate(activeAlbum.date)}`;
   if (activeAlbumCount) activeAlbumCount.textContent = `${sequencedPhotos.length} curated frames`;
   photoGrid.innerHTML = sequencedPhotos.map((photo, index) => getPhotoMarkup(photo, activeAlbum.title, index, sequencedPhotos.length, index === 0)).join('');
   attachPhotoClicks(photoGrid, sequencedPhotos, true, `${activeAlbum.title} • ${formatAlbumDate(activeAlbum.date)} • Editorial sequence`, activeAlbum.title);
+  queueEditorialLayout(photoGrid);
 };
 
 const renderAlbums = () => {
@@ -468,7 +516,7 @@ const renderAlbums = () => {
     if (!showAllAlbums && index >= visibleLimit) card.classList.add('is-hidden');
     if (index === activeAlbumIndex) card.classList.add('is-active');
 
-    const sequencedPhotos = buildSequencedPhotos(album.photos);
+    const sequencedPhotos = buildEditorialSequence(album.photos);
     const coverImage = sequencedPhotos[0] || 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80';
     card.innerHTML = `<div class="album-image-wrap"><img loading="lazy" decoding="async" sizes="(max-width: 700px) 100vw, (max-width: 980px) 50vw, 33vw" src="${coverImage}" alt="${album.title} cover image" /><div class="album-overlay"><p class="album-date">${formatAlbumDate(album.date)}</p><h4>${album.title}</h4><p class="album-count">${album.photos.length} frames</p></div></div><div class="album-meta">${album.descriptor ? `<p>${album.descriptor}</p>` : '<p>Curated sequence with editorial pacing.</p>'}</div>`;
     card.addEventListener('click', () => {
@@ -535,6 +583,16 @@ if (lightbox) lightbox.addEventListener('touchend', (event) => {
   if (Math.abs(delta) < 40 || !lightbox.classList.contains('open')) return;
   if (delta < 0) stepLightbox(1);
   if (delta > 0) stepLightbox(-1);
+}, { passive: true });
+
+let resizeTimer = 0;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = window.setTimeout(() => {
+    if (photoGrid) applyEditorialLayout(photoGrid);
+    if (selectedGallery) applyEditorialLayout(selectedGallery);
+    if (projectGallery) applyEditorialLayout(projectGallery);
+  }, 120);
 }, { passive: true });
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') closeLightbox();
