@@ -2,7 +2,6 @@ const menuToggle = document.querySelector('.menu-toggle');
 const siteNav = document.querySelector('.site-nav');
 const navLinks = document.querySelectorAll('.site-nav a');
 const yearElement = document.getElementById('year');
-
 if (yearElement) yearElement.textContent = new Date().getFullYear();
 if (menuToggle && siteNav) {
   menuToggle.addEventListener('click', () => {
@@ -26,9 +25,7 @@ if ('IntersectionObserver' in window) {
     });
   }, { threshold: 0.2 });
   revealItems.forEach((item) => revealObserver.observe(item));
-} else {
-  revealItems.forEach((item) => item.classList.add('in-view'));
-}
+} else revealItems.forEach((item) => item.classList.add('in-view'));
 
 const GITHUB_OWNER = 'JamieKazemier';
 const GITHUB_REPO = 'JamieKazemier.com';
@@ -46,10 +43,15 @@ const fallbackAlbums = [
   { title: 'Texture Notes', photos: ['https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?auto=format&fit=crop&w=1200&q=80'] },
   { title: 'North Study', photos: ['https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80'] },
   { title: 'Urban Motion', photos: ['https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1200&q=80'] },
-  { title: 'Monochrome Walls', photos: ['https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80'] },
-  { title: 'Road Lines', photos: ['https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1200&q=80'] },
-  { title: 'Field Notes', photos: ['https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=80'] }
+  { title: 'Monochrome Walls', photos: ['https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80'] }
 ];
+
+const selectedData = {
+  'night-session-frames': { title: 'Night Session Frames', description: 'A long-form sports and portrait project shot over a full season, including editing workflow and print selects.', images: ['https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=1200&q=80', 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80'] },
+  'terrain-studies': { title: 'Terrain Studies', description: 'World Machine to in-engine terrain development with heightfield, erosion and material passes.', images: ['https://images.unsplash.com/photo-1477244075012-5cc28286e465?auto=format&fit=crop&w=1200&q=80', 'https://images.unsplash.com/photo-1493244040629-496f6d136cc3?auto=format&fit=crop&w=1200&q=80'] },
+  'fixture-build-v3': { title: 'Fixture Build v3', description: 'Mechanical design and prototyping cycle for a durable production fixture system.', images: ['https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1200&q=80', 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1200&q=80'] },
+  'quiet-structures': { title: 'Quiet Structures', description: 'An architecture and urban-form album centered around contrast, rhythm, and visual silence.', images: ['https://images.unsplash.com/photo-1482192505345-5655af888cc4?auto=format&fit=crop&w=1200&q=80', 'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80'] }
+};
 
 const projectData = {
   'erosion-sandbox': { title: 'Erosion Sandbox', description: 'Long-form terrain studies with erosion passes, shader tests, and cinematic framing iterations.', images: ['https://images.unsplash.com/photo-1477244075012-5cc28286e465?auto=format&fit=crop&w=1200&q=80', 'https://images.unsplash.com/photo-1493244040629-496f6d136cc3?auto=format&fit=crop&w=1200&q=80'] },
@@ -68,6 +70,11 @@ const lightboxImage = document.getElementById('lightbox-image');
 const lightboxClose = document.getElementById('lightbox-close');
 const lightboxExit = document.getElementById('lightbox-exit');
 const lightboxDownload = document.getElementById('lightbox-download');
+const selectedView = document.getElementById('selected-view');
+const selectedBack = document.getElementById('selected-back');
+const selectedTitle = document.getElementById('selected-title');
+const selectedDescription = document.getElementById('selected-description');
+const selectedGallery = document.getElementById('selected-gallery');
 const projectView = document.getElementById('project-view');
 const projectBack = document.getElementById('project-back');
 const projectTitle = document.getElementById('project-title');
@@ -90,19 +97,21 @@ const sanitizeAlbums = (data) => {
     .filter((album) => album.photos.length > 0);
 };
 
-const getPhotoMarkup = (url, albumTitle, index) => `<figure class="photo-item" data-photo-wrap="${url}"><img src="${url}" alt="${albumTitle} photo ${index + 1}" /></figure>`;
+const getPhotoMarkup = (url, title, index) => `<figure class="photo-item" data-photo-wrap="${url}"><img src="${url}" alt="${title} photo ${index + 1}" /></figure>`;
 
 const openLightbox = async (src) => {
   if (!lightbox || !lightboxImage || !src || !lightboxDownload) return;
   lightboxImage.src = src;
-  downloadableBlobUrl = '';
   downloadableFileName = `jamie-photo-${Date.now()}.jpg`;
-  lightboxDownload.href = src;
   lightboxDownload.setAttribute('download', downloadableFileName);
+  lightboxDownload.href = src;
+
+  if (downloadableBlobUrl) URL.revokeObjectURL(downloadableBlobUrl);
+  downloadableBlobUrl = '';
 
   try {
-    const response = await fetch(src, { mode: 'cors' });
-    const blob = await response.blob();
+    const res = await fetch(src, { mode: 'cors' });
+    const blob = await res.blob();
     downloadableBlobUrl = URL.createObjectURL(blob);
     lightboxDownload.href = downloadableBlobUrl;
   } catch {
@@ -115,20 +124,37 @@ const openLightbox = async (src) => {
 
 const closeLightbox = () => {
   if (!lightbox || !lightboxImage || !lightboxDownload) return;
-  if (downloadableBlobUrl) {
-    URL.revokeObjectURL(downloadableBlobUrl);
-    downloadableBlobUrl = '';
-  }
+  if (downloadableBlobUrl) URL.revokeObjectURL(downloadableBlobUrl);
+  downloadableBlobUrl = '';
   lightbox.classList.remove('open');
   lightbox.setAttribute('aria-hidden', 'true');
   lightboxImage.src = '';
   lightboxDownload.href = '#';
 };
 
-const downloadCurrentImage = (event) => {
+const downloadCurrentImage = async (event) => {
   event.preventDefault();
   const src = downloadableBlobUrl || lightboxImage?.src;
   if (!src) return;
+
+  if ('showSaveFilePicker' in window) {
+    try {
+      const fileHandle = await window.showSaveFilePicker({ suggestedName: downloadableFileName, types: [{ description: 'Image', accept: { 'image/*': ['.jpg', '.jpeg', '.png', '.webp'] } }] });
+      const writable = await fileHandle.createWritable();
+      if (downloadableBlobUrl) {
+        const blob = await (await fetch(downloadableBlobUrl)).blob();
+        await writable.write(blob);
+      } else {
+        const blob = await (await fetch(lightboxImage.src)).blob();
+        await writable.write(blob);
+      }
+      await writable.close();
+      return;
+    } catch {
+      // fall through to anchor download
+    }
+  }
+
   const anchor = document.createElement('a');
   anchor.href = src;
   anchor.download = downloadableFileName;
@@ -146,9 +172,9 @@ const attachPhotoClicks = (container) => {
 const renderAlbumPreview = () => {
   const activeAlbum = filteredAlbums[activeAlbumIndex];
   if (!activeAlbum || !photoGrid || !activeTitle || !activeMeta) {
-    if (photoGrid) photoGrid.innerHTML = '';
-    if (activeTitle) activeTitle.textContent = 'Album Preview';
-    if (activeMeta) activeMeta.textContent = 'No album selected';
+    photoGrid.innerHTML = '';
+    activeTitle.textContent = 'Album Preview';
+    activeMeta.textContent = 'No album selected';
     return;
   }
   activeTitle.textContent = activeAlbum.title;
@@ -160,25 +186,23 @@ const renderAlbumPreview = () => {
 const renderAlbums = () => {
   if (!albumsGrid || !moreButton) return;
   albumsGrid.innerHTML = '';
-
   filteredAlbums.forEach((album, index) => {
     const card = document.createElement('button');
     card.type = 'button';
     card.className = 'album-card';
     if (!showAllAlbums && index >= visibleLimit) card.classList.add('is-hidden');
     if (index === activeAlbumIndex) card.classList.add('is-active');
-    const coverImage = album.photos[0] || "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80";
+    const coverImage = album.photos[0] || 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80';
     card.innerHTML = `<img src="${coverImage}" alt="${album.title} thumbnail" loading="lazy" /><div class="album-meta"><h4>${album.title}</h4><p>${album.photos.length} photo${album.photos.length === 1 ? '' : 's'}</p></div>`;
     card.addEventListener('click', () => {
       activeAlbumIndex = index;
       renderAlbums();
       renderAlbumPreview();
+      document.getElementById('photo-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
     albumsGrid.appendChild(card);
   });
-
-  const shouldShowMore = filteredAlbums.length > visibleLimit;
-  moreButton.classList.toggle('is-visible', shouldShowMore);
+  moreButton.classList.toggle('is-visible', filteredAlbums.length > visibleLimit);
   moreButton.textContent = showAllAlbums ? 'Show Less' : 'More Albums';
 };
 
@@ -191,33 +215,20 @@ const runSearch = () => {
   renderAlbumPreview();
 };
 
-const selectAlbumByTitle = (title) => {
-  if (!title) return;
-  if (searchInput) searchInput.value = '';
-  filteredAlbums = [...albums];
-  const index = filteredAlbums.findIndex((album) => album.title.toLowerCase() === title.toLowerCase());
-  activeAlbumIndex = index >= 0 ? index : 0;
-  showAllAlbums = true;
-  renderAlbums();
-  renderAlbumPreview();
-  document.getElementById('photography')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+const openDetailSection = (data, key, elements, section) => {
+  const entry = data[key];
+  if (!entry) return;
+  elements.title.textContent = entry.title;
+  elements.description.textContent = entry.description;
+  elements.gallery.innerHTML = entry.images.map((img, i) => getPhotoMarkup(img, entry.title, i)).join('');
+  attachPhotoClicks(elements.gallery);
+  section.hidden = false;
+  section.scrollIntoView({ behavior: 'smooth', block: 'start' });
 };
 
-const openProjectPage = (projectKey) => {
-  const project = projectData[projectKey];
-  if (!project || !projectView || !projectTitle || !projectDescription || !projectGallery) return;
-  projectTitle.textContent = project.title;
-  projectDescription.textContent = project.description;
-  projectGallery.innerHTML = project.images.map((image, i) => getPhotoMarkup(image, project.title, i)).join('');
-  attachPhotoClicks(projectGallery);
-  projectView.hidden = false;
-  projectView.scrollIntoView({ behavior: 'smooth', block: 'start' });
-};
-
-const closeProjectPage = () => {
-  if (!projectView || !projectGallery) return;
-  projectView.hidden = true;
-  projectGallery.innerHTML = '';
+const closeDetailSection = (section, gallery) => {
+  section.hidden = true;
+  gallery.innerHTML = '';
 };
 
 if (searchInput) searchInput.addEventListener('input', runSearch);
@@ -227,14 +238,15 @@ if (lightboxExit) lightboxExit.addEventListener('click', closeLightbox);
 if (lightboxDownload) lightboxDownload.addEventListener('click', downloadCurrentImage);
 if (lightbox) lightbox.addEventListener('click', (event) => { if (event.target === lightbox) closeLightbox(); });
 document.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeLightbox(); });
-if (projectBack) projectBack.addEventListener('click', closeProjectPage);
+if (selectedBack) selectedBack.addEventListener('click', () => closeDetailSection(selectedView, selectedGallery));
+if (projectBack) projectBack.addEventListener('click', () => closeDetailSection(projectView, projectGallery));
 
-document.querySelectorAll('[data-album-open]').forEach((item) => {
-  item.addEventListener('click', () => selectAlbumByTitle(item.getAttribute('data-album-open')));
+document.querySelectorAll('[data-selected]').forEach((item) => {
+  item.addEventListener('click', () => openDetailSection(selectedData, item.getAttribute('data-selected'), { title: selectedTitle, description: selectedDescription, gallery: selectedGallery }, selectedView));
 });
 
 document.querySelectorAll('[data-project]').forEach((item) => {
-  item.addEventListener('click', () => openProjectPage(item.getAttribute('data-project')));
+  item.addEventListener('click', () => openDetailSection(projectData, item.getAttribute('data-project'), { title: projectTitle, description: projectDescription, gallery: projectGallery }, projectView));
 });
 
 const loadAlbumsFromGitHub = async () => {

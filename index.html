@@ -44,27 +44,34 @@
     <section id="selected-work" class="section reveal">
       <h2>Selected Work</h2>
       <div class="selected-grid">
-        <button class="work-item" type="button" data-album-open="Courtside">
+        <button class="work-item" type="button" data-selected="night-session-frames">
           <img src="https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=1200&q=80" alt="Sports photography sequence" />
           <h3>Night Session Frames</h3>
-          <p>Open the Courtside album.</p>
+          <p>Open full project case study.</p>
         </button>
-        <button class="work-item" type="button" data-album-open="Terrain Studies">
+        <button class="work-item" type="button" data-selected="terrain-studies">
           <img src="https://images.unsplash.com/photo-1477244075012-5cc28286e465?auto=format&fit=crop&w=1200&q=80" alt="Rendered terrain landscape" />
           <h3>Terrain Studies</h3>
-          <p>Open the Terrain Studies album.</p>
+          <p>Open full project case study.</p>
         </button>
-        <button class="work-item" type="button" data-album-open="Fixture Build">
+        <button class="work-item" type="button" data-selected="fixture-build-v3">
           <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1200&q=80" alt="Mechanical prototype on workbench" />
           <h3>Fixture Build v3</h3>
-          <p>Open the Fixture Build album.</p>
+          <p>Open full project case study.</p>
         </button>
-        <button class="work-item" type="button" data-album-open="Structures">
+        <button class="work-item" type="button" data-selected="quiet-structures">
           <img src="https://images.unsplash.com/photo-1482192505345-5655af888cc4?auto=format&fit=crop&w=1200&q=80" alt="Editorial architecture photograph" />
           <h3>Quiet Structures</h3>
-          <p>Open the Structures album.</p>
+          <p>Open full project case study.</p>
         </button>
       </div>
+    </section>
+
+    <section id="selected-view" class="section project-view" aria-live="polite" hidden>
+      <button id="selected-back" class="button" type="button">← Back to selected work</button>
+      <h2 id="selected-title"></h2>
+      <p id="selected-description" class="section-note"></p>
+      <div id="selected-gallery" class="photo-grid"></div>
     </section>
 
     <section id="photography" class="section reveal">
