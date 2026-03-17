@@ -6,7 +6,7 @@
   <title>Jamie Kazemier — Sports Photography & Technical Creative</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -27,16 +27,18 @@
   </header>
 
   <main id="home">
-    <section class="hero section reveal" id="hero">
+    <section class="hero" id="hero">
       <div class="hero-bg" id="hero-bg" aria-hidden="true"></div>
+      <div class="hero-overlay" aria-hidden="true"></div>
       <div class="hero-inner">
-        <p class="eyebrow">Sports Photographer • Mechanical Engineer • 3D Environment Artist</p>
-        <h1 id="hero-headline">I photograph intensity and engineer the systems behind it.</h1>
-        <p class="hero-copy">I work where timing, structure, and storytelling overlap — from courtside moments to technical builds and virtual worlds.</p>
-        <p class="headline-options-label">Headline options:</p>
-        <ul class="headline-options" id="headline-options"></ul>
-        <div class="hero-actions">
-          <a class="button primary" href="#photography">View Photography</a>
+        <p class="eyebrow hero-line">Jamie Kazemier · Sports Photography · Technical Creative</p>
+        <h1>
+          <span class="hero-line">I shoot split-second pressure.</span>
+          <span class="hero-line">Then reverse-engineer why the frame works.</span>
+        </h1>
+        <p class="hero-copy hero-line">Photography-first work built with technical discipline.</p>
+        <div class="hero-actions hero-line">
+          <a class="button primary" href="#photography">Photography</a>
           <a class="button" href="#selected-work">Selected Work</a>
         </div>
       </div>
@@ -45,38 +47,38 @@
     <section id="selected-work" class="section reveal">
       <div class="section-heading">
         <h2>Selected Work</h2>
-        <p class="section-note">A curated mix of photography and technical process projects.</p>
+        <p class="section-note">Case-study driven projects across photography, engineering, and 3D.</p>
       </div>
       <div class="selected-grid">
         <button class="work-item" type="button" data-selected="night-session-frames">
-          <img loading="lazy" src="https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=1400&q=80" alt="Sports photography sequence" />
+          <img loading="lazy" src="https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=1600&q=80" alt="Sports photography sequence" />
           <div class="card-copy">
             <h3>Night Session Frames</h3>
-            <p>Game-night storytelling across a full season.</p>
+            <p>Season-long courtside visual language.</p>
             <div class="tags"><span>Photography</span><span>Editorial</span></div>
           </div>
         </button>
-        <button class="work-item" type="button" data-selected="terrain-studies">
-          <img loading="lazy" src="https://images.unsplash.com/photo-1477244075012-5cc28286e465?auto=format&fit=crop&w=1400&q=80" alt="Rendered terrain landscape" />
+        <button class="work-item offset" type="button" data-selected="terrain-studies">
+          <img loading="lazy" src="https://images.unsplash.com/photo-1477244075012-5cc28286e465?auto=format&fit=crop&w=1600&q=80" alt="Rendered terrain landscape" />
           <div class="card-copy">
             <h3>Terrain Studies</h3>
-            <p>Landscape language built through procedural iteration.</p>
+            <p>Procedural worldbuilding with controlled realism.</p>
             <div class="tags"><span>3D</span><span>Worldbuilding</span></div>
           </div>
         </button>
         <button class="work-item" type="button" data-selected="fixture-build-v3">
-          <img loading="lazy" src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1400&q=80" alt="Mechanical prototype on workbench" />
+          <img loading="lazy" src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1600&q=80" alt="Mechanical prototype on workbench" />
           <div class="card-copy">
             <h3>Fixture Build v3</h3>
-            <p>A repeatable mechanical system for production reliability.</p>
+            <p>Precision tooling for repeatable production.</p>
             <div class="tags"><span>Engineering</span><span>Prototype</span></div>
           </div>
         </button>
-        <button class="work-item" type="button" data-selected="quiet-structures">
-          <img loading="lazy" src="https://images.unsplash.com/photo-1482192505345-5655af888cc4?auto=format&fit=crop&w=1400&q=80" alt="Editorial architecture photograph" />
+        <button class="work-item offset" type="button" data-selected="quiet-structures">
+          <img loading="lazy" src="https://images.unsplash.com/photo-1482192505345-5655af888cc4?auto=format&fit=crop&w=1600&q=80" alt="Editorial architecture photograph" />
           <div class="card-copy">
             <h3>Quiet Structures</h3>
-            <p>Architecture as rhythm, contrast, and restraint.</p>
+            <p>Architecture translated into visual rhythm.</p>
             <div class="tags"><span>Photography</span><span>Architecture</span></div>
           </div>
         </button>
@@ -87,10 +89,20 @@
       <button id="selected-back" class="button" type="button">← Back to selected work</button>
       <article class="case-study">
         <img id="selected-hero" class="case-hero" alt="Case study hero" />
-        <h2 id="selected-title"></h2>
-        <p id="selected-description" class="section-note"></p>
-        <div id="selected-process" class="case-process"></div>
-        <p id="selected-outcome" class="case-outcome"></p>
+        <div class="case-intro">
+          <h2 id="selected-title"></h2>
+          <p id="selected-description" class="section-note"></p>
+        </div>
+        <div class="case-columns">
+          <div>
+            <h3>Process</h3>
+            <div id="selected-process" class="case-process"></div>
+          </div>
+          <div>
+            <h3>Result</h3>
+            <p id="selected-outcome" class="case-outcome"></p>
+          </div>
+        </div>
         <div id="selected-gallery" class="photo-grid"></div>
       </article>
     </section>
@@ -98,7 +110,7 @@
     <section id="photography" class="section reveal">
       <div class="section-heading">
         <h2>Photography</h2>
-        <p class="section-note">Built as a clean portfolio view with fullscreen browsing and controlled downloads.</p>
+        <p class="section-note">High-impact albums with fullscreen viewing and keyboard navigation.</p>
       </div>
       <div class="album-controls">
         <input id="album-search" type="search" placeholder="Search albums" aria-label="Search albums" />
@@ -115,22 +127,22 @@
     <section id="technical-work" class="section reveal">
       <div class="section-heading">
         <h2>Technical Work</h2>
-        <p class="section-note">Engineering and 3D projects that shape how I solve creative problems.</p>
+        <p class="section-note">Engineering and 3D projects structured as practical case studies.</p>
       </div>
       <div class="creative-grid">
         <button class="creative-card" type="button" data-project="erosion-sandbox">
           <h3>Erosion Sandbox</h3>
-          <p>Procedural terrain iteration with material + composition tests.</p>
-          <div class="tags"><span>3D</span><span>Procedural</span><span>R&D</span></div>
+          <p>Procedural terrain iteration and material studies.</p>
+          <div class="tags"><span>3D</span><span>Procedural</span><span>R&amp;D</span></div>
         </button>
         <button class="creative-card" type="button" data-project="motion-rig-kit">
           <h3>Motion Rig Kit</h3>
-          <p>Rapid rig revisions for repeatable dynamic camera movement.</p>
+          <p>Mechanical camera system built for repeatability.</p>
           <div class="tags"><span>Engineering</span><span>Prototype</span></div>
         </button>
         <button class="creative-card" type="button" data-project="material-library">
           <h3>Material Library</h3>
-          <p>Reference captures transformed into reusable production assets.</p>
+          <p>Reusable scan-based assets for look development.</p>
           <div class="tags"><span>3D</span><span>Pipeline</span></div>
         </button>
       </div>
@@ -140,23 +152,33 @@
       <button id="project-back" class="button" type="button">← Back to technical work</button>
       <article class="case-study">
         <img id="project-hero" class="case-hero" alt="Project hero" />
-        <h2 id="project-title"></h2>
-        <p id="project-description" class="section-note"></p>
-        <div id="project-process" class="case-process"></div>
-        <p id="project-outcome" class="case-outcome"></p>
+        <div class="case-intro">
+          <h2 id="project-title"></h2>
+          <p id="project-description" class="section-note"></p>
+        </div>
+        <div class="case-columns">
+          <div>
+            <h3>Process</h3>
+            <div id="project-process" class="case-process"></div>
+          </div>
+          <div>
+            <h3>Result</h3>
+            <p id="project-outcome" class="case-outcome"></p>
+          </div>
+        </div>
         <div id="project-gallery" class="photo-grid"></div>
       </article>
     </section>
 
     <section id="about" class="section reveal about">
       <h2>About</h2>
-      <p>I’m Jamie — a sports photographer and technical creative focused on moments with structure. I split my time between shooting live sport, building mechanical systems, and developing 3D environments.</p>
-      <p>I care about repeatable process as much as final output. That means clear prep, disciplined execution, and honest editing. Whether it’s a game sequence or a prototype rig, I want the work to feel deliberate.</p>
+      <p>I’m Jamie — a sports photographer and technical creative focused on moments with structure. I split time between live sports coverage, mechanical systems, and environment work.</p>
+      <p>My process is repeatable and intentional: prep hard, execute cleanly, edit with restraint.</p>
     </section>
 
     <section id="contact" class="section reveal contact">
       <h2>Contact</h2>
-      <p>If you’re commissioning coverage, developing a technical creative project, or looking for a collaborator, I’d love to hear about it.</p>
+      <p>Available for commissions, editorial assignments, and technical collaboration.</p>
       <div class="contact-links">
         <button class="button" id="copy-email" type="button" data-email="jamie@example.com">Copy Email</button>
         <a href="mailto:jamie@example.com">jamie@example.com</a>
