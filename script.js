@@ -66,16 +66,66 @@ const ALBUMS_FILE_PATH = 'data/albums.json';
 const albumsEndpoint = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${ALBUMS_FILE_PATH}`;
 
 const fallbackAlbums = [
-  { title: 'Courtside', date: '2026-02-01', photos: ['https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=1200&q=80'] },
-  { title: 'Terrain Studies', date: '2026-01-18', photos: ['https://images.unsplash.com/photo-1477244075012-5cc28286e465?auto=format&fit=crop&w=1200&q=80'] },
-  { title: 'Fixture Build', date: '2025-12-08', photos: ['https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1200&q=80'] },
-  { title: 'Structures', date: '2025-11-22', photos: ['https://images.unsplash.com/photo-1482192505345-5655af888cc4?auto=format&fit=crop&w=1200&q=80'] },
-  { title: 'Street Rain', date: '2025-10-11', photos: ['https://images.unsplash.com/photo-1433863448220-78aaa064ff47?auto=format&fit=crop&w=1200&q=80'] },
-  { title: 'Dusk Terrain', date: '2025-09-30', photos: ['https://images.unsplash.com/photo-1493244040629-496f6d136cc3?auto=format&fit=crop&w=1200&q=80'] },
-  { title: 'Texture Notes', date: '2025-08-15', photos: ['https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?auto=format&fit=crop&w=1200&q=80'] },
-  { title: 'North Study', date: '2025-07-03', photos: ['https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80'] },
-  { title: 'Urban Motion', date: '2025-06-14', photos: ['https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1200&q=80'] },
-  { title: 'Monochrome Walls', date: '2025-05-20', photos: ['https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80'] }
+  {
+    title: 'Courtside Control',
+    date: '2026-02-01',
+    descriptor: 'Indoor basketball under arena lights',
+    photos: ['https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=1200&q=80']
+  },
+  {
+    title: 'Training Ground Tempo',
+    date: '2026-01-18',
+    descriptor: 'Warm-up drills and mid-session intensity',
+    photos: ['https://images.unsplash.com/photo-1477244075012-5cc28286e465?auto=format&fit=crop&w=1200&q=80']
+  },
+  {
+    title: 'Fixture Build Session',
+    date: '2025-12-08',
+    descriptor: 'Precision workflow behind sports production',
+    photos: ['https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1200&q=80']
+  },
+  {
+    title: 'Concrete Lines',
+    date: '2025-11-22',
+    descriptor: 'Graphic forms and architectural rhythm',
+    photos: ['https://images.unsplash.com/photo-1482192505345-5655af888cc4?auto=format&fit=crop&w=1200&q=80']
+  },
+  {
+    title: 'Rain Match Run',
+    date: '2025-10-11',
+    descriptor: 'Wet-weather pace and sideline pressure',
+    photos: ['https://images.unsplash.com/photo-1433863448220-78aaa064ff47?auto=format&fit=crop&w=1200&q=80']
+  },
+  {
+    title: 'Dusk Field Study',
+    date: '2025-09-30',
+    descriptor: 'Low-angle light and late-game mood',
+    photos: ['https://images.unsplash.com/photo-1493244040629-496f6d136cc3?auto=format&fit=crop&w=1200&q=80']
+  },
+  {
+    title: 'Surface Notes',
+    date: '2025-08-15',
+    descriptor: 'Detail-focused textures and equipment wear',
+    photos: ['https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?auto=format&fit=crop&w=1200&q=80']
+  },
+  {
+    title: 'Northern Session',
+    date: '2025-07-03',
+    descriptor: 'Cold light, fast movement, clean frames',
+    photos: ['https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80']
+  },
+  {
+    title: 'Urban Sprint',
+    date: '2025-06-14',
+    descriptor: 'Street-level speed and dynamic motion blur',
+    photos: ['https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1200&q=80']
+  },
+  {
+    title: 'Monochrome Structure',
+    date: '2025-05-20',
+    descriptor: 'Editorial black-and-white tonal studies',
+    photos: ['https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80']
+  }
 ];
 
 const selectedData = {
@@ -188,16 +238,32 @@ const parseDate = (value) => {
 const sortAlbumsByDateDesc = (collection) => [...collection].sort((a, b) => parseDate(b.date) - parseDate(a.date));
 const formatAlbumDate = (value) => new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: 'numeric' }).format(parseDate(value));
 
+const looksLikePlaceholderTitle = (value) => !value || /^img[_\s-]?\d+/i.test(value) || /^album\s*\d*/i.test(value) || /^untitled/i.test(value);
+
+const buildEditorialTitle = (album, index) => {
+  const source = `${album.sport || ''} ${album.location || ''} ${album.mood || ''}`.trim();
+  if (source) return source.split(/\s+/).map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(' ').slice(0, 38);
+  return `Matchday Session ${String(index + 1).padStart(2, '0')}`;
+};
+
+const normalizeAlbum = (album, index) => {
+  const titleCandidate = typeof album.title === 'string' ? album.title.trim() : '';
+  const title = looksLikePlaceholderTitle(titleCandidate) ? buildEditorialTitle(album, index) : titleCandidate;
+  const descriptor = typeof album.descriptor === 'string' ? album.descriptor.trim().slice(0, 64) : '';
+  return {
+    title,
+    date: typeof album.date === 'string' ? album.date : '2025-01-01',
+    descriptor,
+    photos: Array.isArray(album.photos) ? album.photos.filter((p) => typeof p === 'string' && p) : []
+  };
+};
+
 const sanitizeAlbums = (data) => {
-  if (!Array.isArray(data)) return sortAlbumsByDateDesc([...fallbackAlbums]);
+  if (!Array.isArray(data)) return sortAlbumsByDateDesc(fallbackAlbums.map((album, index) => normalizeAlbum(album, index)));
   return sortAlbumsByDateDesc(
     data
-      .filter((album) => album && typeof album.title === 'string' && Array.isArray(album.photos))
-      .map((album) => ({
-        title: album.title,
-        date: typeof album.date === 'string' ? album.date : '2025-01-01',
-        photos: album.photos.filter((p) => typeof p === 'string' && p)
-      }))
+      .filter((album) => album && Array.isArray(album.photos))
+      .map((album, index) => normalizeAlbum(album, index))
       .filter((album) => album.photos.length > 0)
   );
 };
@@ -270,6 +336,13 @@ const stepLightbox = (direction) => {
   preloadLightboxNeighbor(currentLightboxIndex);
 };
 
+const isUserCanceledSave = (error) => {
+  if (!error) return false;
+  const name = typeof error.name === 'string' ? error.name : '';
+  const message = typeof error.message === 'string' ? error.message.toLowerCase() : '';
+  return name === 'AbortError' || name === 'NotAllowedError' || message.includes('aborted') || message.includes('cancel');
+};
+
 const downloadCurrentImage = async (event) => {
   event.preventDefault();
   if (!allowDownloadInLightbox) return;
@@ -325,7 +398,7 @@ const renderAlbumPreview = () => {
     return;
   }
   activeTitle.textContent = activeAlbum.title;
-  activeMeta.textContent = `${formatAlbumDate(activeAlbum.date)}`;
+  activeMeta.textContent = activeAlbum.descriptor ? `${formatAlbumDate(activeAlbum.date)} • ${activeAlbum.descriptor}` : `${formatAlbumDate(activeAlbum.date)}`;
   photoGrid.innerHTML = activeAlbum.photos.map((photo, index) => getPhotoMarkup(photo, activeAlbum.title, index)).join('');
   attachPhotoClicks(photoGrid, activeAlbum.photos, true, `${activeAlbum.title} • ${formatAlbumDate(activeAlbum.date)} • EXIF sample`);
 };
@@ -342,7 +415,7 @@ const renderAlbums = () => {
     if (index === activeAlbumIndex) card.classList.add('is-active');
 
     const coverImage = album.photos[0] || 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80';
-    card.innerHTML = `<img loading="lazy" decoding="async" sizes="(max-width: 700px) 100vw, (max-width: 980px) 50vw, 33vw" src="${coverImage}" alt="${album.title} cover image" /><div class="album-meta"><h4>${album.title}</h4><p>${formatAlbumDate(album.date)}</p></div>`;
+    card.innerHTML = `<div class="album-image-wrap"><img loading="lazy" decoding="async" sizes="(max-width: 700px) 100vw, (max-width: 980px) 50vw, 33vw" src="${coverImage}" alt="${album.title} cover image" /><div class="album-overlay"><h4>${album.title}</h4><p>${formatAlbumDate(album.date)}</p></div></div><div class="album-meta">${album.descriptor ? `<p>${album.descriptor}</p>` : ''}</div>`;
     card.addEventListener('click', () => {
       activeAlbumIndex = index;
       renderAlbums();
@@ -360,7 +433,7 @@ const renderAlbums = () => {
 
 const runSearch = () => {
   const term = (searchInput?.value || '').trim().toLowerCase();
-  filteredAlbums = sortAlbumsByDateDesc(albums.filter((album) => album.title.toLowerCase().includes(term)));
+  filteredAlbums = sortAlbumsByDateDesc(albums.filter((album) => album.title.toLowerCase().includes(term) || (album.descriptor || '').toLowerCase().includes(term)));
   activeAlbumIndex = 0;
   showAllAlbums = false;
   renderAlbums();
@@ -457,7 +530,7 @@ const loadAlbumsFromGitHub = async () => {
     }
   } catch (error) {
     console.warn('Using fallback albums.', error);
-    albums = sortAlbumsByDateDesc([...fallbackAlbums]);
+    albums = sortAlbumsByDateDesc(fallbackAlbums.map((album, index) => normalizeAlbum(album, index)));
     filteredAlbums = [...albums];
   }
   renderAlbums();

@@ -77,14 +77,17 @@ h2 { font-size: clamp(1.85rem, 3.2vw, 2.65rem); margin: 0; }
 .album-controls input { width: min(480px, 100%); min-height: 44px; background: var(--panel); border: 1px solid var(--border); color: var(--text); padding: .72rem .82rem; font: inherit; border-radius: 999px; }
 .albums-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: .95rem; }
 .album-card { grid-column: span 4; border: 1px solid var(--border); background: linear-gradient(180deg, rgba(20,27,36,.7), rgba(15,21,29,.96)); padding: 0; display: flex; flex-direction: column; overflow: hidden; cursor: pointer; text-align: left; transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
+.album-image-wrap { position: relative; overflow: hidden; }
 .album-card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; transition: transform .3s ease, filter .3s ease; }
-.album-card .album-meta { padding: .7rem .8rem .84rem; }
-.album-card h4 { margin: 0; font-size: 1rem; }
-.album-card p { margin: .25rem 0 0; color: var(--muted); font-size: .84rem; }
+.album-overlay { position: absolute; inset: auto 0 0; padding: .72rem .78rem; background: linear-gradient(0deg, rgba(6,9,12,.94) 0%, rgba(6,9,12,.14) 100%); transform: translateY(0); }
+.album-overlay h4 { margin: 0; font-size: .98rem; color: #f3f8ff; }
+.album-overlay p { margin: .18rem 0 0; color: #b7c5d6; font-size: .78rem; }
+.album-card .album-meta { padding: .52rem .78rem .76rem; min-height: 2.25rem; }
+.album-card .album-meta p { margin: 0; color: var(--muted); font-size: .8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .album-card.is-hidden { display: none; }
 .album-card.is-active { border-color: var(--accent); }
 .album-card:hover { transform: translateY(-4px); border-color: #49627e; box-shadow: var(--shadow); }
-.album-card:hover img { transform: scale(1.04); filter: brightness(.84); }
+.album-card:hover img { transform: scale(1.04); filter: brightness(.82); }
 .more-button { margin-top: .85rem; display: none; }
 .more-button.is-visible { display: inline-flex; }
 .album-preview-head { margin: 1.9rem 0 .95rem; }
