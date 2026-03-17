@@ -48,15 +48,15 @@ const fallbackAlbums = [
 ];
 
 const selectedData = {
-  'night-session-frames': { title: 'Night Session Frames', description: 'A long-form sports and portrait project shot over a full season, including editing workflow and print selects.', images: ['https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=1200&q=80', 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80'] },
-  'terrain-studies': { title: 'Terrain Studies', description: 'World Machine to in-engine terrain development with heightfield, erosion and material passes.', images: ['https://images.unsplash.com/photo-1477244075012-5cc28286e465?auto=format&fit=crop&w=1200&q=80', 'https://images.unsplash.com/photo-1493244040629-496f6d136cc3?auto=format&fit=crop&w=1200&q=80'] },
-  'fixture-build-v3': { title: 'Fixture Build v3', description: 'Mechanical design and prototyping cycle for a durable production fixture system.', images: ['https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1200&q=80', 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1200&q=80'] },
-  'quiet-structures': { title: 'Quiet Structures', description: 'An architecture and urban-form album centered around contrast, rhythm, and visual silence.', images: ['https://images.unsplash.com/photo-1482192505345-5655af888cc4?auto=format&fit=crop&w=1200&q=80', 'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80'] }
+  'night-session-frames': { title: 'Night Session Frames', description: 'A long-form sports and portrait project shot over a full season, including editing workflow and print selects.', images: ['https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=1200&q=80', 'https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=1200&q=80'] },
+  'terrain-studies': { title: 'Terrain Studies', description: 'World Machine to in-engine terrain development with heightfield, erosion and material passes.', images: ['https://images.unsplash.com/photo-1477244075012-5cc28286e465?auto=format&fit=crop&w=1200&q=80', 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80'] },
+  'fixture-build-v3': { title: 'Fixture Build v3', description: 'Mechanical design and prototyping cycle for a durable production fixture system.', images: ['https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1200&q=80', 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80'] },
+  'quiet-structures': { title: 'Quiet Structures', description: 'An architecture and urban-form album centered around contrast, rhythm, and visual silence.', images: ['https://images.unsplash.com/photo-1482192505345-5655af888cc4?auto=format&fit=crop&w=1200&q=80', 'https://images.unsplash.com/photo-1519999482648-25049ddd37b1?auto=format&fit=crop&w=1200&q=80'] }
 };
 
 const projectData = {
-  'erosion-sandbox': { title: 'Erosion Sandbox', description: 'Long-form terrain studies with erosion passes, shader tests, and cinematic framing iterations.', images: ['https://images.unsplash.com/photo-1477244075012-5cc28286e465?auto=format&fit=crop&w=1200&q=80', 'https://images.unsplash.com/photo-1493244040629-496f6d136cc3?auto=format&fit=crop&w=1200&q=80'] },
-  'motion-rig-kit': { title: 'Motion Rig Kit', description: 'Mechanical prototypes and rig revisions focused on repeatable camera moves in dynamic conditions.', images: ['https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1200&q=80', 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1200&q=80'] },
+  'erosion-sandbox': { title: 'Erosion Sandbox', description: 'Long-form terrain studies with erosion passes, shader tests, and cinematic framing iterations.', images: ['https://images.unsplash.com/photo-1477244075012-5cc28286e465?auto=format&fit=crop&w=1200&q=80', 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80'] },
+  'motion-rig-kit': { title: 'Motion Rig Kit', description: 'Mechanical prototypes and rig revisions focused on repeatable camera moves in dynamic conditions.', images: ['https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1200&q=80', 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80'] },
   'material-library': { title: 'Material Library', description: 'Collected scans and reference captures converted into reusable surface assets for 3D environments.', images: ['https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?auto=format&fit=crop&w=1200&q=80', 'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80'] }
 };
 
@@ -111,7 +111,7 @@ const sanitizeAlbums = (data) => {
       .filter((album) => album && typeof album.title === 'string' && Array.isArray(album.photos))
       .map((album) => ({
         title: album.title,
-        date: typeof album.date === 'string' ? album.date : '1970-01-01',
+        date: typeof album.date === 'string' ? album.date : '2025-01-01',
         photos: album.photos.filter((p) => typeof p === 'string' && p)
       }))
       .filter((album) => album.photos.length > 0)
@@ -266,11 +266,14 @@ if (lightboxExit) lightboxExit.addEventListener('click', closeLightbox);
 if (lightboxDownload) lightboxDownload.addEventListener('click', downloadCurrentImage);
 if (lightbox) lightbox.addEventListener('click', (event) => { if (event.target === lightbox) closeLightbox(); });
 document.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeLightbox(); });
-if (selectedBack) selectedBack.addEventListener('click', () => closeDetailSection(selectedView, selectedGallery));
+if (selectedBack) selectedBack.addEventListener('click', () => {
+  closeDetailSection(selectedView, selectedGallery);
+  document.getElementById('selected-work')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
 if (projectBack) projectBack.addEventListener('click', () => closeDetailSection(projectView, projectGallery));
 
 document.querySelectorAll('[data-selected]').forEach((item) => {
-  item.addEventListener('click', () => openDetailSection(selectedData, item.getAttribute('data-selected'), { title: selectedTitle, description: selectedDescription, gallery: selectedGallery }, selectedView, false));
+  item.addEventListener('click', () => openDetailSection(selectedData, item.getAttribute('data-selected'), { title: selectedTitle, description: selectedDescription, gallery: selectedGallery }, selectedView, true));
 });
 
 document.querySelectorAll('[data-project]').forEach((item) => {
