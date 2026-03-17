@@ -15,15 +15,14 @@
   <header class="site-header">
     <a class="brand" href="#home">JK</a>
     <button class="menu-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
-      <span></span>
-      <span></span>
+      <span></span><span></span>
     </button>
     <nav id="site-nav" class="site-nav">
       <a href="#photography">Photography</a>
       <a href="#selected-work">Selected Work</a>
       <a href="#creative-work">Creative Work</a>
       <a href="#about">About</a>
-      <a href="#footer">Contact</a>
+      <a href="#contact">Contact</a>
     </nav>
   </header>
 
@@ -32,15 +31,12 @@
       <div class="hero-inner">
         <p class="eyebrow">Photography • Creative Work • Observations</p>
         <h1>I make things and capture what I notice.</h1>
-        <p class="hero-copy">
-          A personal archive of photography and creative work — documenting what I build,
-          experiment with, and choose to capture.
-        </p>
+        <p class="hero-copy">A personal archive of photography and creative work — documenting what I build, experiment with, and choose to capture.</p>
         <p class="hero-meta">Senior Technical Producer • Mechanical Engineer • Sports Photographer • 3D Environment Artist</p>
         <div class="hero-actions">
           <a class="button primary" href="#photography">Photography</a>
           <a class="button" href="#creative-work">Creative Work</a>
-          <a class="button" href="#footer">Contact</a>
+          <a class="button" href="#contact">Contact</a>
         </div>
       </div>
     </section>
@@ -64,7 +60,7 @@
         <article class="work-item">
           <img src="https://images.unsplash.com/photo-1477244075012-5cc28286e465?auto=format&fit=crop&w=1200&q=80" alt="Rendered terrain landscape" />
           <h3>Terrain Studies</h3>
-          <p>Procedural mountains shaped in World Machine and refined for game environments.</p>
+          <p>Procedural mountains shaped in World Machine and refined for environment scenes.</p>
         </article>
         <article class="work-item">
           <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1200&q=80" alt="Mechanical prototype on workbench" />
@@ -80,15 +76,25 @@
     </section>
 
     <section id="photography" class="section reveal">
-      <h2>Photography</h2>
-      <div class="photo-grid">
-        <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80" alt="Snow covered mountain" />
-        <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80" alt="Runner in motion" />
-        <img src="https://images.unsplash.com/photo-1433863448220-78aaa064ff47?auto=format&fit=crop&w=1200&q=80" alt="City night scene" />
-        <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=80" alt="Mountain lake panorama" />
-        <img src="https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?auto=format&fit=crop&w=1200&q=80" alt="Detailed natural texture" />
-        <img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1200&q=80" alt="Road through landscape" />
+      <div class="section-heading">
+        <h2>Photography</h2>
+        <p class="section-note">Browse albums or create your own by uploading a full set of images at once.</p>
       </div>
+
+      <div class="album-builder">
+        <input id="album-name" type="text" placeholder="Album title (e.g. Rotterdam Rain)" />
+        <input id="album-files" type="file" accept="image/*" multiple />
+        <button id="create-album" class="button primary" type="button">Add Album</button>
+      </div>
+
+      <div id="albums-grid" class="albums-grid" aria-live="polite"></div>
+      <button id="albums-more" class="button more-button" type="button">More Albums</button>
+
+      <div class="album-preview-head">
+        <h3 id="active-album-title">Album Preview</h3>
+        <p id="active-album-meta"></p>
+      </div>
+      <div id="photo-grid" class="photo-grid"></div>
     </section>
 
     <section id="creative-work" class="section reveal">
@@ -115,6 +121,16 @@
     <section id="about" class="section reveal about">
       <h2>About</h2>
       <p>I like building things and paying attention to detail — whether that’s physical objects, digital environments, or moments worth capturing.</p>
+    </section>
+
+    <section id="contact" class="section reveal contact">
+      <h2>Contact</h2>
+      <p>For collaborations, assignments, or just to share references, reach out.</p>
+      <div class="contact-links">
+        <a href="mailto:jamie@example.com">jamie@example.com</a>
+        <a href="https://instagram.com" target="_blank" rel="noreferrer">Instagram</a>
+        <a href="https://www.linkedin.com" target="_blank" rel="noreferrer">LinkedIn</a>
+      </div>
     </section>
   </main>
 
