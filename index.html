@@ -78,13 +78,11 @@
     <section id="photography" class="section reveal">
       <div class="section-heading">
         <h2>Photography</h2>
-        <p class="section-note">Browse albums or create your own by uploading a full set of images at once.</p>
+        <p class="section-note">Albums are sourced from your GitHub repository only. Visitors can browse but cannot upload or modify albums.</p>
       </div>
 
-      <div class="album-builder">
-        <input id="album-name" type="text" placeholder="Album title (e.g. Rotterdam Rain)" />
-        <input id="album-files" type="file" accept="image/*" multiple />
-        <button id="create-album" class="button primary" type="button">Add Album</button>
+      <div class="album-controls">
+        <input id="album-search" type="search" placeholder="Search albums" aria-label="Search albums" />
       </div>
 
       <div id="albums-grid" class="albums-grid" aria-live="polite"></div>
@@ -100,20 +98,26 @@
     <section id="creative-work" class="section reveal">
       <h2>Creative Work</h2>
       <div class="creative-grid">
-        <article class="creative-card">
+        <article class="creative-card" data-creative-card>
           <h3>Erosion Sandbox</h3>
           <p>Ongoing terrain experiments to explore believable large-scale landscapes.</p>
           <div class="tags"><span>3D</span><span>Procedural</span><span>Experiment</span></div>
+          <button class="card-toggle" type="button">View Notes</button>
+          <div class="card-panel"><p>Testing macro erosion passes and export presets for scene-ready terrain blocks.</p></div>
         </article>
-        <article class="creative-card">
+        <article class="creative-card" data-creative-card>
           <h3>Motion Rig Kit</h3>
           <p>A modular camera support system built for quick setup and repeatable angles.</p>
           <div class="tags"><span>Engineering</span><span>Experiment</span></div>
+          <button class="card-toggle" type="button">View Notes</button>
+          <div class="card-panel"><p>Iterating connectors and lock points to reduce setup time in the field.</p></div>
         </article>
-        <article class="creative-card">
+        <article class="creative-card" data-creative-card>
           <h3>Material Library</h3>
           <p>Collected surface references turned into reusable assets for environment scenes.</p>
           <div class="tags"><span>3D</span><span>Procedural</span></div>
+          <button class="card-toggle" type="button">View Notes</button>
+          <div class="card-panel"><p>Cataloguing scans and look-dev variants for consistent mood across projects.</p></div>
         </article>
       </div>
     </section>
@@ -133,6 +137,11 @@
       </div>
     </section>
   </main>
+
+  <div id="lightbox" class="lightbox" aria-hidden="true">
+    <button id="lightbox-close" class="lightbox-close" type="button" aria-label="Close image">×</button>
+    <img id="lightbox-image" src="" alt="Expanded photograph" />
+  </div>
 
   <footer id="footer" class="site-footer">
     <p>© Jamie Kazemier <span id="year"></span></p>
