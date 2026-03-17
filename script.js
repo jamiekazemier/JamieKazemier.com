@@ -203,9 +203,12 @@ const moreButton = document.getElementById('albums-more');
 const photoGrid = document.getElementById('photo-grid');
 const activeTitle = document.getElementById('active-album-title');
 const activeMeta = document.getElementById('active-album-meta');
+const activeAlbumCount = document.getElementById('active-album-count');
 const searchInput = document.getElementById('album-search');
 const lightbox = document.getElementById('lightbox');
 const lightboxImage = document.getElementById('lightbox-image');
+const lightboxTitle = document.getElementById('lightbox-title');
+const lightboxCounter = document.getElementById('lightbox-counter');
 const lightboxClose = document.getElementById('lightbox-close');
 const lightboxExit = document.getElementById('lightbox-exit');
 const lightboxDownload = document.getElementById('lightbox-download');
@@ -244,7 +247,9 @@ let allowDownloadInLightbox = false;
 let lastSelectedTrigger = null;
 let currentLightboxImages = [];
 let currentLightboxIndex = 0;
+let currentLightboxTitle = '';
 let currentExif = '';
+let touchStartX = 0;
 
 const parseDate = (value) => {
   const date = new Date(value);
@@ -283,7 +288,34 @@ const sanitizeAlbums = (data) => {
   );
 };
 
-const getPhotoMarkup = (url, title, index) => `<figure class="photo-item" data-photo-wrap="${url}" data-photo-index="${index}"><img loading="lazy" decoding="async" sizes="(max-width: 700px) 100vw, (max-width: 980px) 50vw, 33vw" src="${url}" alt="${title} photo ${index + 1}" /></figure>`;
+const getHash = (value) => {
+  let hash = 0;
+  for (let i = 0; i < value.length; i += 1) hash = (hash * 31 + value.charCodeAt(i)) % 2147483647;
+  return Math.abs(hash);
+};
+
+const buildSequencedPhotos = (photos) => {
+  const uniquePhotos = [...new Set(photos)];
+  const ranked = uniquePhotos
+    .map((url, index) => ({ url, index, score: getHash(`${url}-${index}`) }))
+    .sort((a, b) => b.score - a.score);
+  const lead = ranked.filter((_, index) => index % 2 === 0).map((entry) => entry.url);
+  const support = ranked.filter((_, index) => index % 2 === 1).map((entry) => entry.url).reverse();
+  return [...lead, ...support];
+};
+
+const photoLayoutClass = (index, total) => {
+  if (index === 0) return 'photo-item lead';
+  const pattern = ['wide', 'standard', 'standard', 'tall', 'standard', 'wide'];
+  const variant = pattern[index % pattern.length];
+  return `photo-item ${variant} ${index === total - 1 ? 'tail' : ''}`.trim();
+};
+
+const getPhotoMarkup = (url, title, index, total, eager = false) => {
+  const loading = eager || index < 2 ? 'eager' : 'lazy';
+  const sizes = '(max-width: 700px) 100vw, (max-width: 1120px) 50vw, 33vw';
+  return `<figure class="${photoLayoutClass(index, total)}" data-photo-wrap="${url}" data-photo-index="${index}"><img loading="${loading}" decoding="async" sizes="${sizes}" src="${url}" alt="${title} photo ${index + 1}" /><figcaption>${String(index + 1).padStart(2, '0')}</figcaption></figure>`;
+};
 
 const refreshLightboxImage = () => {
   const src = currentLightboxImages[currentLightboxIndex];
@@ -293,8 +325,9 @@ const refreshLightboxImage = () => {
   lightboxDownload.setAttribute('download', downloadableFileName);
   lightboxDownload.href = src;
   if (lightboxExif) lightboxExif.textContent = currentExif;
+  if (lightboxTitle) lightboxTitle.textContent = currentLightboxTitle;
+  if (lightboxCounter) lightboxCounter.textContent = `${String(currentLightboxIndex + 1).padStart(2, '0')} / ${String(currentLightboxImages.length).padStart(2, '0')}`;
 };
-
 
 const preloadLightboxNeighbor = (index) => {
   const nextSrc = currentLightboxImages[(index + 1) % currentLightboxImages.length];
@@ -303,13 +336,14 @@ const preloadLightboxNeighbor = (index) => {
   img.src = nextSrc;
 };
 
-const openLightbox = async (images, index, enableDownload = false, exifLabel = '') => {
+const openLightbox = async (images, index, enableDownload = false, exifLabel = '', titleLabel = 'Photo Story') => {
   if (!lightbox || !lightboxImage || !Array.isArray(images) || !images.length || !lightboxDownload) return;
   allowDownloadInLightbox = enableDownload;
   lightboxDownload.style.display = enableDownload ? 'inline-flex' : 'none';
   currentLightboxImages = images;
   currentLightboxIndex = Math.max(0, Math.min(index, images.length - 1));
   currentExif = exifLabel;
+  currentLightboxTitle = titleLabel;
 
   if (downloadableBlobUrl) URL.revokeObjectURL(downloadableBlobUrl);
   downloadableBlobUrl = '';
@@ -342,6 +376,8 @@ const closeLightbox = () => {
   lightboxImage.src = '';
   lightboxDownload.href = '#';
   if (lightboxMeta) lightboxMeta.hidden = true;
+  if (lightboxTitle) lightboxTitle.textContent = '';
+  if (lightboxCounter) lightboxCounter.textContent = '';
 };
 
 const stepLightbox = (direction) => {
@@ -385,11 +421,11 @@ const downloadCurrentImage = async (event) => {
   anchor.remove();
 };
 
-const attachPhotoClicks = (container, images, enableDownload, exifLabel) => {
+const attachPhotoClicks = (container, images, enableDownload, exifLabel, titleLabel) => {
   container.querySelectorAll('[data-photo-wrap]').forEach((item) => {
     item.addEventListener('click', () => {
       const idx = Number(item.getAttribute('data-photo-index') || '0');
-      openLightbox(images, idx, enableDownload, exifLabel);
+      openLightbox(images, idx, enableDownload, exifLabel, titleLabel);
     });
   });
 };
@@ -400,8 +436,8 @@ const renderCaseStudy = (entry, elements, enableDownload = false) => {
   elements.description.textContent = entry.intro;
   elements.process.innerHTML = entry.process.map((step) => `<p class="case-step">${step}</p>`).join('');
   elements.outcome.textContent = `Outcome: ${entry.outcome}`;
-  elements.gallery.innerHTML = entry.images.map((img, i) => getPhotoMarkup(img, entry.title, i)).join('');
-  attachPhotoClicks(elements.gallery, entry.images, enableDownload, `${entry.title} • 35mm equiv • ISO 800 • 1/1000`);
+  elements.gallery.innerHTML = entry.images.map((img, i) => getPhotoMarkup(img, entry.title, i, entry.images.length)).join('');
+  attachPhotoClicks(elements.gallery, entry.images, enableDownload, `${entry.title} • 35mm equiv • ISO 800 • 1/1000`, entry.title);
 };
 
 const renderAlbumPreview = () => {
@@ -410,12 +446,15 @@ const renderAlbumPreview = () => {
     photoGrid.innerHTML = '';
     activeTitle.textContent = 'Album Preview';
     activeMeta.textContent = 'No album selected';
+    if (activeAlbumCount) activeAlbumCount.textContent = '';
     return;
   }
+  const sequencedPhotos = buildSequencedPhotos(activeAlbum.photos);
   activeTitle.textContent = activeAlbum.title;
   activeMeta.textContent = activeAlbum.descriptor ? `${formatAlbumDate(activeAlbum.date)} • ${activeAlbum.descriptor}` : `${formatAlbumDate(activeAlbum.date)}`;
-  photoGrid.innerHTML = activeAlbum.photos.map((photo, index) => getPhotoMarkup(photo, activeAlbum.title, index)).join('');
-  attachPhotoClicks(photoGrid, activeAlbum.photos, true, `${activeAlbum.title} • ${formatAlbumDate(activeAlbum.date)} • EXIF sample`);
+  if (activeAlbumCount) activeAlbumCount.textContent = `${sequencedPhotos.length} curated frames`;
+  photoGrid.innerHTML = sequencedPhotos.map((photo, index) => getPhotoMarkup(photo, activeAlbum.title, index, sequencedPhotos.length, index === 0)).join('');
+  attachPhotoClicks(photoGrid, sequencedPhotos, true, `${activeAlbum.title} • ${formatAlbumDate(activeAlbum.date)} • Editorial sequence`, activeAlbum.title);
 };
 
 const renderAlbums = () => {
@@ -429,8 +468,9 @@ const renderAlbums = () => {
     if (!showAllAlbums && index >= visibleLimit) card.classList.add('is-hidden');
     if (index === activeAlbumIndex) card.classList.add('is-active');
 
-    const coverImage = album.photos[0] || 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80';
-    card.innerHTML = `<div class="album-image-wrap"><img loading="lazy" decoding="async" sizes="(max-width: 700px) 100vw, (max-width: 980px) 50vw, 33vw" src="${coverImage}" alt="${album.title} cover image" /><div class="album-overlay"><h4>${album.title}</h4><p>${formatAlbumDate(album.date)}</p></div></div><div class="album-meta">${album.descriptor ? `<p>${album.descriptor}</p>` : ''}</div>`;
+    const sequencedPhotos = buildSequencedPhotos(album.photos);
+    const coverImage = sequencedPhotos[0] || 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80';
+    card.innerHTML = `<div class="album-image-wrap"><img loading="lazy" decoding="async" sizes="(max-width: 700px) 100vw, (max-width: 980px) 50vw, 33vw" src="${coverImage}" alt="${album.title} cover image" /><div class="album-overlay"><p class="album-date">${formatAlbumDate(album.date)}</p><h4>${album.title}</h4><p class="album-count">${album.photos.length} frames</p></div></div><div class="album-meta">${album.descriptor ? `<p>${album.descriptor}</p>` : '<p>Curated sequence with editorial pacing.</p>'}</div>`;
     card.addEventListener('click', () => {
       activeAlbumIndex = index;
       renderAlbums();
@@ -488,6 +528,14 @@ if (lightboxPrev) lightboxPrev.addEventListener('click', () => stepLightbox(-1))
 if (lightboxNext) lightboxNext.addEventListener('click', () => stepLightbox(1));
 if (lightboxExifToggle && lightboxMeta) lightboxExifToggle.addEventListener('click', () => { lightboxMeta.hidden = !lightboxMeta.hidden; });
 if (lightbox) lightbox.addEventListener('click', (event) => { if (event.target === lightbox) closeLightbox(); });
+if (lightbox) lightbox.addEventListener('touchstart', (event) => { touchStartX = event.changedTouches[0]?.clientX || 0; }, { passive: true });
+if (lightbox) lightbox.addEventListener('touchend', (event) => {
+  const endX = event.changedTouches[0]?.clientX || 0;
+  const delta = endX - touchStartX;
+  if (Math.abs(delta) < 40 || !lightbox.classList.contains('open')) return;
+  if (delta < 0) stepLightbox(1);
+  if (delta > 0) stepLightbox(-1);
+}, { passive: true });
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') closeLightbox();
   if (!lightbox?.classList.contains('open')) return;
