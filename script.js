@@ -264,14 +264,7 @@ const sanitizeAlbums = (data) => {
   );
 };
 
-const getPhotoMarkup = (url, title, index) => {
-  const spanPattern = [4, 5, 4, 6, 4, 5, 4];
-  const focusPattern = ['50% 45%', '48% 38%', '52% 52%', '50% 42%', '55% 50%', '45% 46%', '50% 48%'];
-  const photoSpan = spanPattern[index % spanPattern.length];
-  const photoFocus = focusPattern[index % focusPattern.length];
-  const extraClass = index % 5 === 0 ? 'photo-wide' : (index % 4 === 1 ? 'photo-tall' : '');
-  return `<figure class="photo-item ${extraClass}" style="--photo-span:${photoSpan};--photo-focus:${photoFocus};" data-photo-wrap="${url}" data-photo-index="${index}"><img loading="lazy" decoding="async" sizes="(max-width: 700px) 100vw, (max-width: 980px) 50vw, 33vw" src="${url}" alt="${title} photo ${index + 1}" /></figure>`;
-};
+const getPhotoMarkup = (url, title, index) => `<figure class="photo-item" data-photo-wrap="${url}" data-photo-index="${index}"><img loading="lazy" decoding="async" sizes="(max-width: 700px) 100vw, (max-width: 980px) 50vw, 33vw" src="${url}" alt="${title} photo ${index + 1}" /></figure>`;
 
 const refreshLightboxImage = () => {
   const src = currentLightboxImages[currentLightboxIndex];
