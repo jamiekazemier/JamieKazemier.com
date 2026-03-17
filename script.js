@@ -90,6 +90,7 @@ let activeAlbumIndex = 0;
 let downloadableBlobUrl = '';
 let downloadableFileName = 'photo.jpg';
 let allowDownloadInLightbox = false;
+let lastSelectedTrigger = null;
 
 const parseDate = (value) => {
   const date = new Date(value);
@@ -173,7 +174,8 @@ const downloadCurrentImage = async (event) => {
       await writable.write(blob);
       await writable.close();
       return;
-    } catch {
+    } catch (error) {
+      if (error?.name === 'AbortError') return;
       // fallback below
     }
   }
@@ -268,12 +270,20 @@ if (lightbox) lightbox.addEventListener('click', (event) => { if (event.target =
 document.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeLightbox(); });
 if (selectedBack) selectedBack.addEventListener('click', () => {
   closeDetailSection(selectedView, selectedGallery);
+  if (lastSelectedTrigger) {
+    lastSelectedTrigger.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    lastSelectedTrigger.focus({ preventScroll: true });
+    return;
+  }
   document.getElementById('selected-work')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
 if (projectBack) projectBack.addEventListener('click', () => closeDetailSection(projectView, projectGallery));
 
 document.querySelectorAll('[data-selected]').forEach((item) => {
-  item.addEventListener('click', () => openDetailSection(selectedData, item.getAttribute('data-selected'), { title: selectedTitle, description: selectedDescription, gallery: selectedGallery }, selectedView, true));
+  item.addEventListener('click', () => {
+    lastSelectedTrigger = item;
+    openDetailSection(selectedData, item.getAttribute('data-selected'), { title: selectedTitle, description: selectedDescription, gallery: selectedGallery }, selectedView, true);
+  });
 });
 
 document.querySelectorAll('[data-project]').forEach((item) => {
