@@ -3,81 +3,102 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jamie Kazemier</title>
+  <title>Jamie Kazemier — Sports Photography & Technical Creative</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="grain"></div>
 
-  <header class="site-header">
-    <a class="brand" href="#home">JK</a>
+  <header class="site-header" id="site-header">
+    <a class="brand" href="#home" aria-label="Jamie Kazemier home">JK</a>
     <button class="menu-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
       <span></span><span></span>
     </button>
     <nav id="site-nav" class="site-nav">
       <a href="#selected-work">Selected Work</a>
       <a href="#photography">Photography</a>
-      <a href="#creative-work">Creative Work</a>
+      <a href="#technical-work">Technical Work</a>
       <a href="#about">About</a>
       <a href="#contact">Contact</a>
     </nav>
   </header>
 
   <main id="home">
-    <section class="hero section reveal">
+    <section class="hero section reveal" id="hero">
+      <div class="hero-bg" id="hero-bg" aria-hidden="true"></div>
       <div class="hero-inner">
-        <p class="eyebrow">Photography • Creative Work • Observations</p>
-        <h1>I make things and capture what I notice.</h1>
-        <p class="hero-copy">A personal archive of photography and creative work — documenting what I build, experiment with, and choose to capture.</p>
-        <p class="hero-meta">Senior Technical Producer • Mechanical Engineer • Sports Photographer • 3D Environment Artist</p>
+        <p class="eyebrow">Sports Photographer • Mechanical Engineer • 3D Environment Artist</p>
+        <h1 id="hero-headline">I photograph intensity and engineer the systems behind it.</h1>
+        <p class="hero-copy">I work where timing, structure, and storytelling overlap — from courtside moments to technical builds and virtual worlds.</p>
+        <p class="headline-options-label">Headline options:</p>
+        <ul class="headline-options" id="headline-options"></ul>
         <div class="hero-actions">
-          <a class="button primary" href="#photography">Photography</a>
-          <a class="button" href="#creative-work">Creative Work</a>
-          <a class="button" href="#contact">Contact</a>
+          <a class="button primary" href="#photography">View Photography</a>
+          <a class="button" href="#selected-work">Selected Work</a>
         </div>
       </div>
     </section>
 
     <section id="selected-work" class="section reveal">
-      <h2>Selected Work</h2>
+      <div class="section-heading">
+        <h2>Selected Work</h2>
+        <p class="section-note">A curated mix of photography and technical process projects.</p>
+      </div>
       <div class="selected-grid">
         <button class="work-item" type="button" data-selected="night-session-frames">
-          <img src="https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=1200&q=80" alt="Sports photography sequence" />
-          <h3>Night Session Frames</h3>
-          <p>Open full project case study.</p>
+          <img loading="lazy" src="https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=1400&q=80" alt="Sports photography sequence" />
+          <div class="card-copy">
+            <h3>Night Session Frames</h3>
+            <p>Game-night storytelling across a full season.</p>
+            <div class="tags"><span>Photography</span><span>Editorial</span></div>
+          </div>
         </button>
         <button class="work-item" type="button" data-selected="terrain-studies">
-          <img src="https://images.unsplash.com/photo-1477244075012-5cc28286e465?auto=format&fit=crop&w=1200&q=80" alt="Rendered terrain landscape" />
-          <h3>Terrain Studies</h3>
-          <p>Open full project case study.</p>
+          <img loading="lazy" src="https://images.unsplash.com/photo-1477244075012-5cc28286e465?auto=format&fit=crop&w=1400&q=80" alt="Rendered terrain landscape" />
+          <div class="card-copy">
+            <h3>Terrain Studies</h3>
+            <p>Landscape language built through procedural iteration.</p>
+            <div class="tags"><span>3D</span><span>Worldbuilding</span></div>
+          </div>
         </button>
         <button class="work-item" type="button" data-selected="fixture-build-v3">
-          <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1200&q=80" alt="Mechanical prototype on workbench" />
-          <h3>Fixture Build v3</h3>
-          <p>Open full project case study.</p>
+          <img loading="lazy" src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1400&q=80" alt="Mechanical prototype on workbench" />
+          <div class="card-copy">
+            <h3>Fixture Build v3</h3>
+            <p>A repeatable mechanical system for production reliability.</p>
+            <div class="tags"><span>Engineering</span><span>Prototype</span></div>
+          </div>
         </button>
         <button class="work-item" type="button" data-selected="quiet-structures">
-          <img src="https://images.unsplash.com/photo-1482192505345-5655af888cc4?auto=format&fit=crop&w=1200&q=80" alt="Editorial architecture photograph" />
-          <h3>Quiet Structures</h3>
-          <p>Open full project case study.</p>
+          <img loading="lazy" src="https://images.unsplash.com/photo-1482192505345-5655af888cc4?auto=format&fit=crop&w=1400&q=80" alt="Editorial architecture photograph" />
+          <div class="card-copy">
+            <h3>Quiet Structures</h3>
+            <p>Architecture as rhythm, contrast, and restraint.</p>
+            <div class="tags"><span>Photography</span><span>Architecture</span></div>
+          </div>
         </button>
       </div>
     </section>
 
     <section id="selected-view" class="section project-view" aria-live="polite" hidden>
       <button id="selected-back" class="button" type="button">← Back to selected work</button>
-      <h2 id="selected-title"></h2>
-      <p id="selected-description" class="section-note"></p>
-      <div id="selected-gallery" class="photo-grid"></div>
+      <article class="case-study">
+        <img id="selected-hero" class="case-hero" alt="Case study hero" />
+        <h2 id="selected-title"></h2>
+        <p id="selected-description" class="section-note"></p>
+        <div id="selected-process" class="case-process"></div>
+        <p id="selected-outcome" class="case-outcome"></p>
+        <div id="selected-gallery" class="photo-grid"></div>
+      </article>
     </section>
 
     <section id="photography" class="section reveal">
       <div class="section-heading">
         <h2>Photography</h2>
-        <p class="section-note">Albums are sourced from your GitHub repository only. Visitors can browse but cannot upload or modify albums.</p>
+        <p class="section-note">Built as a clean portfolio view with fullscreen browsing and controlled downloads.</p>
       </div>
       <div class="album-controls">
         <input id="album-search" type="search" placeholder="Search albums" aria-label="Search albums" />
@@ -91,61 +112,78 @@
       <div id="photo-grid" class="photo-grid"></div>
     </section>
 
-    <section id="creative-work" class="section reveal">
-      <h2>Creative Work</h2>
+    <section id="technical-work" class="section reveal">
+      <div class="section-heading">
+        <h2>Technical Work</h2>
+        <p class="section-note">Engineering and 3D projects that shape how I solve creative problems.</p>
+      </div>
       <div class="creative-grid">
         <button class="creative-card" type="button" data-project="erosion-sandbox">
           <h3>Erosion Sandbox</h3>
-          <p>Open dedicated project page.</p>
-          <div class="tags"><span>3D</span><span>Procedural</span><span>Experiment</span></div>
+          <p>Procedural terrain iteration with material + composition tests.</p>
+          <div class="tags"><span>3D</span><span>Procedural</span><span>R&D</span></div>
         </button>
         <button class="creative-card" type="button" data-project="motion-rig-kit">
           <h3>Motion Rig Kit</h3>
-          <p>Open dedicated project page.</p>
-          <div class="tags"><span>Engineering</span><span>Experiment</span></div>
+          <p>Rapid rig revisions for repeatable dynamic camera movement.</p>
+          <div class="tags"><span>Engineering</span><span>Prototype</span></div>
         </button>
         <button class="creative-card" type="button" data-project="material-library">
           <h3>Material Library</h3>
-          <p>Open dedicated project page.</p>
-          <div class="tags"><span>3D</span><span>Procedural</span></div>
+          <p>Reference captures transformed into reusable production assets.</p>
+          <div class="tags"><span>3D</span><span>Pipeline</span></div>
         </button>
       </div>
     </section>
 
     <section id="project-view" class="section project-view" aria-live="polite" hidden>
-      <button id="project-back" class="button" type="button">← Back to site</button>
-      <h2 id="project-title"></h2>
-      <p id="project-description" class="section-note"></p>
-      <div id="project-gallery" class="photo-grid"></div>
+      <button id="project-back" class="button" type="button">← Back to technical work</button>
+      <article class="case-study">
+        <img id="project-hero" class="case-hero" alt="Project hero" />
+        <h2 id="project-title"></h2>
+        <p id="project-description" class="section-note"></p>
+        <div id="project-process" class="case-process"></div>
+        <p id="project-outcome" class="case-outcome"></p>
+        <div id="project-gallery" class="photo-grid"></div>
+      </article>
     </section>
 
     <section id="about" class="section reveal about">
       <h2>About</h2>
-      <p>I like building things and paying attention to detail — whether that’s physical objects, digital environments, or moments worth capturing.</p>
+      <p>I’m Jamie — a sports photographer and technical creative focused on moments with structure. I split my time between shooting live sport, building mechanical systems, and developing 3D environments.</p>
+      <p>I care about repeatable process as much as final output. That means clear prep, disciplined execution, and honest editing. Whether it’s a game sequence or a prototype rig, I want the work to feel deliberate.</p>
     </section>
 
     <section id="contact" class="section reveal contact">
       <h2>Contact</h2>
-      <p>For collaborations, assignments, or just to share references, reach out.</p>
+      <p>If you’re commissioning coverage, developing a technical creative project, or looking for a collaborator, I’d love to hear about it.</p>
       <div class="contact-links">
+        <button class="button" id="copy-email" type="button" data-email="jamie@example.com">Copy Email</button>
         <a href="mailto:jamie@example.com">jamie@example.com</a>
         <a href="https://instagram.com" target="_blank" rel="noreferrer">Instagram</a>
         <a href="https://www.linkedin.com" target="_blank" rel="noreferrer">LinkedIn</a>
       </div>
+      <p id="copy-feedback" class="copy-feedback" aria-live="polite"></p>
     </section>
   </main>
 
   <div id="lightbox" class="lightbox" aria-hidden="true">
     <button id="lightbox-close" class="lightbox-close" type="button" aria-label="Close image">×</button>
     <img id="lightbox-image" src="" alt="Expanded photograph" />
+    <div class="lightbox-meta" id="lightbox-meta" hidden>
+      <p id="lightbox-exif"></p>
+    </div>
     <div class="lightbox-actions">
+      <button id="lightbox-prev" class="button" type="button">Prev</button>
+      <button id="lightbox-next" class="button" type="button">Next</button>
+      <button id="lightbox-exif-toggle" class="button" type="button">EXIF</button>
       <a id="lightbox-download" class="button" href="#" download>Download</a>
-      <button id="lightbox-exit" class="button" type="button">Exit Fullscreen</button>
+      <button id="lightbox-exit" class="button" type="button">Exit</button>
     </div>
   </div>
 
   <footer id="footer" class="site-footer">
-    <p>© Jamie Kazemier <span id="year"></span> • Updated Mar 17, 2026 19:01 UTC</p>
+    <p>© Jamie Kazemier <span id="year"></span> • Updated Mar 17, 2026 19:05 UTC</p>
   </footer>
 
   <script src="script.js"></script>
