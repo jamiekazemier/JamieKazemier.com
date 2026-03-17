@@ -22,12 +22,31 @@ if (menuToggle && siteNav) {
   }));
 }
 
+let lastScrollY = window.scrollY;
 window.addEventListener('scroll', () => {
-  siteHeader?.classList.toggle('scrolled', window.scrollY > 10);
+  if (!siteHeader) return;
+  const currentScrollY = window.scrollY;
+  siteHeader.classList.toggle('scrolled', currentScrollY > 10);
+
+  const scrollingDown = currentScrollY > lastScrollY;
+  siteHeader.classList.toggle('is-hidden', scrollingDown && currentScrollY > 120);
+  lastScrollY = currentScrollY;
 }, { passive: true });
 
 const revealItems = document.querySelectorAll('.reveal');
-revealItems.forEach((item) => item.classList.add('in-view'));
+if ('IntersectionObserver' in window) {
+  const revealObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('in-view');
+      observer.unobserve(entry.target);
+    });
+  }, { threshold: 0.16, rootMargin: '0px 0px -8% 0px' });
+
+  revealItems.forEach((item) => revealObserver.observe(item));
+} else {
+  revealItems.forEach((item) => item.classList.add('in-view'));
+}
 
 const sectionObserverTargets = ['selected-work', 'photography', 'technical-work', 'about', 'contact']
   .map((id) => document.getElementById(id))
