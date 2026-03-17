@@ -47,29 +47,18 @@ if ('IntersectionObserver' in window) {
   sectionObserverTargets.forEach((section) => sectionObserver.observe(section));
 }
 
-const heroHeadline = document.getElementById('hero-headline');
-const headlineOptions = document.getElementById('headline-options');
 const heroBg = document.getElementById('hero-bg');
-const heroHeadlines = [
-  'I photograph intensity and engineer the systems behind it.',
-  'From courtside moments to technical builds, I chase precision.',
-  'Sports frames, engineered process, and crafted environments.',
-  'I build repeatable systems for unpredictable moments.',
-  'A photographer’s eye with an engineer’s discipline.'
-];
 const heroImages = [
-  'https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=1600&q=80',
-  'https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=1600&q=80',
-  'https://images.unsplash.com/photo-1477244075012-5cc28286e465?auto=format&fit=crop&w=1600&q=80'
+  'https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=2200&q=80',
+  'https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=2200&q=80',
+  'https://images.unsplash.com/photo-1477244075012-5cc28286e465?auto=format&fit=crop&w=2200&q=80'
 ];
 let heroIndex = 0;
-if (headlineOptions) headlineOptions.innerHTML = heroHeadlines.map((line) => `<li>${line}</li>`).join('');
-if (heroHeadline) heroHeadline.textContent = heroHeadlines[0];
 if (heroBg) heroBg.style.backgroundImage = `url('${heroImages[0]}')`;
 setInterval(() => {
   heroIndex = (heroIndex + 1) % heroImages.length;
   if (heroBg) heroBg.style.backgroundImage = `url('${heroImages[heroIndex]}')`;
-}, 5000);
+}, 7000);
 
 const GITHUB_OWNER = 'JamieKazemier';
 const GITHUB_REPO = 'JamieKazemier.com';
@@ -214,7 +203,7 @@ const sanitizeAlbums = (data) => {
   );
 };
 
-const getPhotoMarkup = (url, title, index) => `<figure class="photo-item" data-photo-wrap="${url}" data-photo-index="${index}"><img loading="lazy" src="${url}" alt="${title} photo ${index + 1}" /></figure>`;
+const getPhotoMarkup = (url, title, index) => `<figure class="photo-item" data-photo-wrap="${url}" data-photo-index="${index}"><img loading="lazy" decoding="async" sizes="(max-width: 700px) 100vw, (max-width: 980px) 50vw, 33vw" src="${url}" alt="${title} photo ${index + 1}" /></figure>`;
 
 const refreshLightboxImage = () => {
   const src = currentLightboxImages[currentLightboxIndex];
@@ -270,13 +259,6 @@ const stepLightbox = (direction) => {
   if (!currentLightboxImages.length) return;
   currentLightboxIndex = (currentLightboxIndex + direction + currentLightboxImages.length) % currentLightboxImages.length;
   refreshLightboxImage();
-};
-
-const isUserCanceledSave = (error) => {
-  if (!error) return false;
-  const name = typeof error.name === 'string' ? error.name : '';
-  const message = typeof error.message === 'string' ? error.message.toLowerCase() : '';
-  return name === 'AbortError' || name === 'NotAllowedError' || message.includes('aborted') || message.includes('cancel');
 };
 
 const isUserCanceledSave = (error) => {
@@ -358,7 +340,7 @@ const renderAlbums = () => {
     if (index === activeAlbumIndex) card.classList.add('is-active');
 
     const coverImage = album.photos[0] || 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80';
-    card.innerHTML = `<img loading="lazy" src="${coverImage}" alt="${album.title} thumbnail" /><div class="album-meta"><h4>${album.title}</h4><p>${formatAlbumDate(album.date)} • ${album.photos.length} photo${album.photos.length === 1 ? '' : 's'}</p></div>`;
+    card.innerHTML = `<img loading="lazy" decoding="async" sizes="(max-width: 700px) 100vw, (max-width: 980px) 50vw, 33vw" src="${coverImage}" alt="${album.title} thumbnail" /><div class="album-meta"><h4>${album.title}</h4><p>${formatAlbumDate(album.date)} • ${album.photos.length} photo${album.photos.length === 1 ? '' : 's'}</p></div>`;
     card.addEventListener('click', () => {
       activeAlbumIndex = index;
       renderAlbums();
