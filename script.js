@@ -44,7 +44,11 @@ const fallbackAlbums = [
   { title: 'Street Rain', photos: ['https://images.unsplash.com/photo-1433863448220-78aaa064ff47?auto=format&fit=crop&w=1200&q=80'] },
   { title: 'Dusk Terrain', photos: ['https://images.unsplash.com/photo-1493244040629-496f6d136cc3?auto=format&fit=crop&w=1200&q=80'] },
   { title: 'Texture Notes', photos: ['https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?auto=format&fit=crop&w=1200&q=80'] },
-  { title: 'North Study', photos: ['https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80'] }
+  { title: 'North Study', photos: ['https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80'] },
+  { title: 'Urban Motion', photos: ['https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1200&q=80'] },
+  { title: 'Monochrome Walls', photos: ['https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80'] },
+  { title: 'Road Lines', photos: ['https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1200&q=80'] },
+  { title: 'Field Notes', photos: ['https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=80'] }
 ];
 
 const projectData = {
@@ -75,6 +79,8 @@ let albums = [...fallbackAlbums];
 let filteredAlbums = [...albums];
 let showAllAlbums = false;
 let activeAlbumIndex = 0;
+let downloadableBlobUrl = '';
+let downloadableFileName = 'photo.jpg';
 
 const sanitizeAlbums = (data) => {
   if (!Array.isArray(data)) return [...fallbackAlbums];
@@ -86,42 +92,49 @@ const sanitizeAlbums = (data) => {
 
 const getPhotoMarkup = (url, albumTitle, index) => `<figure class="photo-item" data-photo-wrap="${url}"><img src="${url}" alt="${albumTitle} photo ${index + 1}" /></figure>`;
 
-const openLightbox = (src) => {
+const openLightbox = async (src) => {
   if (!lightbox || !lightboxImage || !src || !lightboxDownload) return;
   lightboxImage.src = src;
+  downloadableBlobUrl = '';
+  downloadableFileName = `jamie-photo-${Date.now()}.jpg`;
   lightboxDownload.href = src;
-  const fileName = `jamie-photo-${Date.now()}.jpg`;
-  lightboxDownload.setAttribute('download', fileName);
+  lightboxDownload.setAttribute('download', downloadableFileName);
+
+  try {
+    const response = await fetch(src, { mode: 'cors' });
+    const blob = await response.blob();
+    downloadableBlobUrl = URL.createObjectURL(blob);
+    lightboxDownload.href = downloadableBlobUrl;
+  } catch {
+    downloadableBlobUrl = '';
+  }
+
   lightbox.classList.add('open');
   lightbox.setAttribute('aria-hidden', 'false');
 };
 
 const closeLightbox = () => {
   if (!lightbox || !lightboxImage || !lightboxDownload) return;
+  if (downloadableBlobUrl) {
+    URL.revokeObjectURL(downloadableBlobUrl);
+    downloadableBlobUrl = '';
+  }
   lightbox.classList.remove('open');
   lightbox.setAttribute('aria-hidden', 'true');
   lightboxImage.src = '';
   lightboxDownload.href = '#';
 };
 
-const downloadCurrentImage = async (event) => {
+const downloadCurrentImage = (event) => {
   event.preventDefault();
-  const src = lightboxImage?.src;
+  const src = downloadableBlobUrl || lightboxImage?.src;
   if (!src) return;
-  try {
-    const response = await fetch(src, { mode: 'cors' });
-    const blob = await response.blob();
-    const blobUrl = URL.createObjectURL(blob);
-    const anchor = document.createElement('a');
-    anchor.href = blobUrl;
-    anchor.download = lightboxDownload.getAttribute('download') || 'photo.jpg';
-    document.body.appendChild(anchor);
-    anchor.click();
-    anchor.remove();
-    URL.revokeObjectURL(blobUrl);
-  } catch {
-    window.open(src, '_blank', 'noopener');
-  }
+  const anchor = document.createElement('a');
+  anchor.href = src;
+  anchor.download = downloadableFileName;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
 };
 
 const attachPhotoClicks = (container) => {
@@ -154,7 +167,8 @@ const renderAlbums = () => {
     card.className = 'album-card';
     if (!showAllAlbums && index >= visibleLimit) card.classList.add('is-hidden');
     if (index === activeAlbumIndex) card.classList.add('is-active');
-    card.innerHTML = `<img src="${album.photos[0]}" alt="${album.title} thumbnail" /><div class="album-meta"><h4>${album.title}</h4><p>${album.photos.length} photo${album.photos.length === 1 ? '' : 's'}</p></div>`;
+    const coverImage = album.photos[0] || "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80";
+    card.innerHTML = `<img src="${coverImage}" alt="${album.title} thumbnail" loading="lazy" /><div class="album-meta"><h4>${album.title}</h4><p>${album.photos.length} photo${album.photos.length === 1 ? '' : 's'}</p></div>`;
     card.addEventListener('click', () => {
       activeAlbumIndex = index;
       renderAlbums();
