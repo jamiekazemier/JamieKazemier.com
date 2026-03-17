@@ -41,37 +41,29 @@
       </div>
     </section>
 
-    <section class="image-strip" aria-label="Photography preview strip">
-      <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1600&q=80" alt="Athlete crossing finish line" />
-      <img src="https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1600&q=80" alt="Minimal concrete and shadows" />
-      <img src="https://images.unsplash.com/photo-1494253109108-2e30c049369b?auto=format&fit=crop&w=1600&q=80" alt="Studio portrait with directional light" />
-      <img src="https://images.unsplash.com/photo-1493244040629-496f6d136cc3?auto=format&fit=crop&w=1600&q=80" alt="Mountain landscape at dusk" />
-      <img src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1600&q=80" alt="Urban bike movement in city" />
-    </section>
-
     <section id="selected-work" class="section reveal">
       <h2>Selected Work</h2>
       <div class="selected-grid">
-        <article class="work-item">
+        <button class="work-item" type="button" data-album-open="Courtside">
           <img src="https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=1200&q=80" alt="Sports photography sequence" />
           <h3>Night Session Frames</h3>
-          <p>A series from local courts where timing mattered more than setup.</p>
-        </article>
-        <article class="work-item">
+          <p>Open the Courtside album.</p>
+        </button>
+        <button class="work-item" type="button" data-album-open="Terrain Studies">
           <img src="https://images.unsplash.com/photo-1477244075012-5cc28286e465?auto=format&fit=crop&w=1200&q=80" alt="Rendered terrain landscape" />
           <h3>Terrain Studies</h3>
-          <p>Procedural mountains shaped in World Machine and refined for environment scenes.</p>
-        </article>
-        <article class="work-item">
+          <p>Open the Terrain Studies album.</p>
+        </button>
+        <button class="work-item" type="button" data-album-open="Fixture Build">
           <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1200&q=80" alt="Mechanical prototype on workbench" />
           <h3>Fixture Build v3</h3>
-          <p>An engineered clamp system designed and iterated to survive field use.</p>
-        </article>
-        <article class="work-item">
+          <p>Open the Fixture Build album.</p>
+        </button>
+        <button class="work-item" type="button" data-album-open="Structures">
           <img src="https://images.unsplash.com/photo-1482192505345-5655af888cc4?auto=format&fit=crop&w=1200&q=80" alt="Editorial architecture photograph" />
           <h3>Quiet Structures</h3>
-          <p>Architecture observations focused on form, rhythm, and negative space.</p>
-        </article>
+          <p>Open the Structures album.</p>
+        </button>
       </div>
     </section>
 
@@ -80,14 +72,11 @@
         <h2>Photography</h2>
         <p class="section-note">Albums are sourced from your GitHub repository only. Visitors can browse but cannot upload or modify albums.</p>
       </div>
-
       <div class="album-controls">
         <input id="album-search" type="search" placeholder="Search albums" aria-label="Search albums" />
       </div>
-
       <div id="albums-grid" class="albums-grid" aria-live="polite"></div>
       <button id="albums-more" class="button more-button" type="button">More Albums</button>
-
       <div class="album-preview-head">
         <h3 id="active-album-title">Album Preview</h3>
         <p id="active-album-meta"></p>
@@ -98,28 +87,29 @@
     <section id="creative-work" class="section reveal">
       <h2>Creative Work</h2>
       <div class="creative-grid">
-        <article class="creative-card" data-creative-card>
+        <button class="creative-card" type="button" data-project="erosion-sandbox">
           <h3>Erosion Sandbox</h3>
-          <p>Ongoing terrain experiments to explore believable large-scale landscapes.</p>
+          <p>Open dedicated project page.</p>
           <div class="tags"><span>3D</span><span>Procedural</span><span>Experiment</span></div>
-          <button class="card-toggle" type="button">View Notes</button>
-          <div class="card-panel"><p>Testing macro erosion passes and export presets for scene-ready terrain blocks.</p></div>
-        </article>
-        <article class="creative-card" data-creative-card>
+        </button>
+        <button class="creative-card" type="button" data-project="motion-rig-kit">
           <h3>Motion Rig Kit</h3>
-          <p>A modular camera support system built for quick setup and repeatable angles.</p>
+          <p>Open dedicated project page.</p>
           <div class="tags"><span>Engineering</span><span>Experiment</span></div>
-          <button class="card-toggle" type="button">View Notes</button>
-          <div class="card-panel"><p>Iterating connectors and lock points to reduce setup time in the field.</p></div>
-        </article>
-        <article class="creative-card" data-creative-card>
+        </button>
+        <button class="creative-card" type="button" data-project="material-library">
           <h3>Material Library</h3>
-          <p>Collected surface references turned into reusable assets for environment scenes.</p>
+          <p>Open dedicated project page.</p>
           <div class="tags"><span>3D</span><span>Procedural</span></div>
-          <button class="card-toggle" type="button">View Notes</button>
-          <div class="card-panel"><p>Cataloguing scans and look-dev variants for consistent mood across projects.</p></div>
-        </article>
+        </button>
       </div>
+    </section>
+
+    <section id="project-view" class="section project-view" aria-live="polite" hidden>
+      <button id="project-back" class="button" type="button">← Back to site</button>
+      <h2 id="project-title"></h2>
+      <p id="project-description" class="section-note"></p>
+      <div id="project-gallery" class="photo-grid"></div>
     </section>
 
     <section id="about" class="section reveal about">
@@ -141,6 +131,10 @@
   <div id="lightbox" class="lightbox" aria-hidden="true">
     <button id="lightbox-close" class="lightbox-close" type="button" aria-label="Close image">×</button>
     <img id="lightbox-image" src="" alt="Expanded photograph" />
+    <div class="lightbox-actions">
+      <a id="lightbox-download" class="button" href="#" download>Download</a>
+      <button id="lightbox-exit" class="button" type="button">Exit Fullscreen</button>
+    </div>
   </div>
 
   <footer id="footer" class="site-footer">
