@@ -47,17 +47,16 @@ if ('IntersectionObserver' in window) {
   sectionObserverTargets.forEach((section) => sectionObserver.observe(section));
 }
 
-const heroBg = document.getElementById('hero-bg');
+const heroImage = document.getElementById('hero-image');
 const heroImages = [
-  'https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=2200&q=80',
-  'https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=2200&q=80',
-  'https://images.unsplash.com/photo-1477244075012-5cc28286e465?auto=format&fit=crop&w=2200&q=80'
+  'https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=1800&q=68',
+  'https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=1800&q=68',
+  'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=1800&q=68'
 ];
 let heroIndex = 0;
-if (heroBg) heroBg.style.backgroundImage = `url('${heroImages[0]}')`;
 setInterval(() => {
   heroIndex = (heroIndex + 1) % heroImages.length;
-  if (heroBg) heroBg.style.backgroundImage = `url('${heroImages[heroIndex]}')`;
+  if (heroImage) heroImage.src = heroImages[heroIndex];
 }, 7000);
 
 const GITHUB_OWNER = 'JamieKazemier';
@@ -215,6 +214,14 @@ const refreshLightboxImage = () => {
   if (lightboxExif) lightboxExif.textContent = currentExif;
 };
 
+
+const preloadLightboxNeighbor = (index) => {
+  const nextSrc = currentLightboxImages[(index + 1) % currentLightboxImages.length];
+  if (!nextSrc) return;
+  const img = new Image();
+  img.src = nextSrc;
+};
+
 const openLightbox = async (images, index, enableDownload = false, exifLabel = '') => {
   if (!lightbox || !lightboxImage || !Array.isArray(images) || !images.length || !lightboxDownload) return;
   allowDownloadInLightbox = enableDownload;
@@ -227,6 +234,7 @@ const openLightbox = async (images, index, enableDownload = false, exifLabel = '
   downloadableBlobUrl = '';
 
   refreshLightboxImage();
+  preloadLightboxNeighbor(currentLightboxIndex);
 
   if (enableDownload) {
     try {
@@ -259,13 +267,7 @@ const stepLightbox = (direction) => {
   if (!currentLightboxImages.length) return;
   currentLightboxIndex = (currentLightboxIndex + direction + currentLightboxImages.length) % currentLightboxImages.length;
   refreshLightboxImage();
-};
-
-const isUserCanceledSave = (error) => {
-  if (!error) return false;
-  const name = typeof error.name === 'string' ? error.name : '';
-  const message = typeof error.message === 'string' ? error.message.toLowerCase() : '';
-  return name === 'AbortError' || name === 'NotAllowedError' || message.includes('aborted') || message.includes('cancel');
+  preloadLightboxNeighbor(currentLightboxIndex);
 };
 
 const downloadCurrentImage = async (event) => {
@@ -323,7 +325,7 @@ const renderAlbumPreview = () => {
     return;
   }
   activeTitle.textContent = activeAlbum.title;
-  activeMeta.textContent = `${activeAlbum.photos.length} photo${activeAlbum.photos.length === 1 ? '' : 's'} • ${formatAlbumDate(activeAlbum.date)}`;
+  activeMeta.textContent = `${formatAlbumDate(activeAlbum.date)}`;
   photoGrid.innerHTML = activeAlbum.photos.map((photo, index) => getPhotoMarkup(photo, activeAlbum.title, index)).join('');
   attachPhotoClicks(photoGrid, activeAlbum.photos, true, `${activeAlbum.title} • ${formatAlbumDate(activeAlbum.date)} • EXIF sample`);
 };
@@ -340,7 +342,7 @@ const renderAlbums = () => {
     if (index === activeAlbumIndex) card.classList.add('is-active');
 
     const coverImage = album.photos[0] || 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80';
-    card.innerHTML = `<img loading="lazy" decoding="async" sizes="(max-width: 700px) 100vw, (max-width: 980px) 50vw, 33vw" src="${coverImage}" alt="${album.title} thumbnail" /><div class="album-meta"><h4>${album.title}</h4><p>${formatAlbumDate(album.date)} • ${album.photos.length} photo${album.photos.length === 1 ? '' : 's'}</p></div>`;
+    card.innerHTML = `<img loading="lazy" decoding="async" sizes="(max-width: 700px) 100vw, (max-width: 980px) 50vw, 33vw" src="${coverImage}" alt="${album.title} cover image" /><div class="album-meta"><h4>${album.title}</h4><p>${formatAlbumDate(album.date)}</p></div>`;
     card.addEventListener('click', () => {
       activeAlbumIndex = index;
       renderAlbums();
