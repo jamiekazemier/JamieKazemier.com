@@ -1,30 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Coming Soon</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: white;
-      display: flex;
-      height: 100vh;
-      align-items: center;
-      justify-content: center;
-      margin: 0;
-    }
-    .box {
-      text-align: center;
-    }
-    h1 { font-size: 3rem; margin-bottom: 1rem; }
-    p { opacity: 0.7; }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jamie Kazemier</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="box">
-    <h1>🚧 Coming Soon</h1>
-    <p>This site is under construction.</p>
-  </div>
+  <div class="grain"></div>
+
+  <header class="site-header">
+    <a class="brand" href="#home">JK</a>
+    <button class="menu-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+      <span></span>
+      <span></span>
+    </button>
+    <nav id="site-nav" class="site-nav">
+      <a href="#photography">Photography</a>
+      <a href="#selected-work">Selected Work</a>
+      <a href="#creative-work">Creative Work</a>
+      <a href="#about">About</a>
+      <a href="#footer">Contact</a>
+    </nav>
+  </header>
+
+  <main id="home">
+    <section class="hero section reveal">
+      <div class="hero-inner">
+        <p class="eyebrow">Photography • Creative Work • Observations</p>
+        <h1>I make things and capture what I notice.</h1>
+        <p class="hero-copy">
+          A personal archive of photography and creative work — documenting what I build,
+          experiment with, and choose to capture.
+        </p>
+        <p class="hero-meta">Senior Technical Producer • Mechanical Engineer • Sports Photographer • 3D Environment Artist</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#photography">Photography</a>
+          <a class="button" href="#creative-work">Creative Work</a>
+          <a class="button" href="#footer">Contact</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="image-strip" aria-label="Photography preview strip">
+      <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1600&q=80" alt="Athlete crossing finish line" />
+      <img src="https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1600&q=80" alt="Minimal concrete and shadows" />
+      <img src="https://images.unsplash.com/photo-1494253109108-2e30c049369b?auto=format&fit=crop&w=1600&q=80" alt="Studio portrait with directional light" />
+      <img src="https://images.unsplash.com/photo-1493244040629-496f6d136cc3?auto=format&fit=crop&w=1600&q=80" alt="Mountain landscape at dusk" />
+      <img src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1600&q=80" alt="Urban bike movement in city" />
+    </section>
+
+    <section id="selected-work" class="section reveal">
+      <h2>Selected Work</h2>
+      <div class="selected-grid">
+        <article class="work-item">
+          <img src="https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=1200&q=80" alt="Sports photography sequence" />
+          <h3>Night Session Frames</h3>
+          <p>A series from local courts where timing mattered more than setup.</p>
+        </article>
+        <article class="work-item">
+          <img src="https://images.unsplash.com/photo-1477244075012-5cc28286e465?auto=format&fit=crop&w=1200&q=80" alt="Rendered terrain landscape" />
+          <h3>Terrain Studies</h3>
+          <p>Procedural mountains shaped in World Machine and refined for game environments.</p>
+        </article>
+        <article class="work-item">
+          <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1200&q=80" alt="Mechanical prototype on workbench" />
+          <h3>Fixture Build v3</h3>
+          <p>An engineered clamp system designed and iterated to survive field use.</p>
+        </article>
+        <article class="work-item">
+          <img src="https://images.unsplash.com/photo-1482192505345-5655af888cc4?auto=format&fit=crop&w=1200&q=80" alt="Editorial architecture photograph" />
+          <h3>Quiet Structures</h3>
+          <p>Architecture observations focused on form, rhythm, and negative space.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="photography" class="section reveal">
+      <h2>Photography</h2>
+      <div class="photo-grid">
+        <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80" alt="Snow covered mountain" />
+        <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80" alt="Runner in motion" />
+        <img src="https://images.unsplash.com/photo-1433863448220-78aaa064ff47?auto=format&fit=crop&w=1200&q=80" alt="City night scene" />
+        <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=80" alt="Mountain lake panorama" />
+        <img src="https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?auto=format&fit=crop&w=1200&q=80" alt="Detailed natural texture" />
+        <img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1200&q=80" alt="Road through landscape" />
+      </div>
+    </section>
+
+    <section id="creative-work" class="section reveal">
+      <h2>Creative Work</h2>
+      <div class="creative-grid">
+        <article class="creative-card">
+          <h3>Erosion Sandbox</h3>
+          <p>Ongoing terrain experiments to explore believable large-scale landscapes.</p>
+          <div class="tags"><span>3D</span><span>Procedural</span><span>Experiment</span></div>
+        </article>
+        <article class="creative-card">
+          <h3>Motion Rig Kit</h3>
+          <p>A modular camera support system built for quick setup and repeatable angles.</p>
+          <div class="tags"><span>Engineering</span><span>Experiment</span></div>
+        </article>
+        <article class="creative-card">
+          <h3>Material Library</h3>
+          <p>Collected surface references turned into reusable assets for environment scenes.</p>
+          <div class="tags"><span>3D</span><span>Procedural</span></div>
+        </article>
+      </div>
+    </section>
+
+    <section id="about" class="section reveal about">
+      <h2>About</h2>
+      <p>I like building things and paying attention to detail — whether that’s physical objects, digital environments, or moments worth capturing.</p>
+    </section>
+  </main>
+
+  <footer id="footer" class="site-footer">
+    <p>© Jamie Kazemier <span id="year"></span></p>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
