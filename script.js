@@ -3,7 +3,13 @@ const siteNav = document.querySelector('.site-nav');
 const navLinks = document.querySelectorAll('.site-nav a');
 const siteHeader = document.getElementById('site-header');
 const yearElement = document.getElementById('year');
-if (yearElement) yearElement.textContent = new Date().getFullYear();
+const lastEditedElement = document.getElementById('last-edited');
+const now = new Date();
+if (yearElement) yearElement.textContent = now.getUTCFullYear();
+if (lastEditedElement) {
+  const stamp = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}-${String(now.getUTCDate()).padStart(2, '0')} ${String(now.getUTCHours()).padStart(2, '0')}:${String(now.getUTCMinutes()).padStart(2, '0')} UTC`;
+  lastEditedElement.textContent = stamp;
+}
 
 if (menuToggle && siteNav) {
   menuToggle.addEventListener('click', () => {
@@ -21,18 +27,7 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 
 const revealItems = document.querySelectorAll('.reveal');
-revealItems.forEach((item, idx) => item.style.setProperty('--reveal-delay', `${Math.min(idx * 55, 220)}ms`));
-if ('IntersectionObserver' in window) {
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('in-view');
-        revealObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.15 });
-  revealItems.forEach((item) => revealObserver.observe(item));
-} else revealItems.forEach((item) => item.classList.add('in-view'));
+revealItems.forEach((item) => item.classList.add('in-view'));
 
 const sectionObserverTargets = ['selected-work', 'photography', 'technical-work', 'about', 'contact']
   .map((id) => document.getElementById(id))

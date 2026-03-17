@@ -268,8 +268,8 @@ h2 { font-size: clamp(2.1rem, 3.6vw, 3.2rem); margin: 0; letter-spacing: -.035em
 .lightbox-actions { position: absolute; left: 50%; bottom: 1.2rem; transform: translateX(-50%); display: flex; gap: .45rem; flex-wrap: wrap; justify-content: center; }
 
 .site-footer { width: min(1220px, 90vw); margin: 0 auto; padding: 1.5rem 0 2.05rem; border-top: 1px solid color-mix(in srgb, var(--border) 58%, transparent); color: var(--muted); font-size: .9rem; }
-.reveal { opacity: 0; transform: translateY(12px); transition: opacity .34s cubic-bezier(.22,.61,.36,1), transform .34s cubic-bezier(.22,.61,.36,1); transition-delay: var(--reveal-delay,0ms); }
-.reveal.in-view { opacity: 1; transform: translateY(0); }
+.reveal { opacity: 1; transform: none; transition: none; }
+.reveal.in-view { opacity: 1; transform: none; }
 
 @keyframes heroZoom { from { transform: scale(1.02); } to { transform: scale(1.07); } }
 @keyframes lineIn { to { opacity: 1; transform: translateY(0); } }
