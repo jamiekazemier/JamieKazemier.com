@@ -64,9 +64,9 @@ if ('IntersectionObserver' in window) {
 
 const heroImage = document.getElementById('hero-image');
 const heroImages = [
-  'https://media.discordapp.net/attachments/767744202355507210/1483624466029219932/Untitled-5.jpg?ex=69bb4475&is=69b9f2f5&hm=80e1f685abfb5544079d8be2a0d2e270ce8f5bc193cbfa065539bdab294a5153&=&format=webp&width=1240&height=826',
-  'https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=1800&q=68',
-  'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=1800&q=68'
+  'assets/hero_shot.svg',
+  'assets/hero_shot2.svg',
+  'assets/hero_shot3.svg'
 ];
 let heroIndex = 0;
 setInterval(() => {
