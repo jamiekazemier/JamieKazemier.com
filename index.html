@@ -16,21 +16,26 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="grain"></div>
+  <div class="grain" aria-hidden="true"></div>
   <div class="vignette" aria-hidden="true"></div>
+  <div class="scanlines" aria-hidden="true"></div>
 
   <header class="site-header" id="site-header">
-    <a class="brand" href="#home" aria-label="Jamie Kazemier home">JK</a>
+    <a class="brand" href="#home" aria-label="Jamie Kazemier home">
+      <span class="brand-mark">JK</span>
+      <span class="brand-meta">Jamie Kazemier</span>
+    </a>
     <button class="menu-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
       <span></span><span></span>
     </button>
-    <nav id="site-nav" class="site-nav">
+    <nav id="site-nav" class="site-nav" aria-label="Primary navigation">
       <a href="#about">About</a>
       <a href="#photography">Photography</a>
       <a href="#technical-work">Technical Work</a>
       <a href="#contact">Contact</a>
     </nav>
   </header>
+  <div class="nav-scrim" id="nav-scrim" hidden></div>
 
   <main id="home">
     <section class="hero" id="hero">
@@ -53,136 +58,169 @@
         />
       </div>
       <div class="hero-overlay" aria-hidden="true"></div>
-      <div class="hero-inner">
-        <h1 class="hero-line">Sports Photography, built on timing and discipline.</h1>
-        <div class="hero-detail-box hero-line">
+      <div class="hero-grid">
+        <div class="hero-copy hero-line">
+          <p class="section-kicker">Sports Photographer</p>
+          <h1>Sports Photography, built on timing and discipline.</h1>
+          <div class="hero-actions hero-line">
+            <a class="button primary" href="#photography">View Work</a>
+            <a class="button" href="#contact">Contact</a>
+          </div>
+        </div>
+        <aside class="hero-caption hero-line" aria-label="Jamie Kazemier overview">
+          <p class="hero-caption-label">Field Notes</p>
           <p class="eyebrow">Mechanical Engineering • Senior Technical Producer • 3D Environment Artist</p>
           <p class="hero-support">Engineered process, decisive timing, and disciplined visual storytelling.</p>
           <p class="hero-meta">Based in the Netherlands · Available for sports, events, and editorial assignments.</p>
-        </div>
-        <div class="hero-actions hero-line">
-          <a class="button primary" href="#photography">View Work</a>
-          <a class="button" href="#contact">Contact</a>
-        </div>
+        </aside>
       </div>
     </section>
 
     <section id="about" class="section reveal about about-intro">
-      <div class="about-header">
-        <div class="section-heading">
+      <div class="section-shell about-shell">
+        <div class="section-heading about-header">
           <p class="section-kicker">Profile</p>
           <h2>About</h2>
           <p class="section-note">Sports photographer first, with engineering discipline and production thinking behind every assignment.</p>
         </div>
-      </div>
-      <div class="about-copy">
-        <p>I’m Jamie — a sports photographer working in high-pressure environments where timing matters. My background in mechanical engineering and senior technical production shapes how I prepare, execute, and deliver.</p>
-        <p>That technical foundation carries through every assignment: structured prep, precise timing, and reliable delivery under pressure.</p>
-        <p>Alongside photography, I build systems, workflows, and 3D environments to make creative output faster, cleaner, and more repeatable.</p>
-      </div>
-      <div class="about-actions">
-        <a class="button primary quick-email" href="#contact">Contact</a>
+        <div class="about-copy">
+          <p>I’m Jamie — a sports photographer working in high-pressure environments where timing matters. My background in mechanical engineering and senior technical production shapes how I prepare, execute, and deliver.</p>
+          <p>That technical foundation carries through every assignment: structured prep, precise timing, and reliable delivery under pressure.</p>
+          <p>Alongside photography, I build systems, workflows, and 3D environments to make creative output faster, cleaner, and more repeatable.</p>
+        </div>
+        <div class="about-actions">
+          <a class="button primary quick-email" href="#contact">Contact</a>
+        </div>
       </div>
     </section>
 
-    <section id="photography" class="section reveal">
-      <div class="section-heading">
-        <p class="section-kicker">Coverage</p>
-        <h2>Photography</h2>
-        <p class="section-note">Curated albums built for fast review, narrative pacing, and clean delivery.</p>
-      </div>
-      <div class="album-controls">
-        <input id="album-search" type="search" placeholder="Search albums" aria-label="Search albums" />
-      </div>
-      <div id="albums-grid" class="albums-grid" aria-live="polite"></div>
-      <button id="albums-more" class="button more-button" type="button">More Albums</button>
-      <div class="album-preview-head">
-        <div>
-          <p class="preview-kicker">Live Edit</p>
-          <h3 id="active-album-title">Album Preview</h3>
-          <p id="active-album-meta"></p>
+    <section id="photography" class="section reveal photography-section">
+      <div class="section-shell photography-shell">
+        <div class="section-heading photography-heading">
+          <div>
+            <p class="section-kicker">Coverage</p>
+            <h2>Photography</h2>
+          </div>
+          <p class="section-note">Curated albums built for fast review, narrative pacing, and clean delivery.</p>
         </div>
-        <p id="active-album-count" class="active-album-count"></p>
+        <div class="album-toolbar">
+          <label class="album-search" for="album-search">
+            <span>Search</span>
+            <input id="album-search" type="search" placeholder="Search albums" aria-label="Search albums" />
+          </label>
+        </div>
+        <div id="albums-grid" class="albums-grid" aria-live="polite"></div>
+        <button id="albums-more" class="button more-button" type="button">More Albums</button>
+        <div class="album-preview-panel">
+          <div class="album-preview-head">
+            <div>
+              <p class="preview-kicker">Live Edit</p>
+              <h3 id="active-album-title">Album Preview</h3>
+              <p id="active-album-meta"></p>
+            </div>
+            <p id="active-album-count" class="active-album-count"></p>
+          </div>
+          <div id="photo-grid" class="photo-grid" aria-live="polite"></div>
+        </div>
       </div>
-      <div id="photo-grid" class="photo-grid" aria-live="polite"></div>
     </section>
 
-    <section id="technical-work" class="section reveal technical-muted">
-      <div class="section-heading">
-        <p class="section-kicker">Engineered Practice</p>
-        <h2>Technical Work</h2>
-        <p class="section-note">Engineered case studies that reinforce reliability, repeatability, and production speed.</p>
-      </div>
-      <div class="technical-groups">
-        <div class="technical-group">
-          <h3 class="technical-group-title">Mechanical Engineering</h3>
-          <div class="creative-grid">
-            <button class="creative-card" type="button" data-project="motion-rig-kit">
-              <h3>Motion Rig Kit</h3>
-              <p>Repeatable camera mechanics for high-pressure coverage.</p>
-              <span class="technical-tag">Mechanical Engineering</span>
-              <p class="tech-micro">Precision mechanisms for stable camera repeatability.</p>
-            </button>
-          </div>
+    <section id="technical-work" class="section reveal technical-section technical-muted">
+      <div class="section-shell technical-shell">
+        <div class="section-heading technical-heading">
+          <p class="section-kicker">Engineered Practice</p>
+          <h2>Technical Work</h2>
+          <p class="section-note">Engineered case studies that reinforce reliability, repeatability, and production speed.</p>
         </div>
-        <div class="technical-group">
-          <h3 class="technical-group-title">Technical Production</h3>
-          <div class="creative-grid">
-            <button class="creative-card" type="button" data-project="material-library">
-              <h3>Material Library</h3>
-              <p>Reference-to-delivery workflow system for faster production.</p>
-              <span class="technical-tag">Technical Production</span>
-              <p class="tech-micro">Workflow architecture for faster visual delivery.</p>
-            </button>
-          </div>
-        </div>
-        <div class="technical-group">
-          <h3 class="technical-group-title">3D Environment Work</h3>
-          <div class="creative-grid">
-            <button class="creative-card" type="button" data-project="erosion-sandbox">
-              <h3>Erosion Sandbox</h3>
-              <p>Terrain look-dev balancing readability and atmosphere.</p>
-              <span class="technical-tag">3D Environment</span>
-              <p class="tech-micro">Material and terrain systems for consistent worldbuilding.</p>
-            </button>
-          </div>
+        <div class="technical-groups">
+          <article class="technical-group">
+            <div class="technical-group-intro">
+              <p class="technical-group-title">Mechanical Engineering</p>
+            </div>
+            <div class="creative-grid">
+              <button class="creative-card" type="button" data-project="motion-rig-kit">
+                <div class="creative-card-head">
+                  <span class="technical-tag">Mechanical Engineering</span>
+                  <h3>Motion Rig Kit</h3>
+                </div>
+                <p>Repeatable camera mechanics for high-pressure coverage.</p>
+                <p class="tech-micro">Precision mechanisms for stable camera repeatability.</p>
+              </button>
+            </div>
+          </article>
+          <article class="technical-group">
+            <div class="technical-group-intro">
+              <p class="technical-group-title">Technical Production</p>
+            </div>
+            <div class="creative-grid">
+              <button class="creative-card" type="button" data-project="material-library">
+                <div class="creative-card-head">
+                  <span class="technical-tag">Technical Production</span>
+                  <h3>Material Library</h3>
+                </div>
+                <p>Reference-to-delivery workflow system for faster production.</p>
+                <p class="tech-micro">Workflow architecture for faster visual delivery.</p>
+              </button>
+            </div>
+          </article>
+          <article class="technical-group">
+            <div class="technical-group-intro">
+              <p class="technical-group-title">3D Environment Work</p>
+            </div>
+            <div class="creative-grid">
+              <button class="creative-card" type="button" data-project="erosion-sandbox">
+                <div class="creative-card-head">
+                  <span class="technical-tag">3D Environment</span>
+                  <h3>Erosion Sandbox</h3>
+                </div>
+                <p>Terrain look-dev balancing readability and atmosphere.</p>
+                <p class="tech-micro">Material and terrain systems for consistent worldbuilding.</p>
+              </button>
+            </div>
+          </article>
         </div>
       </div>
     </section>
 
     <section id="project-view" class="section project-view" aria-live="polite" hidden>
-      <button id="project-back" class="button" type="button">← Back to technical work</button>
-      <article class="case-study">
-        <img id="project-hero" class="case-hero" alt="Technical project hero frame" />
-        <div class="case-intro">
-          <h2 id="project-title"></h2>
-          <p id="project-description" class="section-note"></p>
-        </div>
-        <div class="case-columns">
-          <div>
-            <h3>Process</h3>
-            <div id="project-process" class="case-process"></div>
+      <div class="section-shell project-shell">
+        <button id="project-back" class="button" type="button">← Back to technical work</button>
+        <article class="case-study">
+          <img id="project-hero" class="case-hero" alt="Technical project hero frame" />
+          <div class="case-intro">
+            <h2 id="project-title"></h2>
+            <p id="project-description" class="section-note"></p>
           </div>
-          <div>
-            <h3>Result</h3>
-            <p id="project-outcome" class="case-outcome"></p>
+          <div class="case-columns">
+            <div>
+              <h3>Process</h3>
+              <div id="project-process" class="case-process"></div>
+            </div>
+            <div>
+              <h3>Result</h3>
+              <p id="project-outcome" class="case-outcome"></p>
+            </div>
           </div>
-        </div>
-        <div id="project-gallery" class="photo-grid"></div>
-      </article>
+          <div id="project-gallery" class="photo-grid"></div>
+        </article>
+      </div>
     </section>
 
     <section id="contact" class="section reveal contact">
-      <p class="section-kicker">Commissioning</p>
-      <h2>Contact</h2>
-      <p class="availability">Available for sports, event, and editorial assignments with fast turnaround.</p>
-      <p class="contact-intro">Share timing, scope, and location — I’ll respond with coverage options and delivery approach.</p>
-      <div class="contact-links">
-        <a class="button primary" href="mailto:jamie@example.com">Email Jamie</a>
-        <a class="button" href="https://instagram.com" target="_blank" rel="noreferrer">Instagram</a>
-        <button class="button" id="copy-email" type="button" data-email="jamie@example.com">Copy Email</button>
+      <div class="section-shell contact-shell">
+        <div class="contact-copy">
+          <p class="section-kicker">Commissioning</p>
+          <h2>Contact</h2>
+          <p class="availability">Available for sports, event, and editorial assignments with fast turnaround.</p>
+          <p class="contact-intro">Share timing, scope, and location — I’ll respond with coverage options and delivery approach.</p>
+        </div>
+        <div class="contact-links">
+          <a class="button primary" href="mailto:jamie@example.com">Email Jamie</a>
+          <a class="button" href="https://instagram.com" target="_blank" rel="noreferrer">Instagram</a>
+          <button class="button" id="copy-email" type="button" data-email="jamie@example.com">Copy Email</button>
+        </div>
+        <p id="copy-feedback" class="copy-feedback" aria-live="polite"></p>
       </div>
-      <p id="copy-feedback" class="copy-feedback" aria-live="polite"></p>
     </section>
   </main>
 

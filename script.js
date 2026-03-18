@@ -2,6 +2,7 @@ const menuToggle = document.querySelector('.menu-toggle');
 const siteNav = document.querySelector('.site-nav');
 const navLinks = document.querySelectorAll('.site-nav a');
 const siteHeader = document.getElementById('site-header');
+const navScrim = document.getElementById('nav-scrim');
 const yearElement = document.getElementById('year');
 const lastEditedElement = document.getElementById('last-edited');
 const now = new Date();
@@ -11,15 +12,29 @@ if (lastEditedElement) {
   if (stamp) lastEditedElement.textContent = stamp;
 }
 
+const closeNav = () => {
+  if (!siteNav || !menuToggle) return;
+  siteNav.classList.remove('open');
+  menuToggle.setAttribute('aria-expanded', 'false');
+  document.body.classList.remove('nav-open');
+  if (navScrim) navScrim.hidden = true;
+};
+
+const toggleNav = () => {
+  if (!siteNav || !menuToggle) return;
+  const isOpen = siteNav.classList.toggle('open');
+  menuToggle.setAttribute('aria-expanded', String(isOpen));
+  document.body.classList.toggle('nav-open', isOpen);
+  if (navScrim) navScrim.hidden = !isOpen;
+};
+
 if (menuToggle && siteNav) {
-  menuToggle.addEventListener('click', () => {
-    const isOpen = siteNav.classList.toggle('open');
-    menuToggle.setAttribute('aria-expanded', String(isOpen));
+  menuToggle.addEventListener('click', toggleNav);
+  navLinks.forEach((link) => link.addEventListener('click', closeNav));
+  navScrim?.addEventListener('click', closeNav);
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 820) closeNav();
   });
-  navLinks.forEach((link) => link.addEventListener('click', () => {
-    siteNav.classList.remove('open');
-    menuToggle.setAttribute('aria-expanded', 'false');
-  }));
 }
 
 let lastScrollY = window.scrollY;
@@ -391,6 +406,7 @@ const openLightbox = async (images, index, enableDownload = false, exifLabel = '
   lightbox.classList.add('open');
   lightbox.setAttribute('aria-hidden', 'false');
   siteHeader?.classList.add('is-lightbox-hidden');
+  closeNav();
 };
 
 const closeLightbox = () => {
