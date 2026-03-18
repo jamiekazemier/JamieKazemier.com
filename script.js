@@ -25,12 +25,7 @@ if (menuToggle && siteNav) {
 let lastScrollY = window.scrollY;
 window.addEventListener('scroll', () => {
   if (!siteHeader) return;
-  const currentScrollY = window.scrollY;
-  siteHeader.classList.toggle('scrolled', currentScrollY > 10);
-
-  const scrollingDown = currentScrollY > lastScrollY;
-  siteHeader.classList.toggle('is-hidden', scrollingDown && currentScrollY > 120);
-  lastScrollY = currentScrollY;
+  siteHeader.classList.toggle('scrolled', window.scrollY > 10);
 }, { passive: true });
 
 const revealItems = document.querySelectorAll('.reveal');
@@ -48,7 +43,7 @@ if ('IntersectionObserver' in window) {
   revealItems.forEach((item) => item.classList.add('in-view'));
 }
 
-const sectionObserverTargets = ['selected-work', 'photography', 'technical-work', 'about', 'contact']
+const sectionObserverTargets = ['about', 'photography', 'technical-work', 'contact']
   .map((id) => document.getElementById(id))
   .filter(Boolean);
 if ('IntersectionObserver' in window) {
@@ -62,13 +57,17 @@ if ('IntersectionObserver' in window) {
   sectionObserverTargets.forEach((section) => sectionObserver.observe(section));
 }
 
-const heroImage = document.getElementById('hero-image');
+const heroImagePrimary = document.getElementById('hero-image-primary');
+const heroImageSecondary = document.getElementById('hero-image-secondary');
 const heroImages = [
   'https://github.com/jamiekazemier/JamieKazemier.com/blob/main/hero%20shot.jpg?raw=true',
   'https://github.com/jamiekazemier/JamieKazemier.com/blob/main/hero%20shot%202.jpg?raw=true',
   'https://github.com/jamiekazemier/JamieKazemier.com/blob/main/hero%20shot%203.jpg?raw=true'
 ];
+const heroLayers = [heroImagePrimary, heroImageSecondary].filter(Boolean);
 let heroIndex = 0;
+let activeHeroLayerIndex = 0;
+let heroRotationTimer = null;
 
 const preloadHeroImage = (src) => {
   const image = new Image();
@@ -76,18 +75,50 @@ const preloadHeroImage = (src) => {
   image.src = src;
 };
 
-const setHeroImage = (index) => {
-  if (!heroImage) return;
-  heroIndex = (index + heroImages.length) % heroImages.length;
-  heroImage.src = heroImages[heroIndex];
+const swapHeroImage = (nextIndex) => {
+  if (heroLayers.length < 2) return;
+  const normalizedIndex = (nextIndex + heroImages.length) % heroImages.length;
+  const currentLayer = heroLayers[activeHeroLayerIndex];
+  const nextLayerIndex = (activeHeroLayerIndex + 1) % heroLayers.length;
+  const nextLayer = heroLayers[nextLayerIndex];
+  const nextSrc = heroImages[normalizedIndex];
+
+  const finalizeSwap = () => {
+    nextLayer.classList.add('is-active');
+    currentLayer.classList.remove('is-active');
+    activeHeroLayerIndex = nextLayerIndex;
+    heroIndex = normalizedIndex;
+  };
+
+  if (nextLayer.dataset.loadedSrc === nextSrc) {
+    nextLayer.src = nextSrc;
+    finalizeSwap();
+    return;
+  }
+
+  nextLayer.onload = () => {
+    nextLayer.dataset.loadedSrc = nextSrc;
+    finalizeSwap();
+    nextLayer.onload = null;
+    nextLayer.onerror = null;
+  };
+  nextLayer.onerror = () => {
+    nextLayer.onload = null;
+    nextLayer.onerror = null;
+    heroIndex = normalizedIndex;
+  };
+  nextLayer.src = nextSrc;
 };
 
 heroImages.forEach(preloadHeroImage);
 
-if (heroImage && heroImages.length > 1) {
-  heroImage.addEventListener('error', () => setHeroImage(heroIndex + 1));
-  setInterval(() => {
-    setHeroImage(heroIndex + 1);
+if (heroImagePrimary) {
+  heroImagePrimary.dataset.loadedSrc = heroImages[0];
+}
+
+if (heroLayers.length > 1) {
+  heroRotationTimer = window.setInterval(() => {
+    swapHeroImage(heroIndex + 1);
   }, 9000);
 }
 
@@ -160,37 +191,6 @@ const fallbackAlbums = [
   }
 ];
 
-const selectedData = {
-  'night-session-frames': {
-    title: 'Night Session Frames',
-    intro: 'A season-long body of work focused on game tempo, emotion, and transition moments.',
-    process: ['Build a shot map before tip-off.', 'Prioritize narrative over highlight-only frames.', 'Edit in sequences to preserve emotional pacing.'],
-    outcome: 'Delivered a coherent visual story used for social, editorial, and print.',
-    images: ['https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=1200&q=80', 'https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=1200&q=80']
-  },
-  'terrain-studies': {
-    title: 'Terrain Studies',
-    intro: 'A worldbuilding case study balancing terrain realism with stylized readability.',
-    process: ['Generate varied heightfields in World Machine.', 'Refine erosion passes by gameplay camera distance.', 'Unify mood with restrained material response.'],
-    outcome: 'Created a terrain language reusable across multiple environment scenes.',
-    images: ['https://images.unsplash.com/photo-1477244075012-5cc28286e465?auto=format&fit=crop&w=1200&q=80', 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80']
-  },
-  'fixture-build-v3': {
-    title: 'Fixture Build v3',
-    intro: 'Mechanical fixture redesign for repeatability and reduced setup friction.',
-    process: ['Map high-failure joints from previous version.', 'Revise tolerances with quick CNC iterations.', 'Stress-test assembly under real production handling.'],
-    outcome: 'Reduced setup time and improved reliability over long production runs.',
-    images: ['https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1200&q=80', 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80']
-  },
-  'quiet-structures': {
-    title: 'Quiet Structures',
-    intro: 'An architecture-focused series exploring rhythm, shadow, and visual restraint.',
-    process: ['Scout by light direction, not just location.', 'Compose around repeating geometry.', 'Edit toward tonal consistency and quiet contrast.'],
-    outcome: 'Built a portfolio series with a strong editorial and exhibition tone.',
-    images: ['https://images.unsplash.com/photo-1482192505345-5655af888cc4?auto=format&fit=crop&w=1200&q=80', 'https://images.unsplash.com/photo-1519999482648-25049ddd37b1?auto=format&fit=crop&w=1200&q=80']
-  }
-};
-
 const projectData = {
   'erosion-sandbox': {
     title: 'Erosion Sandbox',
@@ -234,14 +234,6 @@ const lightboxNext = document.getElementById('lightbox-next');
 const lightboxExifToggle = document.getElementById('lightbox-exif-toggle');
 const lightboxMeta = document.getElementById('lightbox-meta');
 const lightboxExif = document.getElementById('lightbox-exif');
-const selectedView = document.getElementById('selected-view');
-const selectedBack = document.getElementById('selected-back');
-const selectedHero = document.getElementById('selected-hero');
-const selectedTitle = document.getElementById('selected-title');
-const selectedDescription = document.getElementById('selected-description');
-const selectedProcess = document.getElementById('selected-process');
-const selectedOutcome = document.getElementById('selected-outcome');
-const selectedGallery = document.getElementById('selected-gallery');
 const projectView = document.getElementById('project-view');
 const projectBack = document.getElementById('project-back');
 const projectHero = document.getElementById('project-hero');
@@ -261,7 +253,6 @@ let activeAlbumIndex = 0;
 let downloadableBlobUrl = '';
 let downloadableFileName = 'photo.jpg';
 let allowDownloadInLightbox = false;
-let lastSelectedTrigger = null;
 let currentLightboxImages = [];
 let currentLightboxIndex = 0;
 let currentLightboxTitle = '';
@@ -557,32 +548,9 @@ document.addEventListener('keydown', (event) => {
   if (event.key === 'ArrowLeft') stepLightbox(-1);
 });
 
-if (selectedBack) selectedBack.addEventListener('click', () => {
-  closeDetailSection(selectedView, selectedGallery);
-  if (lastSelectedTrigger) {
-    lastSelectedTrigger.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    lastSelectedTrigger.focus({ preventScroll: true });
-    return;
-  }
-  document.getElementById('selected-work')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-});
 if (projectBack) projectBack.addEventListener('click', () => {
   closeDetailSection(projectView, projectGallery);
   document.getElementById('technical-work')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-});
-
-document.querySelectorAll('[data-selected]').forEach((item) => {
-  item.addEventListener('click', () => {
-    lastSelectedTrigger = item;
-    openDetailSection(
-      selectedData,
-      item.getAttribute('data-selected'),
-      { hero: selectedHero, title: selectedTitle, description: selectedDescription, process: selectedProcess, outcome: selectedOutcome, gallery: selectedGallery },
-      selectedView,
-      true,
-      false
-    );
-  });
 });
 
 document.querySelectorAll('[data-project]').forEach((item) => {
