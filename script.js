@@ -37,6 +37,7 @@ if (menuToggle && siteNav) {
   });
 }
 
+let lastScrollY = window.scrollY;
 window.addEventListener('scroll', () => {
   if (!siteHeader) return;
   siteHeader.classList.toggle('scrolled', window.scrollY > 10);

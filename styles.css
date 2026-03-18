@@ -1128,3 +1128,4 @@ main { position: relative; z-index: 1; }
   }
   .site-header.is-lightbox-hidden { transform: translateX(-50%); opacity: 1; }
 }
+
