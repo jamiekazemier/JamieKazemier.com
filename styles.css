@@ -520,10 +520,6 @@ main { position: relative; z-index: 1; }
   border-color: rgba(255,255,255,0.18);
   box-shadow: var(--shadow);
 }
-.albums-grid .album-card:nth-child(1) { grid-column: span 7; }
-.albums-grid .album-card:nth-child(2) { grid-column: span 5; }
-.albums-grid .album-card:nth-child(1) .album-image-wrap,
-.albums-grid .album-card:nth-child(2) .album-image-wrap { aspect-ratio: 16 / 10; }
 .album-card.is-active::after {
   content: "";
   position: absolute;
@@ -960,8 +956,6 @@ main { position: relative; z-index: 1; }
   .site-header::before,
   .site-header::after { display: block; }
   .brand-meta { display: none; }
-  .albums-grid .album-card:nth-child(1),
-  .albums-grid .album-card:nth-child(2) { grid-column: span 6; }
   .menu-toggle { display: inline-grid; place-items: center; }
   .site-nav {
     position: fixed;
