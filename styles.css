@@ -30,47 +30,6 @@
   --hero-overlay: radial-gradient(circle at 74% 18%, rgba(30,50,75,.35), transparent 42%), linear-gradient(0deg, rgba(5,8,12,.95) 8%, rgba(6,9,12,.56) 44%, rgba(6,9,12,.24) 100%);
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color-scheme: light;
-    --bg: #eef3f8;
-    --bg-soft: #f6f9fc;
-    --bg-top: #f9fbfe;
-    --bg-bottom: #e8eff6;
-    --panel: #ffffff;
-    --panel-2: #eef3fa;
-    --text: #111b28;
-    --muted: #55667b;
-    --text-soft: #2a3a4d;
-    --text-subtle: #41546a;
-    --text-meta: #556a82;
-    --accent: #4f8fd7;
-    --accent-soft: rgba(79, 143, 215, 0.24);
-    --border: #bfd0e2;
-    --shadow: 0 16px 30px rgba(19, 35, 53, 0.12);
-    --hairline: rgba(79,143,215,.24);
-    --glass-bg: color-mix(in srgb, #ffffff 78%, #dbe7f4 22%);
-    --glass-edge: color-mix(in srgb, #c3d3e5 75%, transparent);
-    --glass-highlight: linear-gradient(180deg, rgba(255,255,255,.94) 0%, rgba(255,255,255,.42) 42%, transparent 100%);
-    --glass-sheen: linear-gradient(110deg, transparent 24%, rgba(255,255,255,.7) 48%, transparent 70%);
-    --surface-border: rgba(33,59,88,.18);
-    --surface-overlay: rgba(208,221,235,.22);
-    --image-chip-bg: rgba(255,255,255,.78);
-    --image-chip-border: rgba(96,134,174,.35);
-    --lightbox-bg: rgba(236,243,250,.94);
-    --header-shadow: 0 14px 28px rgba(30, 58, 89, 0.12), inset 0 1px 0 rgba(255,255,255,.85);
-    --vignette-bg: radial-gradient(circle at 50% 32%, transparent 30%, rgba(196, 213, 231, .4) 100%);
-    --hero-overlay: radial-gradient(circle at 74% 18%, rgba(181,205,231,.34), transparent 42%), linear-gradient(0deg, rgba(244,248,253,.9) 8%, rgba(239,245,251,.4) 46%, rgba(235,243,250,.08) 100%);
-  }
-}
-
-
-@media (prefers-color-scheme: light) {
-  .grain { opacity: .018; mix-blend-mode: multiply; }
-  .hero-image { filter: saturate(.94) contrast(1.02); }
-  .photo-item:hover img { filter: brightness(.97) contrast(1.03); }
-}
-
 * { box-sizing: border-box; }
 html, body {
   margin: 0;
