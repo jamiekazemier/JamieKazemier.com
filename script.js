@@ -7,8 +7,8 @@ const lastEditedElement = document.getElementById('last-edited');
 const now = new Date();
 if (yearElement) yearElement.textContent = now.getUTCFullYear();
 if (lastEditedElement) {
-  const stamp = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}-${String(now.getUTCDate()).padStart(2, '0')} ${String(now.getUTCHours()).padStart(2, '0')}:${String(now.getUTCMinutes()).padStart(2, '0')} UTC`;
-  lastEditedElement.textContent = stamp;
+  const stamp = lastEditedElement.dataset.lastEdited || lastEditedElement.textContent?.trim();
+  if (stamp) lastEditedElement.textContent = stamp;
 }
 
 if (menuToggle && siteNav) {
@@ -329,11 +329,18 @@ const getPhotoLayoutClass = (index, total) => {
   return pattern[index % pattern.length];
 };
 
+const createAlbumFallbackDataUri = (title = 'Album cover') => {
+  const safeTitle = String(title).replace(/[&<>]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[char] || char));
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><rect width="1200" height="800" fill="#111722"/><rect x="34" y="34" width="1132" height="732" rx="20" fill="#172230" stroke="rgba(117,180,255,.28)"/><text x="72" y="706" fill="#ecf2f8" font-size="42" font-family="Inter, Arial, sans-serif">${safeTitle}</text></svg>`;
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+};
+
 const getPhotoMarkup = (url, title, index, total, eager = false) => {
   const loading = eager || index < 2 ? 'eager' : 'lazy';
   const sizes = '(max-width: 700px) 100vw, (max-width: 1120px) 50vw, 33vw';
   const layoutClass = getPhotoLayoutClass(index, total);
-  return `<figure class="photo-item ${layoutClass}" data-photo-wrap="${url}" data-photo-index="${index}"><img loading="${loading}" decoding="async" sizes="${sizes}" src="${url}" alt="${title} photo ${index + 1}" /><figcaption>${String(index + 1).padStart(2, '0')}</figcaption></figure>`;
+  const fallback = createAlbumFallbackDataUri(title);
+  return `<figure class="photo-item ${layoutClass}" data-photo-wrap="${url}" data-photo-index="${index}"><img loading="${loading}" decoding="async" sizes="${sizes}" src="${url}" alt="${title} photo ${index + 1}" data-fallback-src="${fallback}" /><figcaption>${String(index + 1).padStart(2, '0')}</figcaption></figure>`;
 };
 
 const refreshLightboxImage = () => {
@@ -442,6 +449,17 @@ const downloadCurrentImage = async (event) => {
   anchor.remove();
 };
 
+const attachImageFallbacks = (container) => {
+  container.querySelectorAll('img[data-fallback-src]').forEach((img) => {
+    img.addEventListener('error', () => {
+      const fallback = img.getAttribute('data-fallback-src');
+      if (!fallback || img.src === fallback) return;
+      img.src = fallback;
+      img.closest('.album-image-wrap, .photo-item')?.classList.add('is-fallback');
+    }, { once: true });
+  });
+};
+
 const attachPhotoClicks = (container, images, enableDownload, exifLabel, titleLabel) => {
   container.querySelectorAll('[data-photo-wrap]').forEach((item) => {
     item.addEventListener('click', () => {
@@ -458,6 +476,7 @@ const renderCaseStudy = (entry, elements, enableDownload = false) => {
   elements.process.innerHTML = entry.process.map((step) => `<p class="case-step">${step}</p>`).join('');
   elements.outcome.textContent = `Outcome: ${entry.outcome}`;
   elements.gallery.innerHTML = entry.images.map((img, i) => getPhotoMarkup(img, entry.title, i, entry.images.length)).join('');
+  attachImageFallbacks(elements.gallery);
   attachPhotoClicks(elements.gallery, entry.images, enableDownload, `${entry.title} • 35mm equiv • ISO 800 • 1/1000`, entry.title);
 };
 
@@ -475,6 +494,7 @@ const renderAlbumPreview = () => {
   activeMeta.textContent = activeAlbum.descriptor ? `${formatAlbumDate(activeAlbum.date)} • ${activeAlbum.descriptor}` : `${formatAlbumDate(activeAlbum.date)}`;
   if (activeAlbumCount) activeAlbumCount.textContent = `${sequencedPhotos.length} curated frames`;
   photoGrid.innerHTML = sequencedPhotos.map((photo, index) => getPhotoMarkup(photo, activeAlbum.title, index, sequencedPhotos.length, index === 0)).join('');
+  attachImageFallbacks(photoGrid);
   attachPhotoClicks(photoGrid, sequencedPhotos, true, `${activeAlbum.title} • ${formatAlbumDate(activeAlbum.date)} • Editorial sequence`, activeAlbum.title);
 };
 
@@ -490,8 +510,10 @@ const renderAlbums = () => {
     if (index === activeAlbumIndex) card.classList.add('is-active');
 
     const sequencedPhotos = buildEditorialSequence(album.photos);
-    const coverImage = sequencedPhotos[0] || 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80';
-    card.innerHTML = `<div class="album-image-wrap"><img loading="lazy" decoding="async" sizes="(max-width: 700px) 100vw, (max-width: 980px) 50vw, 33vw" src="${coverImage}" alt="${album.title} cover image" /><div class="album-overlay"><p class="album-date">${formatAlbumDate(album.date)}</p><h4>${album.title}</h4><p class="album-count">${album.photos.length} frames</p></div></div><div class="album-meta">${album.descriptor ? `<p>${album.descriptor}</p>` : '<p>Curated sequence with editorial pacing.</p>'}</div>`;
+    const coverFallback = createAlbumFallbackDataUri(album.title);
+    const coverImage = sequencedPhotos[0] || coverFallback;
+    card.innerHTML = `<div class="album-image-wrap"><img loading="lazy" decoding="async" sizes="(max-width: 700px) 100vw, (max-width: 980px) 50vw, 33vw" src="${coverImage}" alt="${album.title} cover image" data-fallback-src="${coverFallback}" /><div class="album-overlay"><p class="album-date">${formatAlbumDate(album.date)}</p><h4>${album.title}</h4><p class="album-count">${album.photos.length} frames</p></div></div><div class="album-meta">${album.descriptor ? `<p>${album.descriptor}</p>` : '<p>Curated sequence with editorial pacing.</p>'}</div>`;
+    attachImageFallbacks(card);
     card.addEventListener('click', () => {
       activeAlbumIndex = index;
       renderAlbums();
