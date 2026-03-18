@@ -322,10 +322,18 @@ const buildEditorialSequence = (photos) => {
   return [opener, ...woven];
 };
 
+const getPhotoLayoutClass = (index, total) => {
+  if (total === 1) return 'bento-hero';
+  if (total === 2) return index === 0 ? 'bento-wide' : 'bento-tall';
+  const pattern = ['bento-hero', 'bento-tall', 'bento-standard', 'bento-wide', 'bento-standard', 'bento-square'];
+  return pattern[index % pattern.length];
+};
+
 const getPhotoMarkup = (url, title, index, total, eager = false) => {
   const loading = eager || index < 2 ? 'eager' : 'lazy';
   const sizes = '(max-width: 700px) 100vw, (max-width: 1120px) 50vw, 33vw';
-  return `<figure class="photo-item" data-photo-wrap="${url}" data-photo-index="${index}"><img loading="${loading}" decoding="async" sizes="${sizes}" src="${url}" alt="${title} photo ${index + 1}" /><figcaption>${String(index + 1).padStart(2, '0')}</figcaption></figure>`;
+  const layoutClass = getPhotoLayoutClass(index, total);
+  return `<figure class="photo-item ${layoutClass}" data-photo-wrap="${url}" data-photo-index="${index}"><img loading="${loading}" decoding="async" sizes="${sizes}" src="${url}" alt="${title} photo ${index + 1}" /><figcaption>${String(index + 1).padStart(2, '0')}</figcaption></figure>`;
 };
 
 const refreshLightboxImage = () => {
