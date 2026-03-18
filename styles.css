@@ -1012,3 +1012,10 @@ main,
   }
   .site-header.is-lightbox-hidden { transform: translateX(-50%); opacity: 1; }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; }
+  html { scroll-behavior: auto; }
+  .site-header { transform: none !important; opacity: 1 !important; }
+}
+
