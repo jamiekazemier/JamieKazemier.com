@@ -64,15 +64,32 @@ if ('IntersectionObserver' in window) {
 
 const heroImage = document.getElementById('hero-image');
 const heroImages = [
-  'assets/hero_shot.svg',
-  'assets/hero_shot2.svg',
-  'assets/hero_shot3.svg'
+  'https://github.com/jamiekazemier/JamieKazemier.com/blob/main/hero%20shot.jpg?raw=true',
+  'https://github.com/jamiekazemier/JamieKazemier.com/blob/main/hero%20shot%202.jpg?raw=true',
+  'https://github.com/jamiekazemier/JamieKazemier.com/blob/main/hero%20shot%203.jpg?raw=true'
 ];
 let heroIndex = 0;
-setInterval(() => {
-  heroIndex = (heroIndex + 1) % heroImages.length;
-  if (heroImage) heroImage.src = heroImages[heroIndex];
-}, 7000);
+
+const preloadHeroImage = (src) => {
+  const image = new Image();
+  image.decoding = 'async';
+  image.src = src;
+};
+
+const setHeroImage = (index) => {
+  if (!heroImage) return;
+  heroIndex = (index + heroImages.length) % heroImages.length;
+  heroImage.src = heroImages[heroIndex];
+};
+
+heroImages.forEach(preloadHeroImage);
+
+if (heroImage && heroImages.length > 1) {
+  heroImage.addEventListener('error', () => setHeroImage(heroIndex + 1));
+  setInterval(() => {
+    setHeroImage(heroIndex + 1);
+  }, 9000);
+}
 
 const GITHUB_OWNER = 'JamieKazemier';
 const GITHUB_REPO = 'JamieKazemier.com';
