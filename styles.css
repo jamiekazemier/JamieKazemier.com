@@ -1,13 +1,13 @@
 :root {
   color-scheme: dark;
-  --bg: #06080d;
-  --bg-soft: #0e1520;
-  --bg-top: #070b12;
-  --bg-bottom: #05070b;
-  --panel: #121b27;
-  --panel-2: #1b2735;
+  --bg: #04060b;
+  --bg-soft: #0a111a;
+  --bg-top: #050811;
+  --bg-bottom: #03050a;
+  --panel: #0f1722;
+  --panel-2: #172230;
   --text: #ecf2f8;
-  --muted: #96a8bd;
+  --muted: #879bb2;
   --text-soft: #c8d7e6;
   --text-subtle: #9fb0c4;
   --text-meta: #7f97b2;
@@ -31,6 +31,7 @@
 }
 
 * { box-sizing: border-box; }
+html { color-scheme: dark; background: #03050a; }
 html, body {
   margin: 0;
   padding: 0;
