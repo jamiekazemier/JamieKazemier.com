@@ -313,56 +313,6 @@ const getPhotoMarkup = (url, title, index, total, eager = false) => {
   return `<figure class="photo-item" data-photo-wrap="${url}" data-photo-index="${index}"><img loading="${loading}" decoding="async" sizes="${sizes}" src="${url}" alt="${title} photo ${index + 1}" /><figcaption>${String(index + 1).padStart(2, '0')}</figcaption></figure>`;
 };
 
-const classifyShape = (img) => {
-  const ratio = img.naturalWidth / img.naturalHeight;
-  if (ratio >= 1.75) return 'shape-pano';
-  if (ratio <= 0.9) return 'shape-portrait';
-  return 'shape-landscape';
-};
-
-const applyEditorialLayout = (container) => {
-  const items = container.querySelectorAll('.photo-item');
-  const compact = window.matchMedia('(max-width: 980px)').matches;
-
-  items.forEach((item, index) => {
-    const img = item.querySelector('img');
-    if (!img || !img.naturalWidth || !img.naturalHeight) return;
-
-    item.classList.remove('is-lead', 'is-cinematic', 'shape-pano', 'shape-portrait', 'shape-landscape');
-    const shape = classifyShape(img);
-    item.classList.add(shape);
-
-    if (index === 0) item.classList.add('is-lead');
-    if (!compact && index > 0 && index % 5 === 0 && shape !== 'shape-portrait') item.classList.add('is-cinematic');
-
-    const base = 8;
-    const ratio = img.naturalWidth / img.naturalHeight;
-    const targetHeight = item.clientWidth / ratio;
-    const span = Math.max(18, Math.ceil((targetHeight + 8) / base));
-    item.style.gridRowEnd = `span ${span}`;
-  });
-};
-
-const queueEditorialLayout = (container) => {
-  const images = container.querySelectorAll('.photo-item img');
-  if (!images.length) return;
-
-  let remaining = images.length;
-  const done = () => {
-    remaining -= 1;
-    if (remaining <= 0) requestAnimationFrame(() => applyEditorialLayout(container));
-  };
-
-  images.forEach((img) => {
-    if (img.complete && img.naturalWidth) {
-      done();
-      return;
-    }
-    img.addEventListener('load', done, { once: true });
-    img.addEventListener('error', done, { once: true });
-  });
-};
-
 const refreshLightboxImage = () => {
   const src = currentLightboxImages[currentLightboxIndex];
   if (!src || !lightboxImage || !lightboxDownload) return;
@@ -484,7 +434,6 @@ const renderCaseStudy = (entry, elements, enableDownload = false) => {
   elements.outcome.textContent = `Outcome: ${entry.outcome}`;
   elements.gallery.innerHTML = entry.images.map((img, i) => getPhotoMarkup(img, entry.title, i, entry.images.length)).join('');
   attachPhotoClicks(elements.gallery, entry.images, enableDownload, `${entry.title} • 35mm equiv • ISO 800 • 1/1000`, entry.title);
-  queueEditorialLayout(elements.gallery);
 };
 
 const renderAlbumPreview = () => {
@@ -502,7 +451,6 @@ const renderAlbumPreview = () => {
   if (activeAlbumCount) activeAlbumCount.textContent = `${sequencedPhotos.length} curated frames`;
   photoGrid.innerHTML = sequencedPhotos.map((photo, index) => getPhotoMarkup(photo, activeAlbum.title, index, sequencedPhotos.length, index === 0)).join('');
   attachPhotoClicks(photoGrid, sequencedPhotos, true, `${activeAlbum.title} • ${formatAlbumDate(activeAlbum.date)} • Editorial sequence`, activeAlbum.title);
-  queueEditorialLayout(photoGrid);
 };
 
 const renderAlbums = () => {
@@ -585,15 +533,6 @@ if (lightbox) lightbox.addEventListener('touchend', (event) => {
   if (delta > 0) stepLightbox(-1);
 }, { passive: true });
 
-let resizeTimer = 0;
-window.addEventListener('resize', () => {
-  clearTimeout(resizeTimer);
-  resizeTimer = window.setTimeout(() => {
-    if (photoGrid) applyEditorialLayout(photoGrid);
-    if (selectedGallery) applyEditorialLayout(selectedGallery);
-    if (projectGallery) applyEditorialLayout(projectGallery);
-  }, 120);
-}, { passive: true });
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') closeLightbox();
   if (!lightbox?.classList.contains('open')) return;
