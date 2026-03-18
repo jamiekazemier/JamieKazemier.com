@@ -65,52 +65,59 @@ const heroImages = [
   'https://github.com/jamiekazemier/JamieKazemier.com/blob/main/hero%20shot%203.jpg?raw=true'
 ];
 const heroLayers = [heroImagePrimary, heroImageSecondary].filter(Boolean);
+const heroPreloaded = new Map();
 let heroIndex = 0;
 let activeHeroLayerIndex = 0;
 let heroRotationTimer = null;
+let isHeroTransitioning = false;
 
 const preloadHeroImage = (src) => {
+  if (heroPreloaded.has(src)) return heroPreloaded.get(src);
   const image = new Image();
   image.decoding = 'async';
   image.src = src;
+  const ready = image.decode
+    ? image.decode().catch(() => undefined).then(() => image)
+    : new Promise((resolve, reject) => {
+        image.onload = () => resolve(image);
+        image.onerror = reject;
+      }).catch(() => undefined);
+  heroPreloaded.set(src, ready);
+  return ready;
 };
 
-const swapHeroImage = (nextIndex) => {
-  if (heroLayers.length < 2) return;
+const finalizeHeroSwap = (currentLayer, nextLayer, nextLayerIndex, normalizedIndex, nextSrc) => {
+  nextLayer.src = nextSrc;
+  nextLayer.dataset.loadedSrc = nextSrc;
+  nextLayer.classList.add('is-active');
+  currentLayer.classList.remove('is-active');
+  activeHeroLayerIndex = nextLayerIndex;
+  heroIndex = normalizedIndex;
+  isHeroTransitioning = false;
+};
+
+const swapHeroImage = async (nextIndex) => {
+  if (heroLayers.length < 2 || isHeroTransitioning) return;
   const normalizedIndex = (nextIndex + heroImages.length) % heroImages.length;
+  const nextSrc = heroImages[normalizedIndex];
+  if (heroImages[heroIndex] === nextSrc) return;
+
+  isHeroTransitioning = true;
   const currentLayer = heroLayers[activeHeroLayerIndex];
   const nextLayerIndex = (activeHeroLayerIndex + 1) % heroLayers.length;
   const nextLayer = heroLayers[nextLayerIndex];
-  const nextSrc = heroImages[normalizedIndex];
 
-  const finalizeSwap = () => {
-    nextLayer.classList.add('is-active');
-    currentLayer.classList.remove('is-active');
-    activeHeroLayerIndex = nextLayerIndex;
-    heroIndex = normalizedIndex;
-  };
-
-  if (nextLayer.dataset.loadedSrc === nextSrc) {
-    nextLayer.src = nextSrc;
-    finalizeSwap();
-    return;
+  try {
+    await preloadHeroImage(nextSrc);
+    finalizeHeroSwap(currentLayer, nextLayer, nextLayerIndex, normalizedIndex, nextSrc);
+  } catch (_error) {
+    isHeroTransitioning = false;
   }
-
-  nextLayer.onload = () => {
-    nextLayer.dataset.loadedSrc = nextSrc;
-    finalizeSwap();
-    nextLayer.onload = null;
-    nextLayer.onerror = null;
-  };
-  nextLayer.onerror = () => {
-    nextLayer.onload = null;
-    nextLayer.onerror = null;
-    heroIndex = normalizedIndex;
-  };
-  nextLayer.src = nextSrc;
 };
 
-heroImages.forEach(preloadHeroImage);
+heroImages.forEach((src) => {
+  void preloadHeroImage(src);
+});
 
 if (heroImagePrimary) {
   heroImagePrimary.dataset.loadedSrc = heroImages[0];
@@ -118,7 +125,7 @@ if (heroImagePrimary) {
 
 if (heroLayers.length > 1) {
   heroRotationTimer = window.setInterval(() => {
-    swapHeroImage(heroIndex + 1);
+    void swapHeroImage(heroIndex + 1);
   }, 9000);
 }
 
@@ -368,6 +375,7 @@ const openLightbox = async (images, index, enableDownload = false, exifLabel = '
 
   lightbox.classList.add('open');
   lightbox.setAttribute('aria-hidden', 'false');
+  siteHeader?.classList.add('is-lightbox-hidden');
 };
 
 const closeLightbox = () => {
@@ -377,6 +385,7 @@ const closeLightbox = () => {
   allowDownloadInLightbox = false;
   lightbox.classList.remove('open');
   lightbox.setAttribute('aria-hidden', 'true');
+  siteHeader?.classList.remove('is-lightbox-hidden');
   lightboxImage.src = '';
   lightboxDownload.href = '#';
   if (lightboxMeta) lightboxMeta.hidden = true;
