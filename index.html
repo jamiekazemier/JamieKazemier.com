@@ -97,30 +97,30 @@
     <section id="photography" class="section reveal photography-section">
       <div class="section-shell photography-shell">
         <div class="section-heading photography-heading">
-          <div>
+          <div class="photography-heading-copy">
             <p class="section-kicker">Coverage</p>
             <h2>Photography</h2>
+            <p class="section-note">Curated albums built for fast review, narrative pacing, and clean delivery.</p>
           </div>
-          <p class="section-note">Curated albums built for fast review, narrative pacing, and clean delivery.</p>
-        </div>
-        <div class="album-toolbar">
           <label class="album-search" for="album-search">
             <span>Search</span>
             <input id="album-search" type="search" placeholder="Search albums" aria-label="Search albums" />
           </label>
         </div>
-        <div id="albums-grid" class="albums-grid" aria-live="polite"></div>
-        <button id="albums-more" class="button more-button" type="button">More Albums</button>
-        <div class="album-preview-panel">
-          <div class="album-preview-head">
-            <div>
-              <p class="preview-kicker">Live Edit</p>
-              <h3 id="active-album-title">Album Preview</h3>
-              <p id="active-album-meta"></p>
+        <div class="archive-stage">
+          <div id="albums-grid" class="albums-grid" aria-live="polite"></div>
+          <button id="albums-more" class="button more-button" type="button">More Albums</button>
+          <div class="album-preview-panel">
+            <div class="album-preview-head">
+              <div>
+                <p class="preview-kicker">Live Edit</p>
+                <h3 id="active-album-title">Album Preview</h3>
+                <p id="active-album-meta"></p>
+              </div>
+              <p id="active-album-count" class="active-album-count"></p>
             </div>
-            <p id="active-album-count" class="active-album-count"></p>
+            <div id="photo-grid" class="photo-grid" aria-live="polite"></div>
           </div>
-          <div id="photo-grid" class="photo-grid" aria-live="polite"></div>
         </div>
       </div>
     </section>
