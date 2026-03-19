@@ -37,11 +37,18 @@ if (menuToggle && siteNav) {
   });
 }
 
-let lastScrollY = window.scrollY;
-window.addEventListener('scroll', () => {
-  if (!siteHeader) return;
-  siteHeader.classList.toggle('scrolled', window.scrollY > 10);
-}, { passive: true });
+let heroParallaxFrame = null;
+const syncScrollState = () => {
+  if (siteHeader) siteHeader.classList.toggle('scrolled', window.scrollY > 10);
+  if (heroParallaxFrame) return;
+  heroParallaxFrame = window.requestAnimationFrame(() => {
+    document.documentElement.style.setProperty('--hero-parallax', `${Math.min(window.scrollY * 0.12, 64)}px`);
+    heroParallaxFrame = null;
+  });
+};
+
+window.addEventListener('scroll', syncScrollState, { passive: true });
+syncScrollState();
 
 const revealItems = document.querySelectorAll('.reveal');
 if ('IntersectionObserver' in window) {
