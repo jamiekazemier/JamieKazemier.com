@@ -160,46 +160,64 @@ const albumsEndpoint = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITH
 
 const fallbackAlbums = [
   {
-    title: 'HEAD of the river Amstel',
-    date: '2026-03-08',
-    descriptor: 'Rowing competition in the canals of Amsterdam',
-    photos: ['https://api.esrtheta.nl/mediafiles/photoalbums/000111520260308-Head-of-the-river-Amstel/000111520260308-Head-of-the-river-Amstel-06a5dcbc.jpg']
+    title: 'Courtside Control',
+    date: '2026-02-01',
+    descriptor: 'Indoor basketball under arena lights',
+    photos: ['https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=1200&q=80']
   },
   {
-    title: 'Compo Traika',
-    date: '2026-02-22',
-    descriptor: 'Compo training camp at TSR Vidar',
-    photos: ['https://api.esrtheta.nl/mediafiles/photoalbums/000111120260222-Comporno-Zondag/000111120260222-Comporno-Zondag-f8768515.jpg']
+    title: 'Training Ground Tempo',
+    date: '2026-01-18',
+    descriptor: 'Warm-up drills and mid-session intensity',
+    photos: ['https://images.unsplash.com/photo-1477244075012-5cc28286e465?auto=format&fit=crop&w=1200&q=80']
   },
   {
-    title: 'Theta Herfstregatta',
+    title: 'Fixture Build Session',
     date: '2025-12-08',
-    descriptor: 'Placeholder description',
-    photos: ['https://i.imgur.com/csDwH7W.jpeg']
+    descriptor: 'Precision workflow behind sports production',
+    photos: ['https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1200&q=80']
   },
   {
-    title: 'TEMP',
+    title: 'Concrete Lines',
     date: '2025-11-22',
-    descriptor: 'Placeholder descriptionm',
-    photos: ['https://i.imgur.com/NTYrt3G.jpeg']
+    descriptor: 'Graphic forms and architectural rhythm',
+    photos: ['https://images.unsplash.com/photo-1482192505345-5655af888cc4?auto=format&fit=crop&w=1200&q=80']
   },
   {
-    title: 'TEMPn',
+    title: 'Rain Match Run',
     date: '2025-10-11',
-    descriptor: 'Placeholder description',
-    photos: ['https://i.imgur.com/8fiP3iU.jpeg']
+    descriptor: 'Wet-weather pace and sideline pressure',
+    photos: ['https://images.unsplash.com/photo-1433863448220-78aaa064ff47?auto=format&fit=crop&w=1200&q=80']
   },
   {
-    title: 'TEMPy',
+    title: 'Dusk Field Study',
     date: '2025-09-30',
-    descriptor: 'Placeholder descriptiond',
-    photos: ['https://i.imgur.com/j8knNeK.jpeg']
+    descriptor: 'Low-angle light and late-game mood',
+    photos: ['https://images.unsplash.com/photo-1493244040629-496f6d136cc3?auto=format&fit=crop&w=1200&q=80']
   },
   {
-    title: 'TEMP',
+    title: 'Surface Notes',
     date: '2025-08-15',
-    descriptor: 'Placeholder description',
-    photos: ['https://i.imgur.com/XmJEpxy.jpeg']
+    descriptor: 'Detail-focused textures and equipment wear',
+    photos: ['https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?auto=format&fit=crop&w=1200&q=80']
+  },
+  {
+    title: 'Northern Session',
+    date: '2025-07-03',
+    descriptor: 'Cold light, fast movement, clean frames',
+    photos: ['https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80']
+  },
+  {
+    title: 'Urban Sprint',
+    date: '2025-06-14',
+    descriptor: 'Street-level speed and dynamic motion blur',
+    photos: ['https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1200&q=80']
+  },
+  {
+    title: 'Monochrome Structure',
+    date: '2025-05-20',
+    descriptor: 'Editorial black-and-white tonal studies',
+    photos: ['https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80']
   }
 ];
 
