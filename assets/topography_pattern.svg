@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900" fill="none">
+  <path d="M-40 118C88 72 168 176 294 140C414 106 496 14 628 44C758 72 812 176 950 136" stroke="#fff" stroke-opacity="0.05" stroke-width="0.9"/>
+  <path d="M-34 212C94 168 174 264 304 230C436 196 514 112 648 138C774 162 830 270 956 236" stroke="#fff" stroke-opacity="0.05" stroke-width="0.9"/>
+  <path d="M-30 310C96 270 182 360 324 328C456 296 534 208 666 236C800 262 842 364 964 334" stroke="#fff" stroke-opacity="0.045" stroke-width="0.8"/>
+  <path d="M-28 410C106 372 194 456 332 426C470 398 548 312 686 340C812 364 860 462 972 438" stroke="#fff" stroke-opacity="0.05" stroke-width="0.9"/>
+  <path d="M-24 514C108 476 204 564 350 534C490 506 578 414 710 444C842 474 880 572 986 546" stroke="#fff" stroke-opacity="0.045" stroke-width="0.8"/>
+  <path d="M-18 618C116 582 210 664 360 640C504 616 590 524 724 554C852 582 896 674 992 650" stroke="#fff" stroke-opacity="0.05" stroke-width="0.9"/>
+  <path d="M-10 722C124 690 224 766 376 746C516 726 606 632 742 658C870 684 916 768 1000 748" stroke="#fff" stroke-opacity="0.045" stroke-width="0.8"/>
+  <path d="M0 824C132 798 238 868 394 852C532 838 620 744 760 768C886 792 934 868 1006 854" stroke="#fff" stroke-opacity="0.05" stroke-width="0.9"/>
+</svg>
