@@ -67,12 +67,11 @@
             <a class="button" href="#contact">Contact</a>
           </div>
         </div>
-        <aside class="hero-caption hero-line" aria-label="Jamie Kazemier overview">
-          <p class="hero-caption-label">Field Notes</p>
-          <p class="eyebrow">Mechanical Engineering • Senior Technical Producer • 3D Environment Artist</p>
-          <p class="hero-support">Engineered process, decisive timing, and disciplined visual storytelling.</p>
-          <p class="hero-meta">Based in the Netherlands · Available for sports, events, and editorial assignments.</p>
-        </aside>
+        <div class="hero-support-copy hero-line" aria-label="Jamie Kazemier overview">
+          <p class="hero-support-line">Sports photographer with engineering discipline and technical production range.</p>
+          <p class="hero-support-line">Built for decisive timing, clean visual narrative, and reliable delivery under pressure.</p>
+          <p class="hero-support-line hero-meta">Based in the Netherlands · Available for sports, events, and editorial assignments.</p>
+        </div>
       </div>
     </section>
 
@@ -110,17 +109,20 @@
         <div class="archive-stage">
           <div id="albums-grid" class="albums-grid" aria-live="polite"></div>
           <button id="albums-more" class="button more-button" type="button">More Albums</button>
-          <div class="album-preview-panel">
+          <section class="album-preview-panel" id="album-preview-panel" aria-live="polite" hidden>
             <div class="album-preview-head">
               <div>
-                <p class="preview-kicker">Live Edit</p>
+                <p class="preview-kicker">Selected Album</p>
                 <h3 id="active-album-title">Album Preview</h3>
                 <p id="active-album-meta"></p>
               </div>
-              <p id="active-album-count" class="active-album-count"></p>
+              <div class="album-preview-actions">
+                <p id="active-album-count" class="active-album-count"></p>
+                <button id="album-preview-close" class="button" type="button">Back to archive</button>
+              </div>
             </div>
             <div id="photo-grid" class="photo-grid" aria-live="polite"></div>
-          </div>
+          </section>
         </div>
       </div>
     </section>

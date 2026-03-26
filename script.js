@@ -248,6 +248,8 @@ const projectData = {
 const albumsGrid = document.getElementById('albums-grid');
 const moreButton = document.getElementById('albums-more');
 const photoGrid = document.getElementById('photo-grid');
+const albumPreviewPanel = document.getElementById('album-preview-panel');
+const albumPreviewClose = document.getElementById('album-preview-close');
 const activeTitle = document.getElementById('active-album-title');
 const activeMeta = document.getElementById('active-album-meta');
 const activeAlbumCount = document.getElementById('active-album-count');
@@ -279,7 +281,7 @@ const visibleLimit = 6;
 let albums = [...fallbackAlbums];
 let filteredAlbums = [...albums];
 let showAllAlbums = false;
-let activeAlbumIndex = 0;
+let activeAlbumIndex = -1;
 let downloadableBlobUrl = '';
 let downloadableFileName = 'photo.jpg';
 let allowDownloadInLightbox = false;
@@ -504,15 +506,25 @@ const renderCaseStudy = (entry, elements, enableDownload = false) => {
   attachPhotoClicks(elements.gallery, entry.images, enableDownload, `${entry.title} • 35mm equiv • ISO 800 • 1/1000`, entry.title);
 };
 
+const hideAlbumPreview = () => {
+  activeAlbumIndex = -1;
+  if (photoGrid) photoGrid.innerHTML = '';
+  if (activeTitle) activeTitle.textContent = 'Album Preview';
+  if (activeMeta) activeMeta.textContent = 'Select an album to open the curated sequence.';
+  if (activeAlbumCount) activeAlbumCount.textContent = '';
+  if (albumPreviewPanel) {
+    albumPreviewPanel.hidden = true;
+    albumPreviewPanel.classList.remove('is-open');
+  }
+};
+
 const renderAlbumPreview = () => {
   const activeAlbum = filteredAlbums[activeAlbumIndex];
   if (!activeAlbum || !photoGrid || !activeTitle || !activeMeta) {
-    photoGrid.innerHTML = '';
-    activeTitle.textContent = 'Album Preview';
-    activeMeta.textContent = 'No album selected';
-    if (activeAlbumCount) activeAlbumCount.textContent = '';
+    hideAlbumPreview();
     return;
   }
+
   const sequencedPhotos = buildEditorialSequence(activeAlbum.photos);
   activeTitle.textContent = activeAlbum.title;
   activeMeta.textContent = activeAlbum.descriptor ? `${formatAlbumDate(activeAlbum.date)} • ${activeAlbum.descriptor}` : `${formatAlbumDate(activeAlbum.date)}`;
@@ -520,6 +532,10 @@ const renderAlbumPreview = () => {
   photoGrid.innerHTML = sequencedPhotos.map((photo, index) => getPhotoMarkup(photo, activeAlbum.title, index, sequencedPhotos.length, index === 0)).join('');
   attachImageFallbacks(photoGrid);
   attachPhotoClicks(photoGrid, sequencedPhotos, true, `${activeAlbum.title} • ${formatAlbumDate(activeAlbum.date)} • Editorial sequence`, activeAlbum.title);
+  if (albumPreviewPanel) {
+    albumPreviewPanel.hidden = false;
+    albumPreviewPanel.classList.add('is-open');
+  }
 };
 
 const renderAlbums = () => {
@@ -543,7 +559,7 @@ const renderAlbums = () => {
       renderAlbums();
       renderAlbumPreview();
       requestAnimationFrame(() => {
-        document.getElementById('photo-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        albumPreviewPanel?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
     });
     albumsGrid.appendChild(card);
@@ -556,10 +572,9 @@ const renderAlbums = () => {
 const runSearch = () => {
   const term = (searchInput?.value || '').trim().toLowerCase();
   filteredAlbums = sortAlbumsByDateDesc(albums.filter((album) => album.title.toLowerCase().includes(term) || (album.descriptor || '').toLowerCase().includes(term)));
-  activeAlbumIndex = 0;
   showAllAlbums = false;
   renderAlbums();
-  renderAlbumPreview();
+  hideAlbumPreview();
 };
 
 const openDetailSection = (data, key, elements, section, shouldScroll = true, enableDownload = false) => {
@@ -587,6 +602,11 @@ if (copyEmail) {
 }
 
 if (searchInput) searchInput.addEventListener('input', runSearch);
+if (albumPreviewClose) albumPreviewClose.addEventListener('click', () => {
+  hideAlbumPreview();
+  document.getElementById('albums-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  renderAlbums();
+});
 if (moreButton) moreButton.addEventListener('click', () => { showAllAlbums = !showAllAlbums; renderAlbums(); });
 if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
 if (lightboxExit) lightboxExit.addEventListener('click', closeLightbox);
@@ -642,7 +662,7 @@ const loadAlbumsFromGitHub = async () => {
     filteredAlbums = [...albums];
   }
   renderAlbums();
-  renderAlbumPreview();
+  hideAlbumPreview();
 };
 
 loadAlbumsFromGitHub();
