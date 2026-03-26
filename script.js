@@ -276,7 +276,7 @@ const projectGallery = document.getElementById('project-gallery');
 const copyEmail = document.getElementById('copy-email');
 const copyFeedback = document.getElementById('copy-feedback');
 
-const visibleLimit = 6;
+const visibleLimit = 4;
 let albums = [...fallbackAlbums];
 let filteredAlbums = [...albums];
 let showAllAlbums = false;
@@ -545,6 +545,7 @@ const renderAlbums = () => {
     const card = document.createElement('button');
     card.type = 'button';
     card.className = 'album-card';
+    card.dataset.shape = index % 4 === 1 || index % 4 === 3 ? 'portrait' : 'landscape';
     if (!showAllAlbums && index >= visibleLimit) card.classList.add('is-hidden');
     if (index === activeAlbumIndex) card.classList.add('is-active');
 
