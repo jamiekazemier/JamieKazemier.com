@@ -66,14 +66,15 @@ main { position: relative; z-index: 1; }
   inset: -8vh 0 -10vh;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.34;
+  opacity: 0.3;
   transform: translate3d(0, var(--topo-parallax, 0px), 0);
   will-change: transform;
+  mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.75) 10%, rgba(0,0,0,0.92) 45%, rgba(0,0,0,0.78) 92%, transparent 100%);
   background-image:
     linear-gradient(158deg, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.16) 40%, rgba(0,0,0,0.22) 100%),
     url("https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2c4aaff1-92d8-4141-af8f-637dd62ee587/dfovh7e-4e7fad78-7277-499a-ba45-c7738a39bb55.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi8yYzRhYWZmMS05MmQ4LTQxNDEtYWY4Zi02MzdkZDYyZWU1ODcvZGZvdmg3ZS00ZTdmYWQ3OC03Mjc3LTQ5OWEtYmE0NS1jNzczOGEzOWJiNTUuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.IFsXUUUUhYjSXOX7jWlmXJribpd8u06C8TsUlxjmKGU"),
     url("assets/topography_pattern.svg");
-  background-size: cover, cover, 1420px 1080px;
+  background-size: cover, cover, 2200px 1700px;
   background-position: center, center, center top;
   background-repeat: no-repeat, no-repeat, repeat;
 }
@@ -229,10 +230,12 @@ header.site-header {
   left: 0;
   right: 0;
   bottom: 0;
-  height: 160px;
-  background: linear-gradient(180deg, rgba(5,5,5,0) 0%, rgba(5,5,5,0.94) 100%);
+  height: 280px;
+  background:
+    linear-gradient(180deg, rgba(5,5,6,0) 0%, rgba(5,5,6,0.48) 54%, rgba(5,5,6,0.92) 100%),
+    linear-gradient(180deg, rgba(5,5,6,0) 18%, rgba(5,5,6,0.6) 78%, rgba(5,5,6,1) 100%);
   pointer-events: none;
-  z-index: 2;
+  z-index: 4;
 }
 .hero-media,
 .hero-overlay {
@@ -277,7 +280,7 @@ header.site-header {
   z-index: 3;
   width: var(--container);
   margin: 0 auto;
-  padding: 0 0 96px;
+  padding: 0 0 124px;
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: 24px;
@@ -303,20 +306,8 @@ header.site-header {
 .hero-actions {
   display: flex;
   gap: 14px;
-  margin-top: 26px;
+  margin-top: 30px;
   flex-wrap: wrap;
-}
-.hero-support-copy {
-  margin-top: 24px;
-  max-width: 54ch;
-  display: grid;
-  gap: 7px;
-}
-.hero-support-line {
-  margin: 0;
-  font-size: 0.93rem;
-  line-height: 1.58;
-  color: rgba(237,237,237,0.8);
 }
 .section-kicker,
 .preview-kicker,
@@ -342,13 +333,6 @@ header.site-header {
 .availability {
   color: var(--muted);
 }
-.hero-support-copy .hero-meta {
-  margin-top: 6px;
-  font-size: 0.7rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: rgba(161,161,161,0.8);
-}
 .hero-line {
   opacity: 0;
   transform: translateY(18px);
@@ -362,6 +346,20 @@ header.site-header {
   padding: 120px 0;
   position: relative;
   z-index: 1;
+}
+#about.section {
+  padding-top: 132px;
+}
+#about.section::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -84px;
+  height: 140px;
+  pointer-events: none;
+  z-index: 0;
+  background: linear-gradient(180deg, rgba(5,5,6,0.95) 0%, rgba(5,5,6,0.55) 48%, rgba(5,5,6,0) 100%);
 }
 .section-shell {
   position: relative;
@@ -917,7 +915,6 @@ header.site-header {
 
 @media (max-width: 1100px) {
   .hero-copy { grid-column: 2 / 10; }
-  .hero-support-copy { max-width: 50ch; }
   .about-header { grid-column: 2 / 5; }
   .about-copy,
   .about-actions { grid-column: 6 / 12; }
@@ -938,7 +935,11 @@ header.site-header {
     gap: 12px;
     padding: 0 14px;
   }
-  .brand-meta { display: none; }
+  .brand-meta {
+    display: inline;
+    font-size: 0.64rem;
+    letter-spacing: 0.19em;
+  }
   .menu-toggle {
     display: inline-grid;
     place-items: center;
@@ -978,13 +979,12 @@ header.site-header {
     min-height: auto;
   }
   .hero-grid {
-    padding-bottom: 72px;
+    padding-bottom: 96px;
     grid-template-columns: repeat(12, minmax(0, 1fr));
   }
   .hero-copy {
     grid-column: 1 / 11;
   }
-  .hero-support-copy { max-width: 48ch; }
   .about-shell,
   .photography-heading,
   .contact-shell {
@@ -1023,7 +1023,6 @@ header.site-header {
     gap: 18px;
   }
   .hero-copy,
-  .hero-support-copy,
   .about-header,
   .about-copy,
   .about-actions,
@@ -1044,10 +1043,6 @@ header.site-header {
     grid-template-columns: 1fr;
   }
   .hero-actions .button { width: 100%; }
-  .hero-support-copy {
-    max-width: 100%;
-    margin-top: 22px;
-  }
   .brand-mark {
     width: 40px;
     height: 40px;
