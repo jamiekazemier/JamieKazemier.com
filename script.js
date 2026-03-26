@@ -43,7 +43,7 @@ const syncScrollState = () => {
   if (heroParallaxFrame) return;
   heroParallaxFrame = window.requestAnimationFrame(() => {
     document.documentElement.style.setProperty('--hero-parallax', `${Math.min(window.scrollY * 0.12, 64)}px`);
-    document.documentElement.style.setProperty('--topo-shift', `${Math.min(window.scrollY * 0.04, 36)}px`);
+    document.documentElement.style.setProperty('--topo-parallax', `${Math.min(window.scrollY * 0.05, 42)}px`);
     heroParallaxFrame = null;
   });
 };
