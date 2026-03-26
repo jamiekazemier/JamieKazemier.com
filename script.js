@@ -2,38 +2,71 @@ const menuToggle = document.querySelector('.menu-toggle');
 const siteNav = document.querySelector('.site-nav');
 const navLinks = document.querySelectorAll('.site-nav a');
 const siteHeader = document.getElementById('site-header');
+const navScrim = document.getElementById('nav-scrim');
 const yearElement = document.getElementById('year');
-if (yearElement) yearElement.textContent = new Date().getFullYear();
-
-if (menuToggle && siteNav) {
-  menuToggle.addEventListener('click', () => {
-    const isOpen = siteNav.classList.toggle('open');
-    menuToggle.setAttribute('aria-expanded', String(isOpen));
-  });
-  navLinks.forEach((link) => link.addEventListener('click', () => {
-    siteNav.classList.remove('open');
-    menuToggle.setAttribute('aria-expanded', 'false');
-  }));
+const lastEditedElement = document.getElementById('last-edited');
+const now = new Date();
+if (yearElement) yearElement.textContent = now.getUTCFullYear();
+if (lastEditedElement) {
+  const stamp = lastEditedElement.dataset.lastEdited || lastEditedElement.textContent?.trim();
+  if (stamp) lastEditedElement.textContent = stamp;
 }
 
-window.addEventListener('scroll', () => {
-  siteHeader?.classList.toggle('scrolled', window.scrollY > 10);
-}, { passive: true });
+const closeNav = () => {
+  if (!siteNav || !menuToggle) return;
+  siteNav.classList.remove('open');
+  menuToggle.setAttribute('aria-expanded', 'false');
+  document.body.classList.remove('nav-open');
+  if (navScrim) navScrim.hidden = true;
+};
+
+const toggleNav = () => {
+  if (!siteNav || !menuToggle) return;
+  const isOpen = siteNav.classList.toggle('open');
+  menuToggle.setAttribute('aria-expanded', String(isOpen));
+  document.body.classList.toggle('nav-open', isOpen);
+  if (navScrim) navScrim.hidden = !isOpen;
+};
+
+if (menuToggle && siteNav) {
+  menuToggle.addEventListener('click', toggleNav);
+  navLinks.forEach((link) => link.addEventListener('click', closeNav));
+  navScrim?.addEventListener('click', closeNav);
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 820) closeNav();
+  });
+}
+
+let heroParallaxFrame = null;
+const syncScrollState = () => {
+  if (siteHeader) siteHeader.classList.toggle('scrolled', window.scrollY > 10);
+  if (heroParallaxFrame) return;
+  heroParallaxFrame = window.requestAnimationFrame(() => {
+    document.documentElement.style.setProperty('--hero-parallax', `${Math.min(window.scrollY * 0.12, 64)}px`);
+    document.documentElement.style.setProperty('--topo-parallax', `${Math.min(window.scrollY * 0.05, 42)}px`);
+    heroParallaxFrame = null;
+  });
+};
+
+window.addEventListener('scroll', syncScrollState, { passive: true });
+syncScrollState();
 
 const revealItems = document.querySelectorAll('.reveal');
 if ('IntersectionObserver' in window) {
-  const revealObserver = new IntersectionObserver((entries) => {
+  const revealObserver = new IntersectionObserver((entries, observer) => {
     entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('in-view');
-        revealObserver.unobserve(entry.target);
-      }
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('in-view');
+      observer.unobserve(entry.target);
     });
-  }, { threshold: 0.15 });
-  revealItems.forEach((item) => revealObserver.observe(item));
-} else revealItems.forEach((item) => item.classList.add('in-view'));
+  }, { threshold: 0.16, rootMargin: '0px 0px -8% 0px' });
 
-const sectionObserverTargets = ['selected-work', 'photography', 'technical-work', 'about', 'contact']
+  revealItems.forEach((item) => revealObserver.observe(item));
+} else {
+  revealItems.forEach((item) => item.classList.add('in-view'));
+}
+
+const sectionObserverTargets = ['about', 'photography', 'technical-work', 'contact']
   .map((id) => document.getElementById(id))
   .filter(Boolean);
 if ('IntersectionObserver' in window) {
@@ -47,29 +80,77 @@ if ('IntersectionObserver' in window) {
   sectionObserverTargets.forEach((section) => sectionObserver.observe(section));
 }
 
-const heroHeadline = document.getElementById('hero-headline');
-const headlineOptions = document.getElementById('headline-options');
-const heroBg = document.getElementById('hero-bg');
-const heroHeadlines = [
-  'I photograph intensity and engineer the systems behind it.',
-  'From courtside moments to technical builds, I chase precision.',
-  'Sports frames, engineered process, and crafted environments.',
-  'I build repeatable systems for unpredictable moments.',
-  'A photographer’s eye with an engineer’s discipline.'
-];
+const heroImagePrimary = document.getElementById('hero-image-primary');
+const heroImageSecondary = document.getElementById('hero-image-secondary');
 const heroImages = [
-  'https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=1600&q=80',
-  'https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=1600&q=80',
-  'https://images.unsplash.com/photo-1477244075012-5cc28286e465?auto=format&fit=crop&w=1600&q=80'
+  'https://github.com/jamiekazemier/JamieKazemier.com/blob/main/hero%20shot.jpg?raw=true',
+  'https://github.com/jamiekazemier/JamieKazemier.com/blob/main/hero%20shot%202.jpg?raw=true',
+  'https://github.com/jamiekazemier/JamieKazemier.com/blob/main/hero%20shot%203.jpg?raw=true'
 ];
+const heroLayers = [heroImagePrimary, heroImageSecondary].filter(Boolean);
+const heroPreloaded = new Map();
 let heroIndex = 0;
-if (headlineOptions) headlineOptions.innerHTML = heroHeadlines.map((line) => `<li>${line}</li>`).join('');
-if (heroHeadline) heroHeadline.textContent = heroHeadlines[0];
-if (heroBg) heroBg.style.backgroundImage = `url('${heroImages[0]}')`;
-setInterval(() => {
-  heroIndex = (heroIndex + 1) % heroImages.length;
-  if (heroBg) heroBg.style.backgroundImage = `url('${heroImages[heroIndex]}')`;
-}, 5000);
+let activeHeroLayerIndex = 0;
+let heroRotationTimer = null;
+let isHeroTransitioning = false;
+
+const preloadHeroImage = (src) => {
+  if (heroPreloaded.has(src)) return heroPreloaded.get(src);
+  const image = new Image();
+  image.decoding = 'async';
+  image.src = src;
+  const ready = image.decode
+    ? image.decode().catch(() => undefined).then(() => image)
+    : new Promise((resolve, reject) => {
+        image.onload = () => resolve(image);
+        image.onerror = reject;
+      }).catch(() => undefined);
+  heroPreloaded.set(src, ready);
+  return ready;
+};
+
+const finalizeHeroSwap = (currentLayer, nextLayer, nextLayerIndex, normalizedIndex, nextSrc) => {
+  nextLayer.src = nextSrc;
+  nextLayer.dataset.loadedSrc = nextSrc;
+  nextLayer.classList.add('is-active');
+  currentLayer.classList.remove('is-active');
+  activeHeroLayerIndex = nextLayerIndex;
+  heroIndex = normalizedIndex;
+  isHeroTransitioning = false;
+};
+
+const swapHeroImage = async (nextIndex) => {
+  if (heroLayers.length < 2 || isHeroTransitioning) return;
+  const normalizedIndex = (nextIndex + heroImages.length) % heroImages.length;
+  const nextSrc = heroImages[normalizedIndex];
+  if (heroImages[heroIndex] === nextSrc) return;
+
+  isHeroTransitioning = true;
+  const currentLayer = heroLayers[activeHeroLayerIndex];
+  const nextLayerIndex = (activeHeroLayerIndex + 1) % heroLayers.length;
+  const nextLayer = heroLayers[nextLayerIndex];
+
+  try {
+    await preloadHeroImage(nextSrc);
+    finalizeHeroSwap(currentLayer, nextLayer, nextLayerIndex, normalizedIndex, nextSrc);
+  } catch (_error) {
+    isHeroTransitioning = false;
+  }
+};
+
+heroImages.forEach((src) => {
+  void preloadHeroImage(src);
+});
+
+if (heroImagePrimary) {
+  heroImagePrimary.dataset.loadedSrc = heroImages[0];
+}
+
+if (heroLayers.length > 1) {
+  heroRotationTimer = window.setInterval(() => {
+    void swapHeroImage(heroIndex + 1);
+  }, 9000);
+}
 
 const GITHUB_OWNER = 'JamieKazemier';
 const GITHUB_REPO = 'JamieKazemier.com';
@@ -78,48 +159,67 @@ const ALBUMS_FILE_PATH = 'data/albums.json';
 const albumsEndpoint = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${ALBUMS_FILE_PATH}`;
 
 const fallbackAlbums = [
-  { title: 'Courtside', date: '2026-02-01', photos: ['https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=1200&q=80'] },
-  { title: 'Terrain Studies', date: '2026-01-18', photos: ['https://images.unsplash.com/photo-1477244075012-5cc28286e465?auto=format&fit=crop&w=1200&q=80'] },
-  { title: 'Fixture Build', date: '2025-12-08', photos: ['https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1200&q=80'] },
-  { title: 'Structures', date: '2025-11-22', photos: ['https://images.unsplash.com/photo-1482192505345-5655af888cc4?auto=format&fit=crop&w=1200&q=80'] },
-  { title: 'Street Rain', date: '2025-10-11', photos: ['https://images.unsplash.com/photo-1433863448220-78aaa064ff47?auto=format&fit=crop&w=1200&q=80'] },
-  { title: 'Dusk Terrain', date: '2025-09-30', photos: ['https://images.unsplash.com/photo-1493244040629-496f6d136cc3?auto=format&fit=crop&w=1200&q=80'] },
-  { title: 'Texture Notes', date: '2025-08-15', photos: ['https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?auto=format&fit=crop&w=1200&q=80'] },
-  { title: 'North Study', date: '2025-07-03', photos: ['https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80'] },
-  { title: 'Urban Motion', date: '2025-06-14', photos: ['https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1200&q=80'] },
-  { title: 'Monochrome Walls', date: '2025-05-20', photos: ['https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80'] }
-];
-
-const selectedData = {
-  'night-session-frames': {
-    title: 'Night Session Frames',
-    intro: 'A season-long body of work focused on game tempo, emotion, and transition moments.',
-    process: ['Build a shot map before tip-off.', 'Prioritize narrative over highlight-only frames.', 'Edit in sequences to preserve emotional pacing.'],
-    outcome: 'Delivered a coherent visual story used for social, editorial, and print.',
-    images: ['https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=1200&q=80', 'https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=1200&q=80']
+  {
+    title: 'Courtside Control',
+    date: '2026-02-01',
+    descriptor: 'Indoor basketball under arena lights',
+    photos: ['https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=1200&q=80']
   },
-  'terrain-studies': {
-    title: 'Terrain Studies',
-    intro: 'A worldbuilding case study balancing terrain realism with stylized readability.',
-    process: ['Generate varied heightfields in World Machine.', 'Refine erosion passes by gameplay camera distance.', 'Unify mood with restrained material response.'],
-    outcome: 'Created a terrain language reusable across multiple environment scenes.',
-    images: ['https://images.unsplash.com/photo-1477244075012-5cc28286e465?auto=format&fit=crop&w=1200&q=80', 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80']
+  {
+    title: 'Training Ground Tempo',
+    date: '2026-01-18',
+    descriptor: 'Warm-up drills and mid-session intensity',
+    photos: ['https://images.unsplash.com/photo-1477244075012-5cc28286e465?auto=format&fit=crop&w=1200&q=80']
   },
-  'fixture-build-v3': {
-    title: 'Fixture Build v3',
-    intro: 'Mechanical fixture redesign for repeatability and reduced setup friction.',
-    process: ['Map high-failure joints from previous version.', 'Revise tolerances with quick CNC iterations.', 'Stress-test assembly under real production handling.'],
-    outcome: 'Reduced setup time and improved reliability over long production runs.',
-    images: ['https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1200&q=80', 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80']
+  {
+    title: 'Fixture Build Session',
+    date: '2025-12-08',
+    descriptor: 'Precision workflow behind sports production',
+    photos: ['https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1200&q=80']
   },
-  'quiet-structures': {
-    title: 'Quiet Structures',
-    intro: 'An architecture-focused series exploring rhythm, shadow, and visual restraint.',
-    process: ['Scout by light direction, not just location.', 'Compose around repeating geometry.', 'Edit toward tonal consistency and quiet contrast.'],
-    outcome: 'Built a portfolio series with a strong editorial and exhibition tone.',
-    images: ['https://images.unsplash.com/photo-1482192505345-5655af888cc4?auto=format&fit=crop&w=1200&q=80', 'https://images.unsplash.com/photo-1519999482648-25049ddd37b1?auto=format&fit=crop&w=1200&q=80']
+  {
+    title: 'Concrete Lines',
+    date: '2025-11-22',
+    descriptor: 'Graphic forms and architectural rhythm',
+    photos: ['https://images.unsplash.com/photo-1482192505345-5655af888cc4?auto=format&fit=crop&w=1200&q=80']
+  },
+  {
+    title: 'Rain Match Run',
+    date: '2025-10-11',
+    descriptor: 'Wet-weather pace and sideline pressure',
+    photos: ['https://images.unsplash.com/photo-1433863448220-78aaa064ff47?auto=format&fit=crop&w=1200&q=80']
+  },
+  {
+    title: 'Dusk Field Study',
+    date: '2025-09-30',
+    descriptor: 'Low-angle light and late-game mood',
+    photos: ['https://images.unsplash.com/photo-1493244040629-496f6d136cc3?auto=format&fit=crop&w=1200&q=80']
+  },
+  {
+    title: 'Surface Notes',
+    date: '2025-08-15',
+    descriptor: 'Detail-focused textures and equipment wear',
+    photos: ['https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?auto=format&fit=crop&w=1200&q=80']
+  },
+  {
+    title: 'Northern Session',
+    date: '2025-07-03',
+    descriptor: 'Cold light, fast movement, clean frames',
+    photos: ['https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80']
+  },
+  {
+    title: 'Urban Sprint',
+    date: '2025-06-14',
+    descriptor: 'Street-level speed and dynamic motion blur',
+    photos: ['https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1200&q=80']
+  },
+  {
+    title: 'Monochrome Structure',
+    date: '2025-05-20',
+    descriptor: 'Editorial black-and-white tonal studies',
+    photos: ['https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80']
   }
-};
+];
 
 const projectData = {
   'erosion-sandbox': {
@@ -148,11 +248,16 @@ const projectData = {
 const albumsGrid = document.getElementById('albums-grid');
 const moreButton = document.getElementById('albums-more');
 const photoGrid = document.getElementById('photo-grid');
+const albumPreviewPanel = document.getElementById('album-preview-panel');
+const albumPreviewClose = document.getElementById('album-preview-close');
 const activeTitle = document.getElementById('active-album-title');
 const activeMeta = document.getElementById('active-album-meta');
+const activeAlbumCount = document.getElementById('active-album-count');
 const searchInput = document.getElementById('album-search');
 const lightbox = document.getElementById('lightbox');
 const lightboxImage = document.getElementById('lightbox-image');
+const lightboxTitle = document.getElementById('lightbox-title');
+const lightboxCounter = document.getElementById('lightbox-counter');
 const lightboxClose = document.getElementById('lightbox-close');
 const lightboxExit = document.getElementById('lightbox-exit');
 const lightboxDownload = document.getElementById('lightbox-download');
@@ -161,14 +266,6 @@ const lightboxNext = document.getElementById('lightbox-next');
 const lightboxExifToggle = document.getElementById('lightbox-exif-toggle');
 const lightboxMeta = document.getElementById('lightbox-meta');
 const lightboxExif = document.getElementById('lightbox-exif');
-const selectedView = document.getElementById('selected-view');
-const selectedBack = document.getElementById('selected-back');
-const selectedHero = document.getElementById('selected-hero');
-const selectedTitle = document.getElementById('selected-title');
-const selectedDescription = document.getElementById('selected-description');
-const selectedProcess = document.getElementById('selected-process');
-const selectedOutcome = document.getElementById('selected-outcome');
-const selectedGallery = document.getElementById('selected-gallery');
 const projectView = document.getElementById('project-view');
 const projectBack = document.getElementById('project-back');
 const projectHero = document.getElementById('project-hero');
@@ -184,14 +281,15 @@ const visibleLimit = 6;
 let albums = [...fallbackAlbums];
 let filteredAlbums = [...albums];
 let showAllAlbums = false;
-let activeAlbumIndex = 0;
+let activeAlbumIndex = -1;
 let downloadableBlobUrl = '';
 let downloadableFileName = 'photo.jpg';
 let allowDownloadInLightbox = false;
-let lastSelectedTrigger = null;
 let currentLightboxImages = [];
 let currentLightboxIndex = 0;
+let currentLightboxTitle = '';
 let currentExif = '';
+let touchStartX = 0;
 
 const parseDate = (value) => {
   const date = new Date(value);
@@ -200,21 +298,75 @@ const parseDate = (value) => {
 const sortAlbumsByDateDesc = (collection) => [...collection].sort((a, b) => parseDate(b.date) - parseDate(a.date));
 const formatAlbumDate = (value) => new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: 'numeric' }).format(parseDate(value));
 
+const looksLikePlaceholderTitle = (value) => !value || /^img[_\s-]?\d+/i.test(value) || /^album\s*\d*/i.test(value) || /^untitled/i.test(value);
+
+const buildEditorialTitle = (album, index) => {
+  const source = `${album.sport || ''} ${album.location || ''} ${album.mood || ''}`.trim();
+  if (source) return source.split(/\s+/).map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(' ').slice(0, 38);
+  return `Matchday Session ${String(index + 1).padStart(2, '0')}`;
+};
+
+const normalizeAlbum = (album, index) => {
+  const titleCandidate = typeof album.title === 'string' ? album.title.trim() : '';
+  const title = looksLikePlaceholderTitle(titleCandidate) ? buildEditorialTitle(album, index) : titleCandidate;
+  const descriptor = typeof album.descriptor === 'string' ? album.descriptor.trim().slice(0, 64) : '';
+  return {
+    title,
+    date: typeof album.date === 'string' ? album.date : '2025-01-01',
+    descriptor,
+    photos: Array.isArray(album.photos) ? album.photos.filter((p) => typeof p === 'string' && p) : []
+  };
+};
+
 const sanitizeAlbums = (data) => {
-  if (!Array.isArray(data)) return sortAlbumsByDateDesc([...fallbackAlbums]);
+  if (!Array.isArray(data)) return sortAlbumsByDateDesc(fallbackAlbums.map((album, index) => normalizeAlbum(album, index)));
   return sortAlbumsByDateDesc(
     data
-      .filter((album) => album && typeof album.title === 'string' && Array.isArray(album.photos))
-      .map((album) => ({
-        title: album.title,
-        date: typeof album.date === 'string' ? album.date : '2025-01-01',
-        photos: album.photos.filter((p) => typeof p === 'string' && p)
-      }))
+      .filter((album) => album && Array.isArray(album.photos))
+      .map((album, index) => normalizeAlbum(album, index))
       .filter((album) => album.photos.length > 0)
   );
 };
 
-const getPhotoMarkup = (url, title, index) => `<figure class="photo-item" data-photo-wrap="${url}" data-photo-index="${index}"><img loading="lazy" src="${url}" alt="${title} photo ${index + 1}" /></figure>`;
+const buildEditorialSequence = (photos) => {
+  const uniquePhotos = [...new Set(photos)];
+  if (uniquePhotos.length < 4) return uniquePhotos;
+
+  const opener = uniquePhotos[0];
+  const body = uniquePhotos.slice(1);
+  const middle = Math.ceil(body.length / 2);
+  const firstHalf = body.slice(0, middle);
+  const secondHalf = body.slice(middle);
+  const woven = [];
+
+  for (let i = 0; i < Math.max(firstHalf.length, secondHalf.length); i += 1) {
+    if (firstHalf[i]) woven.push(firstHalf[i]);
+    if (secondHalf[i]) woven.push(secondHalf[i]);
+  }
+
+  return [opener, ...woven];
+};
+
+const getPhotoLayoutClass = (index, total) => {
+  if (total === 1) return 'bento-hero';
+  if (total === 2) return index === 0 ? 'bento-wide' : 'bento-tall';
+  const pattern = ['bento-hero', 'bento-tall', 'bento-standard', 'bento-wide', 'bento-standard', 'bento-square'];
+  return pattern[index % pattern.length];
+};
+
+const createAlbumFallbackDataUri = (title = 'Album cover') => {
+  const safeTitle = String(title).replace(/[&<>]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[char] || char));
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><rect width="1200" height="800" fill="#111722"/><rect x="34" y="34" width="1132" height="732" rx="20" fill="#172230" stroke="rgba(117,180,255,.28)"/><text x="72" y="706" fill="#ecf2f8" font-size="42" font-family="Inter, Arial, sans-serif">${safeTitle}</text></svg>`;
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+};
+
+const getPhotoMarkup = (url, title, index, total, eager = false) => {
+  const loading = eager || index < 2 ? 'eager' : 'lazy';
+  const sizes = '(max-width: 700px) 100vw, (max-width: 1120px) 50vw, 33vw';
+  const layoutClass = getPhotoLayoutClass(index, total);
+  const fallback = createAlbumFallbackDataUri(title);
+  return `<figure class="photo-item ${layoutClass}" data-photo-wrap="${url}" data-photo-index="${index}"><img loading="${loading}" decoding="async" sizes="${sizes}" src="${url}" alt="${title} photo ${index + 1}" data-fallback-src="${fallback}" /><figcaption>${String(index + 1).padStart(2, '0')}</figcaption></figure>`;
+};
 
 const refreshLightboxImage = () => {
   const src = currentLightboxImages[currentLightboxIndex];
@@ -224,20 +376,31 @@ const refreshLightboxImage = () => {
   lightboxDownload.setAttribute('download', downloadableFileName);
   lightboxDownload.href = src;
   if (lightboxExif) lightboxExif.textContent = currentExif;
+  if (lightboxTitle) lightboxTitle.textContent = currentLightboxTitle;
+  if (lightboxCounter) lightboxCounter.textContent = `${String(currentLightboxIndex + 1).padStart(2, '0')} / ${String(currentLightboxImages.length).padStart(2, '0')}`;
 };
 
-const openLightbox = async (images, index, enableDownload = false, exifLabel = '') => {
+const preloadLightboxNeighbor = (index) => {
+  const nextSrc = currentLightboxImages[(index + 1) % currentLightboxImages.length];
+  if (!nextSrc) return;
+  const img = new Image();
+  img.src = nextSrc;
+};
+
+const openLightbox = async (images, index, enableDownload = false, exifLabel = '', titleLabel = 'Photo Story') => {
   if (!lightbox || !lightboxImage || !Array.isArray(images) || !images.length || !lightboxDownload) return;
   allowDownloadInLightbox = enableDownload;
   lightboxDownload.style.display = enableDownload ? 'inline-flex' : 'none';
   currentLightboxImages = images;
   currentLightboxIndex = Math.max(0, Math.min(index, images.length - 1));
   currentExif = exifLabel;
+  currentLightboxTitle = titleLabel;
 
   if (downloadableBlobUrl) URL.revokeObjectURL(downloadableBlobUrl);
   downloadableBlobUrl = '';
 
   refreshLightboxImage();
+  preloadLightboxNeighbor(currentLightboxIndex);
 
   if (enableDownload) {
     try {
@@ -252,6 +415,8 @@ const openLightbox = async (images, index, enableDownload = false, exifLabel = '
 
   lightbox.classList.add('open');
   lightbox.setAttribute('aria-hidden', 'false');
+  siteHeader?.classList.add('is-lightbox-hidden');
+  closeNav();
 };
 
 const closeLightbox = () => {
@@ -261,22 +426,19 @@ const closeLightbox = () => {
   allowDownloadInLightbox = false;
   lightbox.classList.remove('open');
   lightbox.setAttribute('aria-hidden', 'true');
+  siteHeader?.classList.remove('is-lightbox-hidden');
   lightboxImage.src = '';
   lightboxDownload.href = '#';
   if (lightboxMeta) lightboxMeta.hidden = true;
+  if (lightboxTitle) lightboxTitle.textContent = '';
+  if (lightboxCounter) lightboxCounter.textContent = '';
 };
 
 const stepLightbox = (direction) => {
   if (!currentLightboxImages.length) return;
   currentLightboxIndex = (currentLightboxIndex + direction + currentLightboxImages.length) % currentLightboxImages.length;
   refreshLightboxImage();
-};
-
-const isUserCanceledSave = (error) => {
-  if (!error) return false;
-  const name = typeof error.name === 'string' ? error.name : '';
-  const message = typeof error.message === 'string' ? error.message.toLowerCase() : '';
-  return name === 'AbortError' || name === 'NotAllowedError' || message.includes('aborted') || message.includes('cancel');
+  preloadLightboxNeighbor(currentLightboxIndex);
 };
 
 const isUserCanceledSave = (error) => {
@@ -313,11 +475,22 @@ const downloadCurrentImage = async (event) => {
   anchor.remove();
 };
 
-const attachPhotoClicks = (container, images, enableDownload, exifLabel) => {
+const attachImageFallbacks = (container) => {
+  container.querySelectorAll('img[data-fallback-src]').forEach((img) => {
+    img.addEventListener('error', () => {
+      const fallback = img.getAttribute('data-fallback-src');
+      if (!fallback || img.src === fallback) return;
+      img.src = fallback;
+      img.closest('.album-image-wrap, .photo-item')?.classList.add('is-fallback');
+    }, { once: true });
+  });
+};
+
+const attachPhotoClicks = (container, images, enableDownload, exifLabel, titleLabel) => {
   container.querySelectorAll('[data-photo-wrap]').forEach((item) => {
     item.addEventListener('click', () => {
       const idx = Number(item.getAttribute('data-photo-index') || '0');
-      openLightbox(images, idx, enableDownload, exifLabel);
+      openLightbox(images, idx, enableDownload, exifLabel, titleLabel);
     });
   });
 };
@@ -328,22 +501,41 @@ const renderCaseStudy = (entry, elements, enableDownload = false) => {
   elements.description.textContent = entry.intro;
   elements.process.innerHTML = entry.process.map((step) => `<p class="case-step">${step}</p>`).join('');
   elements.outcome.textContent = `Outcome: ${entry.outcome}`;
-  elements.gallery.innerHTML = entry.images.map((img, i) => getPhotoMarkup(img, entry.title, i)).join('');
-  attachPhotoClicks(elements.gallery, entry.images, enableDownload, `${entry.title} • 35mm equiv • ISO 800 • 1/1000`);
+  elements.gallery.innerHTML = entry.images.map((img, i) => getPhotoMarkup(img, entry.title, i, entry.images.length)).join('');
+  attachImageFallbacks(elements.gallery);
+  attachPhotoClicks(elements.gallery, entry.images, enableDownload, `${entry.title} • 35mm equiv • ISO 800 • 1/1000`, entry.title);
+};
+
+const hideAlbumPreview = () => {
+  activeAlbumIndex = -1;
+  if (photoGrid) photoGrid.innerHTML = '';
+  if (activeTitle) activeTitle.textContent = 'Album Preview';
+  if (activeMeta) activeMeta.textContent = 'Select an album to open the curated sequence.';
+  if (activeAlbumCount) activeAlbumCount.textContent = '';
+  if (albumPreviewPanel) {
+    albumPreviewPanel.hidden = true;
+    albumPreviewPanel.classList.remove('is-open');
+  }
 };
 
 const renderAlbumPreview = () => {
   const activeAlbum = filteredAlbums[activeAlbumIndex];
   if (!activeAlbum || !photoGrid || !activeTitle || !activeMeta) {
-    photoGrid.innerHTML = '';
-    activeTitle.textContent = 'Album Preview';
-    activeMeta.textContent = 'No album selected';
+    hideAlbumPreview();
     return;
   }
+
+  const sequencedPhotos = buildEditorialSequence(activeAlbum.photos);
   activeTitle.textContent = activeAlbum.title;
-  activeMeta.textContent = `${activeAlbum.photos.length} photo${activeAlbum.photos.length === 1 ? '' : 's'} • ${formatAlbumDate(activeAlbum.date)}`;
-  photoGrid.innerHTML = activeAlbum.photos.map((photo, index) => getPhotoMarkup(photo, activeAlbum.title, index)).join('');
-  attachPhotoClicks(photoGrid, activeAlbum.photos, true, `${activeAlbum.title} • ${formatAlbumDate(activeAlbum.date)} • EXIF sample`);
+  activeMeta.textContent = activeAlbum.descriptor ? `${formatAlbumDate(activeAlbum.date)} • ${activeAlbum.descriptor}` : `${formatAlbumDate(activeAlbum.date)}`;
+  if (activeAlbumCount) activeAlbumCount.textContent = `${sequencedPhotos.length} curated frames`;
+  photoGrid.innerHTML = sequencedPhotos.map((photo, index) => getPhotoMarkup(photo, activeAlbum.title, index, sequencedPhotos.length, index === 0)).join('');
+  attachImageFallbacks(photoGrid);
+  attachPhotoClicks(photoGrid, sequencedPhotos, true, `${activeAlbum.title} • ${formatAlbumDate(activeAlbum.date)} • Editorial sequence`, activeAlbum.title);
+  if (albumPreviewPanel) {
+    albumPreviewPanel.hidden = false;
+    albumPreviewPanel.classList.add('is-open');
+  }
 };
 
 const renderAlbums = () => {
@@ -357,14 +549,17 @@ const renderAlbums = () => {
     if (!showAllAlbums && index >= visibleLimit) card.classList.add('is-hidden');
     if (index === activeAlbumIndex) card.classList.add('is-active');
 
-    const coverImage = album.photos[0] || 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80';
-    card.innerHTML = `<img loading="lazy" src="${coverImage}" alt="${album.title} thumbnail" /><div class="album-meta"><h4>${album.title}</h4><p>${formatAlbumDate(album.date)} • ${album.photos.length} photo${album.photos.length === 1 ? '' : 's'}</p></div>`;
+    const sequencedPhotos = buildEditorialSequence(album.photos);
+    const coverFallback = createAlbumFallbackDataUri(album.title);
+    const coverImage = sequencedPhotos[0] || coverFallback;
+    card.innerHTML = `<div class="album-image-wrap"><img loading="lazy" decoding="async" sizes="(max-width: 700px) 100vw, (max-width: 980px) 50vw, 33vw" src="${coverImage}" alt="${album.title} cover image" data-fallback-src="${coverFallback}" /><div class="album-overlay"><p class="album-date">${formatAlbumDate(album.date)}</p><h4>${album.title}</h4><p class="album-count">${album.photos.length} frames</p></div></div><div class="album-meta">${album.descriptor ? `<p>${album.descriptor}</p>` : '<p>Curated sequence with editorial pacing.</p>'}</div>`;
+    attachImageFallbacks(card);
     card.addEventListener('click', () => {
       activeAlbumIndex = index;
       renderAlbums();
       renderAlbumPreview();
       requestAnimationFrame(() => {
-        document.getElementById('photo-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        albumPreviewPanel?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
     });
     albumsGrid.appendChild(card);
@@ -376,11 +571,10 @@ const renderAlbums = () => {
 
 const runSearch = () => {
   const term = (searchInput?.value || '').trim().toLowerCase();
-  filteredAlbums = sortAlbumsByDateDesc(albums.filter((album) => album.title.toLowerCase().includes(term)));
-  activeAlbumIndex = 0;
+  filteredAlbums = sortAlbumsByDateDesc(albums.filter((album) => album.title.toLowerCase().includes(term) || (album.descriptor || '').toLowerCase().includes(term)));
   showAllAlbums = false;
   renderAlbums();
-  renderAlbumPreview();
+  hideAlbumPreview();
 };
 
 const openDetailSection = (data, key, elements, section, shouldScroll = true, enableDownload = false) => {
@@ -408,6 +602,11 @@ if (copyEmail) {
 }
 
 if (searchInput) searchInput.addEventListener('input', runSearch);
+if (albumPreviewClose) albumPreviewClose.addEventListener('click', () => {
+  hideAlbumPreview();
+  document.getElementById('albums-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  renderAlbums();
+});
 if (moreButton) moreButton.addEventListener('click', () => { showAllAlbums = !showAllAlbums; renderAlbums(); });
 if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
 if (lightboxExit) lightboxExit.addEventListener('click', closeLightbox);
@@ -416,6 +615,15 @@ if (lightboxPrev) lightboxPrev.addEventListener('click', () => stepLightbox(-1))
 if (lightboxNext) lightboxNext.addEventListener('click', () => stepLightbox(1));
 if (lightboxExifToggle && lightboxMeta) lightboxExifToggle.addEventListener('click', () => { lightboxMeta.hidden = !lightboxMeta.hidden; });
 if (lightbox) lightbox.addEventListener('click', (event) => { if (event.target === lightbox) closeLightbox(); });
+if (lightbox) lightbox.addEventListener('touchstart', (event) => { touchStartX = event.changedTouches[0]?.clientX || 0; }, { passive: true });
+if (lightbox) lightbox.addEventListener('touchend', (event) => {
+  const endX = event.changedTouches[0]?.clientX || 0;
+  const delta = endX - touchStartX;
+  if (Math.abs(delta) < 40 || !lightbox.classList.contains('open')) return;
+  if (delta < 0) stepLightbox(1);
+  if (delta > 0) stepLightbox(-1);
+}, { passive: true });
+
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') closeLightbox();
   if (!lightbox?.classList.contains('open')) return;
@@ -423,32 +631,9 @@ document.addEventListener('keydown', (event) => {
   if (event.key === 'ArrowLeft') stepLightbox(-1);
 });
 
-if (selectedBack) selectedBack.addEventListener('click', () => {
-  closeDetailSection(selectedView, selectedGallery);
-  if (lastSelectedTrigger) {
-    lastSelectedTrigger.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    lastSelectedTrigger.focus({ preventScroll: true });
-    return;
-  }
-  document.getElementById('selected-work')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-});
 if (projectBack) projectBack.addEventListener('click', () => {
   closeDetailSection(projectView, projectGallery);
   document.getElementById('technical-work')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-});
-
-document.querySelectorAll('[data-selected]').forEach((item) => {
-  item.addEventListener('click', () => {
-    lastSelectedTrigger = item;
-    openDetailSection(
-      selectedData,
-      item.getAttribute('data-selected'),
-      { hero: selectedHero, title: selectedTitle, description: selectedDescription, process: selectedProcess, outcome: selectedOutcome, gallery: selectedGallery },
-      selectedView,
-      true,
-      false
-    );
-  });
 });
 
 document.querySelectorAll('[data-project]').forEach((item) => {
@@ -473,11 +658,11 @@ const loadAlbumsFromGitHub = async () => {
     }
   } catch (error) {
     console.warn('Using fallback albums.', error);
-    albums = sortAlbumsByDateDesc([...fallbackAlbums]);
+    albums = sortAlbumsByDateDesc(fallbackAlbums.map((album, index) => normalizeAlbum(album, index)));
     filteredAlbums = [...albums];
   }
   renderAlbums();
-  renderAlbumPreview();
+  hideAlbumPreview();
 };
 
 loadAlbumsFromGitHub();
