@@ -10,7 +10,7 @@ export const galleries = [
     slug: "head-of-the-river",
     location: "Amsterdam",
     date: "Spring 2026",
-    summary: "Low angles, tight crews, and long water lines from a fast spring race day.",
+    summary: "Low bridges, long lanes, and a hard spring rhythm moving straight through Amsterdam.",
     href: "/galleries/head-of-the-river/",
     cover: image("head-of-the-river", 2, "A yellow rowing shell racing low across the water at Head of the River."),
     lead: image("head-of-the-river", 3, "A rowing crew driving together past the riverbank in bright spring light.", "wide"),
@@ -33,7 +33,7 @@ export const galleries = [
     slug: "herfstregatta",
     location: "Netherlands",
     date: "Autumn 2026",
-    summary: "Yellow crews, green banks, close racing, and calm regatta water in autumn light.",
+    summary: "Autumn colour, close blades, and a race day that keeps tightening as the water darkens.",
     href: "/galleries/herfstregatta/",
     cover: image("herfstregatta", 7, "A women's crew in yellow rowing toward camera through warm autumn reflections."),
     lead: image("herfstregatta", 6, "A rowing crew moving along a green riverbank during Herfstregatta.", "wide"),
@@ -57,7 +57,7 @@ export const galleries = [
     slug: "traika-tilburg",
     location: "Tilburg",
     date: "Winter 2026",
-    summary: "Low morning light, quiet water, and close-up training moments from Tilburg.",
+    summary: "Mist, preparation, and low winter light before the race-day noise begins.",
     href: "/galleries/traika-tilburg/",
     cover: image("traika-tilburg", 2, "A single rower silhouetted against misty golden water in Tilburg."),
     lead: image("traika-tilburg", 3, "Rowers preparing beside the water with oars cutting through golden reflections.", "wide"),
@@ -76,14 +76,56 @@ export const galleries = [
   }
 ];
 
-export const featuredImages = [
-  galleries[0].images[1],
-  galleries[1].images[0],
-  galleries[2].images[1],
-  galleries[0].images[3],
-  galleries[1].images[4],
-  galleries[2].images[5]
+export const portfolioSequence = [
+  {
+    image: galleries[2].images[1],
+    layout: "poster"
+  },
+  {
+    image: galleries[0].images[1],
+    layout: "landscape",
+    href: galleries[0].href,
+    label: galleries[0].title
+  },
+  {
+    image: galleries[1].images[6],
+    layout: "poster"
+  },
+  {
+    image: galleries[1].images[4],
+    layout: "tall"
+  },
+  {
+    image: galleries[0].images[9],
+    layout: "landscape"
+  },
+  {
+    image: galleries[2].images[5],
+    layout: "diptych"
+  },
+  {
+    image: galleries[1].images[11],
+    layout: "tall"
+  },
+  {
+    image: galleries[1].images[8],
+    layout: "landscape",
+    href: galleries[1].href,
+    label: galleries[1].title
+  },
+  {
+    image: galleries[2].images[7],
+    layout: "poster"
+  },
+  {
+    image: galleries[1].images[1],
+    layout: "landscape",
+    href: galleries[2].href,
+    label: galleries[2].title
+  }
 ];
+
+export const storyTeasers = [galleries[0], galleries[1]];
 
 export function getGalleryBySlug(slug) {
   return galleries.find((gallery) => gallery.slug === slug);

@@ -3,9 +3,10 @@ import { site } from "../data/site.mjs";
 import { withBase } from "../utils/urls.mjs";
 
 const nav = [
+  { label: "Home", href: "/" },
   { label: "Portfolio", href: "/portfolio/" },
-  { label: "Buy Photos", href: site.buyPhotosHref, current: false },
-  { label: "Contact", href: "/contact/" }
+  { label: "Contact", href: "/contact/" },
+  { label: site.shopLabel, href: site.shopHref, external: true, current: false }
 ];
 
 const base = import.meta.env.BASE_URL || "/";
@@ -15,8 +16,8 @@ const normalizePath = (href: string) => {
   const path = href.split("#")[0];
   return path.endsWith("/") ? path : `${path}/`;
 };
-const isCurrent = (item: { href: string; current?: boolean }) => {
-  if (item.current === false) {
+const isCurrent = (item: { href: string; external?: boolean; current?: boolean }) => {
+  if (item.current === false || item.external) {
     return false;
   }
 
@@ -24,10 +25,6 @@ const isCurrent = (item: { href: string; current?: boolean }) => {
 
   if (path === "/portfolio/") {
     return currentPath === "/portfolio/" || currentPath.startsWith("/galleries/");
-  }
-
-  if (path === "/contact/") {
-    return currentPath === "/contact/";
   }
 
   return currentPath === path;
@@ -41,11 +38,17 @@ const isCurrent = (item: { href: string; current?: boolean }) => {
     aria-label="Jamie Kazemier Photography home"
     aria-current={currentPath === "/" ? "page" : undefined}
   >
-    {site.name}
+    <span>Jamie Kazemier</span>
+    <small>Photography</small>
   </a>
   <nav class="main-nav" aria-label="Primary navigation">
     {nav.map((item) => (
-      <a href={withBase(item.href)} aria-current={isCurrent(item) ? "page" : undefined}>
+      <a
+        href={withBase(item.href)}
+        aria-current={isCurrent(item) ? "page" : undefined}
+        target={item.external ? "_blank" : undefined}
+        rel={item.external ? "noreferrer" : undefined}
+      >
         {item.label}
       </a>
     ))}
