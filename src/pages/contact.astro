@@ -1,0 +1,39 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { site } from "../data/site.mjs";
+---
+
+<BaseLayout title="Contact | Jamie Kazemier Photography" description="Contact Jamie Kazemier Photography for rowing photography and photo sales questions.">
+  <section class="page-hero section contact-hero">
+    <p class="eyebrow">Contact</p>
+    <h1>For rowing photos, race coverage, and image questions.</h1>
+    <p>Instagram is best for quick messages and recent frames. Email works just as well for practical requests.</p>
+  </section>
+
+  <section class="section contact-grid" aria-label="Contact options">
+    <a class="contact-tile" href={site.instagramUrl}>
+      <span>Instagram</span>
+      <strong>{site.instagramHandle}</strong>
+    </a>
+    <a class="contact-tile" href={`mailto:${site.email}`}>
+      <span>Email</span>
+      <strong>{site.email}</strong>
+    </a>
+  </section>
+
+  <section class="section buy-panel" id="buy-photos" aria-labelledby="buy-photos-title">
+    <p class="eyebrow">Buy photos</p>
+    <h2 id="buy-photos-title">Gallery sales will open externally.</h2>
+    <p>
+      Jamie's rowing images will be sold through Pixieset or Oypo once the gallery shop is ready. This website
+      will link out to that shop rather than handling checkout here.
+    </p>
+    <p class="buy-panel__note">
+      For now, send the event name, crew or boat, and race details through Instagram or email.
+    </p>
+    <div class="intro-band__actions">
+      <a class="button button--gold" href={site.instagramUrl}>Instagram</a>
+      <a class="button button--dark" href={`mailto:${site.email}`}>Email Jamie</a>
+    </div>
+  </section>
+</BaseLayout>

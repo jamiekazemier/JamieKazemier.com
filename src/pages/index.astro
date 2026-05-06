@@ -1,0 +1,96 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ResponsiveImage from "../components/ResponsiveImage.astro";
+import { featuredImages, galleries } from "../data/galleries.mjs";
+import { site } from "../data/site.mjs";
+import { withBase } from "../utils/urls.mjs";
+
+const hero = {
+  src: "/images/hero.jpg",
+  alt: "Low-angle rowing shell racing across dark Dutch water with warm light."
+};
+---
+
+<BaseLayout title="Jamie Kazemier Photography | Rowing Photography" description={site.description} heroHeader>
+  <section class="hero-photo" aria-label="Featured rowing photograph">
+    <ResponsiveImage image={hero} class="hero-photo__image" loading="eager" sizes="100vw" width="1800" height="1200" />
+  </section>
+
+  <section class="hero-context" aria-label="Rowing photography focus">
+    <span>Race-day coverage</span>
+    <span>Blade timing</span>
+    <span>Crew movement</span>
+    <span>Finish-line pressure</span>
+  </section>
+
+  <section class="intro-band section">
+    <div class="intro-band__copy">
+      <p class="eyebrow">Rowing photography in the Netherlands</p>
+      <h1>{site.tagline}</h1>
+      <p>{site.description}</p>
+    </div>
+    <div class="intro-band__mark" aria-hidden="true">
+      <span>JK</span>
+      <span>NL</span>
+    </div>
+    <div class="intro-band__actions">
+      <a class="button button--dark" href={withBase("/portfolio/")}>View portfolio</a>
+      <a class="button button--gold" href={withBase(site.buyPhotosHref)}>Buy photos</a>
+    </div>
+  </section>
+
+  <section class="section featured-work" aria-labelledby="featured-work-title">
+    <div class="section-heading">
+      <div class="section-heading__meta">
+        <p class="eyebrow">Featured work</p>
+        <a href={withBase("/portfolio/")}>All galleries</a>
+      </div>
+      <h2 id="featured-work-title">Crews, water, pressure, rhythm.</h2>
+    </div>
+    <div class="feature-grid">
+      {featuredImages.map((image, index) => (
+        <figure class="feature-grid__item">
+          <ResponsiveImage
+            image={image}
+            class="feature-grid__image"
+            sizes="(min-width: 900px) 33vw, 50vw"
+            loading={index < 4 ? "eager" : "lazy"}
+          />
+        </figure>
+      ))}
+    </div>
+  </section>
+
+  <section class="section about-strip" aria-label="About Jamie">
+    <p class="eyebrow">Behind the lens</p>
+    <p>
+      Jamie Kazemier photographs rowing with a sport-specific eye for timing, crew movement, blade work,
+      and the quiet moments around racing. The result is clean, composed coverage that still feels alive.
+    </p>
+  </section>
+
+  <section class="section gallery-preview" aria-labelledby="gallery-preview-title">
+    <div class="section-heading">
+      <div class="section-heading__meta">
+        <p class="eyebrow">Event galleries</p>
+      </div>
+      <h2 id="gallery-preview-title">Recent rowing stories.</h2>
+    </div>
+    <div class="gallery-cards">
+      {galleries.map((gallery, index) => (
+        <a class="gallery-card" href={withBase(gallery.href)}>
+          <ResponsiveImage
+            image={gallery.cover}
+            class="gallery-card__image"
+            sizes="(min-width: 900px) 33vw, 100vw"
+            loading="eager"
+          />
+          <div class="gallery-card__body">
+            <span>{String(index + 1).padStart(2, "0")} / {gallery.location} / {gallery.date}</span>
+            <strong>{gallery.title}</strong>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,40 @@
+---
+const {
+  image,
+  class: className = "",
+  loading = "lazy",
+  sizes = "(min-width: 900px) 50vw, 100vw",
+  width = 1400,
+  height = 950,
+  sourceWidth = image.src === "/images/hero.jpg" ? 2200 : 1800
+} = Astro.props;
+
+import { withBase } from "../utils/urls.mjs";
+
+const jpg = withBase(image.src);
+const responsiveWidths = [640, 960, 1400, 1800, 2200].filter((candidate) => candidate < sourceWidth);
+const srcFor = (format: string, candidateWidth: number) => {
+  const suffix = candidateWidth === sourceWidth ? "" : `-${candidateWidth}`;
+  return withBase(image.src.replace(/\.jpg$/, `${suffix}.${format}`));
+};
+const srcsetFor = (format: string) => [
+  ...responsiveWidths.map((candidateWidth) => `${srcFor(format, candidateWidth)} ${candidateWidth}w`),
+  `${srcFor(format, sourceWidth)} ${sourceWidth}w`
+].join(", ");
+---
+
+<picture>
+  <source srcset={srcsetFor("avif")} type="image/avif" sizes={sizes} />
+  <source srcset={srcsetFor("webp")} type="image/webp" sizes={sizes} />
+  <img
+    class={className}
+    src={jpg}
+    srcset={srcsetFor("jpg")}
+    alt={image.alt}
+    loading={loading}
+    decoding="async"
+    sizes={sizes}
+    width={width}
+    height={height}
+  />
+</picture>

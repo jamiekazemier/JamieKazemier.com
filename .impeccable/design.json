@@ -1,0 +1,228 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-05T19:35:00Z",
+  "title": "Design System: Jamie Kazemier Photography",
+  "extensions": {
+    "colorMeta": {
+      "paper": {
+        "role": "neutral",
+        "displayName": "Warm Photo Paper",
+        "canonical": "#f8f2e7",
+        "tonalRamp": ["oklch(16% 0.006 92)", "oklch(28% 0.006 92)", "oklch(40% 0.006 92)", "oklch(52% 0.006 92)", "oklch(66% 0.006 92)", "oklch(78% 0.006 92)", "oklch(88% 0.006 92)", "oklch(97% 0.006 92)"]
+      },
+      "paper-strong": {
+        "role": "neutral",
+        "displayName": "Pressed Paper",
+        "canonical": "#ece1ce",
+        "tonalRamp": ["oklch(15% 0.007 92)", "oklch(27% 0.007 92)", "oklch(39% 0.007 92)", "oklch(51% 0.007 92)", "oklch(63% 0.007 92)", "oklch(76% 0.007 92)", "oklch(87% 0.007 92)", "oklch(94% 0.007 92)"]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Dark Hull Ink",
+        "canonical": "#171715",
+        "tonalRamp": ["oklch(14% 0.006 92)", "oklch(22% 0.006 92)", "oklch(34% 0.006 92)", "oklch(46% 0.006 92)", "oklch(58% 0.006 92)", "oklch(70% 0.006 92)", "oklch(82% 0.006 92)", "oklch(94% 0.006 92)"]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Weathered Caption Gray",
+        "canonical": "#736b61",
+        "tonalRamp": ["oklch(15% 0.006 105)", "oklch(27% 0.006 105)", "oklch(39% 0.006 105)", "oklch(51% 0.006 105)", "oklch(63% 0.006 105)", "oklch(75% 0.006 105)", "oklch(86% 0.006 105)", "oklch(94% 0.006 105)"]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Pale Dock Line",
+        "canonical": "#d7c9b1",
+        "tonalRamp": ["oklch(16% 0.008 86)", "oklch(28% 0.008 86)", "oklch(40% 0.008 86)", "oklch(52% 0.008 86)", "oklch(64% 0.008 86)", "oklch(76% 0.008 86)", "oklch(86% 0.008 86)", "oklch(93% 0.008 86)"]
+      },
+      "water": {
+        "role": "secondary",
+        "displayName": "River Wash",
+        "canonical": "#c2cfcb",
+        "tonalRamp": ["oklch(17% 0.013 185)", "oklch(29% 0.013 185)", "oklch(41% 0.013 185)", "oklch(53% 0.013 185)", "oklch(65% 0.013 185)", "oklch(77% 0.013 185)", "oklch(87% 0.013 185)", "oklch(95% 0.013 185)"]
+      },
+      "gold": {
+        "role": "primary",
+        "displayName": "Regatta Gold",
+        "canonical": "#c99d37",
+        "tonalRamp": ["oklch(18% 0.06 82)", "oklch(28% 0.075 82)", "oklch(40% 0.09 82)", "oklch(52% 0.105 82)", "oklch(64% 0.12 82)", "oklch(74% 0.105 82)", "oklch(84% 0.065 82)", "oklch(94% 0.025 82)"]
+      },
+      "gold-dark": {
+        "role": "primary",
+        "displayName": "Bank Gold Deep",
+        "canonical": "#745925",
+        "tonalRamp": ["oklch(16% 0.055 82)", "oklch(26% 0.07 82)", "oklch(38% 0.085 82)", "oklch(50% 0.095 82)", "oklch(62% 0.095 82)", "oklch(74% 0.075 82)", "oklch(84% 0.045 82)", "oklch(94% 0.02 82)"]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Home and page-level statements only."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section headers and gallery titles."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Descriptive copy and supporting context."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Eyebrows, metadata, nav labels, and compact UI text."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "state-quick",
+        "value": "180ms ease-out",
+        "purpose": "Button hover and header color transitions."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "transition-duration: 1ms",
+        "purpose": "Applied under prefers-reduced-motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "small-phone",
+        "value": "480px",
+        "purpose": "Tightens type, header, actions, and contact text for the smallest expected phones."
+      },
+      {
+        "name": "phone",
+        "value": "800px",
+        "purpose": "Collapses the site to one clear column with scroll-safe navigation and full-width action groups."
+      },
+      {
+        "name": "tablet",
+        "value": "801px-1100px",
+        "purpose": "Uses six-track editorial grids and two-column masonry instead of cramped desktop compositions."
+      },
+      {
+        "name": "wide",
+        "value": "1600px",
+        "purpose": "Expands the canvas slightly while keeping photography bounded and intentional."
+      },
+      {
+        "name": "short-landscape",
+        "value": "max-height 620px",
+        "purpose": "Protects hero and page-hero spacing on phones and tablets held sideways."
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Dark Button",
+      "kind": "button",
+      "refersTo": "button-dark",
+      "description": "Primary practical action such as viewing the portfolio.",
+      "html": "<button class=\"ds-button ds-button-dark\">View portfolio</button>",
+      "css": ".ds-button { display: inline-flex; min-height: 46px; align-items: center; justify-content: center; padding: 0.8rem 1.05rem; border: 1px solid #171715; border-radius: 0; font-family: Onest, Segoe UI, sans-serif; font-weight: 700; transition: transform 180ms ease-out, background-color 180ms ease-out, color 180ms ease-out; } .ds-button:hover { transform: translateY(-1px); } .ds-button:focus-visible { outline: 2px solid #c99d37; outline-offset: 3px; } .ds-button-dark { background: #171715; color: #fdf9ef; }"
+    },
+    {
+      "name": "Gold Button",
+      "kind": "button",
+      "refersTo": "button-gold",
+      "description": "Buying or sales-adjacent action. Use sparingly.",
+      "html": "<button class=\"ds-button ds-button-gold\">Buy photos</button>",
+      "css": ".ds-button { display: inline-flex; min-height: 46px; align-items: center; justify-content: center; padding: 0.8rem 1.05rem; border: 1px solid #c99d37; border-radius: 0; font-family: Onest, Segoe UI, sans-serif; font-weight: 700; transition: transform 180ms ease-out, background-color 180ms ease-out, color 180ms ease-out; } .ds-button:hover { transform: translateY(-1px); } .ds-button:focus-visible { outline: 2px solid #171715; outline-offset: 3px; } .ds-button-gold { background: #c99d37; color: #171715; }"
+    },
+      {
+        "name": "Header Navigation",
+        "kind": "nav",
+      "description": "Fixed wordmark and practical navigation for portfolio, buy photos, and contact, with aria-current on the active route.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-wordmark\" href=\"#\">Jamie Kazemier Photography</a><span class=\"ds-links\"><a href=\"#\">Portfolio</a><a href=\"#\">Buy Photos</a><a href=\"#\">Contact</a></span></nav>",
+      "css": ".ds-nav { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 2rem; color: #171715; background: rgba(248, 242, 231, 0.96); border-bottom: 1px solid #d7c9b1; font-family: Onest, Segoe UI, sans-serif; } .ds-wordmark { font-family: Schibsted Grotesk, Arial Narrow, sans-serif; font-size: 1.35rem; font-weight: 800; color: inherit; text-decoration: none; } .ds-links { display: flex; gap: 1.25rem; font-size: 0.86rem; } .ds-links a { color: inherit; min-height: 44px; display: inline-flex; align-items: center; text-decoration: none; } .ds-links a:hover { color: #745925; }"
+    },
+    {
+      "name": "Gallery Card",
+      "kind": "card",
+      "description": "An image-led event gallery entry with metadata and a large modern grotesk title.",
+      "html": "<article class=\"ds-gallery-card\"><div class=\"ds-gallery-image\"></div><span>Amsterdam / Spring 2026</span><strong>Head of the River</strong></article>",
+      "css": ".ds-gallery-card { display: grid; gap: 0.65rem; padding-top: 0.85rem; border-top: 1px solid #d7c9b1; font-family: Onest, Segoe UI, sans-serif; color: #171715; } .ds-gallery-image { aspect-ratio: 4 / 5; background: #c2cfcb; } .ds-gallery-card span { color: #736b61; font-size: 0.85rem; } .ds-gallery-card strong { font-family: Schibsted Grotesk, Arial Narrow, sans-serif; font-size: 2rem; font-weight: 800; line-height: 0.92; }"
+    },
+    {
+      "name": "Contact Tile",
+      "kind": "custom",
+      "description": "Large text-led contact route for email and Instagram.",
+      "html": "<a class=\"ds-contact-tile\" href=\"#\"><span>Email</span><strong>jamiekaazz@gmail.com</strong></a>",
+      "css": ".ds-contact-tile { display: grid; gap: 0.5rem; padding: 1rem 0 2rem; border-top: 1px solid #d7c9b1; color: #171715; text-decoration: none; } .ds-contact-tile span { color: #736b61; font-family: Onest, Segoe UI, sans-serif; font-size: 0.85rem; } .ds-contact-tile strong { font-family: Schibsted Grotesk, Arial Narrow, sans-serif; font-size: clamp(2rem, 5vw, 3.8rem); font-weight: 800; line-height: 0.92; overflow-wrap: anywhere; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Regatta Print Room",
+    "overview": "The system should feel like an edited wall of rowing photographs in a quiet studio: warm paper, deep ink, measured spacing, gold used as a deliberate mark, and images treated as authored objects. It is a brand surface first and a gallery index second. The design must make race photos easy to find without flattening the work into a generic event-upload grid.\n\nThe current implementation is art-directed but calmer than the first bold pass. Future polish should tune crop choices, spacing, and mobile rhythm rather than retreating to safe symmetry. PRODUCT.md says the site must not feel \"generic, bland, template-like\"; that line is binding.",
+    "keyCharacteristics": [
+      "Image-led, with hero and gallery photography carrying the first impression.",
+      "Warm, premium neutrals with a muted rowing-club palette and precise gold accent.",
+      "Flat, editorial surfaces with rules and image scale instead of decorative shadows.",
+      "Practical event browsing that still feels curated and made with intent.",
+      "Layout rhythm built from shared gutter, content, wide, and section spacing tokens rather than one-off padding.",
+      "Responsive behavior adapts the composition for phone, tablet, desktop, wide, and short-landscape contexts.",
+      "First impression pairs a pure hero photograph with a quiet rowing-context strip rather than overlay text.",
+      "Photography is served with responsive AVIF, WebP, and JPG srcsets."
+    ],
+    "rules": [
+      {
+        "name": "The Gold Has To Earn It Rule",
+        "body": "Gold is for buying, wayfinding, and authored emphasis. Do not sprinkle it as decoration.",
+        "section": "colors"
+      },
+      {
+        "name": "The No Sterile White Rule",
+        "body": "Never introduce pure white or pure black. Neutrals stay warm and photographic.",
+        "section": "colors"
+      },
+      {
+        "name": "The Authored Caption Rule",
+        "body": "Text should sound selected, not generated. Short, specific, visual lines beat explanatory paragraphs.",
+        "section": "typography"
+      },
+      {
+        "name": "The Modern Grotesk Rule",
+        "body": "The brand voice is premium-modern, not ornamental. Use Schibsted Grotesk for display scale and Onest for calm supporting text.",
+        "section": "typography"
+      },
+      {
+        "name": "The Quiet Monument Rule",
+        "body": "Only one element per view should feel monumental. Reduce weight, rule thickness, and saturation before removing character.",
+        "section": "typography"
+      },
+      {
+        "name": "The External Shop Rule",
+        "body": "Buy Photos should route to contact for now and later to Pixieset or Oypo. Do not imply onsite checkout.",
+        "section": "components"
+      },
+      {
+        "name": "The Named Derivative Rule",
+        "body": "Transparent overlays, dark panels, quiet rules, and softened text colors should live as named CSS variables instead of scattered one-off values.",
+        "section": "colors"
+      },
+      {
+        "name": "The No Floating Gallery Rule",
+        "body": "Do not add card shadows to portfolio or gallery items. A photography portfolio should feel printed and sequenced, not like floating SaaS cards.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do lead with real rowing imagery and treat every image as an authored object.",
+      "Do use Warm Photo Paper, Dark Hull Ink, softened club colors, and Regatta Gold as the recognizable core.",
+      "Do quiet bold moments by thinning rules, softening saturation, and reducing weight before making the layout generic.",
+      "Do use rowing-specific interface language: blade timing, crew movement, race-day coverage, finish-line pressure, event names, and race details.",
+      "Do keep event browsing practical for rowers and families looking for photos.",
+      "Do use asymmetry, stronger crops, and varied pacing on desktop, then simplify to one clear column on mobile.",
+      "Do keep every interactive target at least 44px tall and make phone actions full-width when space is tight.",
+      "Do preserve alt text, contrast, keyboard navigation, and reduced-motion support."
+    ],
+    "donts": [
+      "Don't make the site feel \"generic, bland, template-like, or like a default photography grid with swapped-in images.\"",
+      "Don't use modal-first image viewing.",
+      "Don't add decorative card shadows, glass effects, gradient text, or side-stripe borders.",
+      "Don't let buying feel like a dead placeholder. It must always route to contact or a real sales destination.",
+      "Don't imply checkout happens on the portfolio site while sales are planned for Pixieset or Oypo.",
+      "Don't retreat to polite centered sections, equal cards, safe serif typography, or ornamental fashion type if the site starts feeling bland again."
+    ]
+  }
+}

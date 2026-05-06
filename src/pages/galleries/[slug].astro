@@ -1,0 +1,41 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ResponsiveImage from "../../components/ResponsiveImage.astro";
+import { galleries } from "../../data/galleries.mjs";
+import { withBase } from "../../utils/urls.mjs";
+
+export function getStaticPaths() {
+  return galleries.map((gallery) => ({
+    params: { slug: gallery.slug },
+    props: { gallery }
+  }));
+}
+
+const { gallery } = Astro.props;
+---
+
+<BaseLayout title={`${gallery.title} | Jamie Kazemier Photography`} description={gallery.summary}>
+  <article>
+    <section class="gallery-hero section">
+      <div>
+        <p class="eyebrow">{gallery.location} / {gallery.date}</p>
+        <h1>{gallery.title}</h1>
+        <p>{gallery.summary}</p>
+      </div>
+      <span class="gallery-hero__count" aria-hidden="true">{gallery.images.length} frames</span>
+      <a href={withBase("/portfolio/")}>Back to portfolio</a>
+    </section>
+
+    <section class="gallery-lead section" aria-label={`${gallery.title} lead image`}>
+      <ResponsiveImage image={gallery.lead} class="gallery-lead__image" sizes="100vw" width="1800" height="1100" />
+    </section>
+
+    <section class="section masonry" aria-label={`${gallery.title} image sequence`}>
+      {gallery.images.map((image) => (
+        <figure class:list={["masonry__item", `masonry__item--${image.span}`]}>
+          <ResponsiveImage image={image} class="masonry__image" sizes="(min-width: 1000px) 33vw, 100vw" />
+        </figure>
+      ))}
+    </section>
+  </article>
+</BaseLayout>

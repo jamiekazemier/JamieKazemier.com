@@ -1,0 +1,24 @@
+---
+import { site } from "../data/site.mjs";
+import { withBase } from "../utils/urls.mjs";
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div>
+    <a class="footer-brand" href={withBase("/")}>{site.name}</a>
+    <p>Images may not be used, copied, or distributed without permission.</p>
+  </div>
+  <nav aria-label="Footer navigation">
+    <div class="footer-nav__group">
+      <a href={withBase("/portfolio/")}>Portfolio</a>
+      <a href={withBase(site.buyPhotosHref)}>Buy Photos</a>
+      <a href={withBase("/contact/")}>Contact</a>
+    </div>
+    <div class="footer-nav__group">
+      <a href={`mailto:${site.email}`}>{site.email}</a>
+      <a href={site.instagramUrl}>{site.instagramHandle}</a>
+    </div>
+  </nav>
+  <p class="copyright">&copy; {year} Jamie Kazemier Photography.</p>
+</footer>

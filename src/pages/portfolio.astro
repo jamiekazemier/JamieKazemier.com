@@ -1,0 +1,28 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ResponsiveImage from "../components/ResponsiveImage.astro";
+import { galleries } from "../data/galleries.mjs";
+import { withBase } from "../utils/urls.mjs";
+---
+
+<BaseLayout title="Portfolio | Jamie Kazemier Photography" description="Event-led rowing photography galleries by Jamie Kazemier.">
+  <section class="page-hero section">
+    <p class="eyebrow">Portfolio</p>
+    <h1>Event-led rowing galleries.</h1>
+    <p>Three curated collections built around race days, crews, details, and the water between them.</p>
+  </section>
+
+  <section class="section portfolio-list" aria-label="Featured galleries">
+    {galleries.map((gallery, index) => (
+      <a class="portfolio-row" href={withBase(gallery.href)}>
+        <ResponsiveImage image={gallery.cover} class="portfolio-row__image" sizes="(min-width: 900px) 42vw, 100vw" />
+        <span class="portfolio-row__number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+        <div>
+          <span class="eyebrow">{gallery.location} / {gallery.date}</span>
+          <h2>{gallery.title}</h2>
+          <p>{gallery.summary}</p>
+        </div>
+      </a>
+    ))}
+  </section>
+</BaseLayout>

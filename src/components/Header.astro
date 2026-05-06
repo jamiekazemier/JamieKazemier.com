@@ -1,0 +1,63 @@
+---
+import { site } from "../data/site.mjs";
+import { withBase } from "../utils/urls.mjs";
+
+const nav = [
+  { label: "Portfolio", href: "/portfolio/" },
+  { label: "Buy Photos", href: site.buyPhotosHref, current: false },
+  { label: "Contact", href: "/contact/" }
+];
+
+const base = import.meta.env.BASE_URL || "/";
+const basePath = base === "/" ? "" : base.replace(/\/$/, "");
+const currentPath = Astro.url.pathname.replace(basePath, "") || "/";
+const normalizePath = (href: string) => {
+  const path = href.split("#")[0];
+  return path.endsWith("/") ? path : `${path}/`;
+};
+const isCurrent = (item: { href: string; current?: boolean }) => {
+  if (item.current === false) {
+    return false;
+  }
+
+  const path = normalizePath(item.href);
+
+  if (path === "/portfolio/") {
+    return currentPath === "/portfolio/" || currentPath.startsWith("/galleries/");
+  }
+
+  if (path === "/contact/") {
+    return currentPath === "/contact/";
+  }
+
+  return currentPath === path;
+};
+---
+
+<header class="site-header" data-header>
+  <a
+    class="wordmark"
+    href={withBase("/")}
+    aria-label="Jamie Kazemier Photography home"
+    aria-current={currentPath === "/" ? "page" : undefined}
+  >
+    {site.name}
+  </a>
+  <nav class="main-nav" aria-label="Primary navigation">
+    {nav.map((item) => (
+      <a href={withBase(item.href)} aria-current={isCurrent(item) ? "page" : undefined}>
+        {item.label}
+      </a>
+    ))}
+  </nav>
+</header>
+
+<script>
+  const header = document.querySelector("[data-header]");
+  const setHeaderState = () => {
+    header?.classList.toggle("is-scrolled", window.scrollY > 24);
+  };
+
+  setHeaderState();
+  window.addEventListener("scroll", setHeaderState, { passive: true });
+</script>
