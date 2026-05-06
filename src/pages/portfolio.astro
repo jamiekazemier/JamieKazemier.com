@@ -1,28 +1,39 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ResponsiveImage from "../components/ResponsiveImage.astro";
-import { galleries } from "../data/galleries.mjs";
+import { portfolioSequence } from "../data/galleries.mjs";
 import { withBase } from "../utils/urls.mjs";
 ---
 
-<BaseLayout title="Portfolio | Jamie Kazemier Photography" description="Event-led rowing photography galleries by Jamie Kazemier.">
+<BaseLayout title="Portfolio | Jamie Kazemier Photography" description="Curated rowing photography by Jamie Kazemier.">
   <section class="page-hero section">
     <p class="eyebrow">Portfolio</p>
-    <h1>Event-led rowing galleries.</h1>
-    <p>Three curated collections built around race days, crews, details, and the water between them.</p>
+    <h1>Ten selected frames, with only a few exits into deeper stories.</h1>
+    <p>No captions unless a page earns them. No archive grid. Just the strongest rowing photographs in sequence.</p>
   </section>
 
-  <section class="section portfolio-list" aria-label="Featured galleries">
-    {galleries.map((gallery, index) => (
-      <a class="portfolio-row" href={withBase(gallery.href)}>
-        <ResponsiveImage image={gallery.cover} class="portfolio-row__image" sizes="(min-width: 900px) 42vw, 100vw" />
-        <span class="portfolio-row__number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-        <div>
-          <span class="eyebrow">{gallery.location} / {gallery.date}</span>
-          <h2>{gallery.title}</h2>
-          <p>{gallery.summary}</p>
-        </div>
-      </a>
-    ))}
+  <section class="section portfolio-sequence" aria-label="Curated portfolio sequence">
+    {portfolioSequence.map((entry) =>
+      entry.href ? (
+        <a class:list={["sequence-item", `sequence-item--${entry.layout}`, "is-linked"]} href={withBase(entry.href)}>
+          <ResponsiveImage
+            image={entry.image}
+            class="sequence-item__image"
+            sizes="(min-width: 960px) 80vw, 100vw"
+            loading="eager"
+          />
+          <span class="sequence-item__label">Story / {entry.label}</span>
+        </a>
+      ) : (
+        <figure class:list={["sequence-item", `sequence-item--${entry.layout}`]}>
+          <ResponsiveImage
+            image={entry.image}
+            class="sequence-item__image"
+            sizes="(min-width: 960px) 80vw, 100vw"
+            loading="eager"
+          />
+        </figure>
+      )
+    )}
   </section>
 </BaseLayout>

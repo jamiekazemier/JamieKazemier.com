@@ -1,17 +1,21 @@
 import { describe, expect, it } from "vitest";
-import { galleries, featuredImages } from "../src/data/galleries.mjs";
+import { galleries, portfolioSequence, storyTeasers } from "../src/data/galleries.mjs";
 import { site } from "../src/data/site.mjs";
 
 describe("site content contract", () => {
-  it("uses the agreed brand, contact, and sales destinations", () => {
+  it("uses the agreed brand, contact, and subtle external shop config", () => {
     expect(site.name).toBe("Jamie Kazemier Photography");
     expect(site.email).toBe("jamiekaazz@gmail.com");
     expect(site.instagramHandle).toBe("@jamie.kazemier");
-    expect(site.buyPhotosHref).toBe("/contact/#buy-photos");
+    expect(site.shopLabel).toBe("Shop");
+    expect(site.shopHref).toMatch(/^https?:\/\//);
+    expect(site.description).toMatch(/rowing photography/i);
+    expect(site.tagline).toMatch(/rowing/i);
   });
 
-  it("ships three event-led rowing galleries with valid asset conventions", () => {
-    expect(galleries).toHaveLength(3);
+  it("keeps only a few deeper story galleries with strong asset conventions", () => {
+    expect(galleries.length).toBeGreaterThanOrEqual(2);
+    expect(galleries.length).toBeLessThanOrEqual(3);
 
     for (const gallery of galleries) {
       expect(gallery.href).toBe(`/galleries/${gallery.slug}/`);
@@ -27,8 +31,31 @@ describe("site content contract", () => {
     }
   });
 
-  it("features six homepage images drawn from gallery content", () => {
-    expect(featuredImages).toHaveLength(6);
-    expect(new Set(featuredImages.map((image) => image.src)).size).toBe(6);
+  it("defines a curated portfolio sequence with only a few linked story exits", () => {
+    expect(portfolioSequence).toHaveLength(10);
+
+    const uniqueImages = new Set(portfolioSequence.map((entry) => entry.image.src));
+    expect(uniqueImages.size).toBe(portfolioSequence.length);
+
+    const linkedEntries = portfolioSequence.filter((entry) => entry.href);
+    expect(linkedEntries.length).toBeGreaterThanOrEqual(2);
+    expect(linkedEntries.length).toBeLessThanOrEqual(3);
+
+    for (const entry of portfolioSequence) {
+      expect(entry.image.alt.length).toBeGreaterThan(20);
+      expect(["poster", "landscape", "tall", "diptych"]).toContain(entry.layout);
+
+      if (entry.href) {
+        expect(entry.href).toMatch(/^\/galleries\/.+\/$/);
+      }
+    }
+  });
+
+  it("surfaces a sparse set of homepage story teasers", () => {
+    expect(storyTeasers).toHaveLength(2);
+
+    for (const teaser of storyTeasers) {
+      expect(teaser.href).toMatch(/^\/galleries\/.+\/$/);
+    }
   });
 });
