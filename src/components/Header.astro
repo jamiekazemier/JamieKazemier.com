@@ -5,8 +5,8 @@ import { withBase } from "../utils/urls.mjs";
 const nav = [
   { label: "Home", href: "/" },
   { label: "Portfolio", href: "/portfolio/" },
-  { label: "Contact", href: "/contact/" },
-  { label: site.shopLabel, href: site.shopHref, external: true, current: false }
+  { label: site.shopLabel, href: site.shopHref, external: site.shopExternal, current: false },
+  { label: "Contact", href: "/contact/" }
 ];
 
 const base = import.meta.env.BASE_URL || "/";

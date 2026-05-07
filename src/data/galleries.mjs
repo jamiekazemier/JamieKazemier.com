@@ -1,7 +1,9 @@
-const image = (slug, number, alt, span = "standard") => ({
+const image = (slug, number, alt, span = "standard", width = 1800, height = 1200) => ({
   src: `/images/galleries/${slug}/${String(number).padStart(2, "0")}.jpg`,
   alt,
-  span
+  span,
+  width,
+  height
 });
 
 export const galleries = [
@@ -42,14 +44,14 @@ export const galleries = [
       image("herfstregatta", 2, "A men's crew in yellow rowing close to camera with focused expressions.", "wide"),
       image("herfstregatta", 3, "A blue crew driving through the water in tight formation during racing.", "wide"),
       image("herfstregatta", 4, "A rower throwing a sheet of water from a wooden shell in bright light.", "tall"),
-      image("herfstregatta", 5, "Close race detail of oars, hands, and water splashing over the shell.", "tall"),
+      image("herfstregatta", 5, "Close race detail of oars, hands, and water splashing over the shell.", "wide"),
       image("herfstregatta", 6, "A rowing crew moving along a green riverbank during Herfstregatta.", "wide"),
       image("herfstregatta", 7, "A women's crew in yellow rowing toward camera through warm autumn reflections.", "wide"),
       image("herfstregatta", 8, "A long canal view with small rowing shells moving through a leafy course.", "wide"),
       image("herfstregatta", 9, "A blue crew rowing toward camera with blades spread across the water.", "wide"),
       image("herfstregatta", 10, "A green crew and blue crew crossing paths in a high-angle regatta view.", "wide"),
-      image("herfstregatta", 11, "An overhead view of a green crew aligned in a narrow rowing shell.", "tall"),
-      image("herfstregatta", 12, "An overhead view of a blue crew rowing in formation on dark water.", "tall")
+      image("herfstregatta", 11, "An overhead view of a green crew aligned in a narrow rowing shell.", "tall", 1800, 2700),
+      image("herfstregatta", 12, "An overhead view of a blue crew rowing in formation on dark water.", "tall", 1800, 2700)
     ]
   },
   {
@@ -65,13 +67,13 @@ export const galleries = [
       image("traika-tilburg", 1, "A rower framed in silhouette on still morning water in Tilburg.", "wide"),
       image("traika-tilburg", 2, "A single rower silhouetted against misty golden water in Tilburg.", "wide"),
       image("traika-tilburg", 3, "Rowers preparing beside the water with oars cutting through golden reflections.", "wide"),
-      image("traika-tilburg", 4, "A rower leaning over the shell in dark silhouette before training.", "wide"),
+      image("traika-tilburg", 4, "A rower leaning over the shell in dark silhouette before training.", "tall", 1800, 2700),
       image("traika-tilburg", 5, "A close low-angle silhouette of a rower and oar above the water.", "wide"),
       image("traika-tilburg", 6, "A crew member focused in the shell with blurred oars crossing the foreground.", "wide"),
       image("traika-tilburg", 7, "A low-angle view of athletes rowing past warm reflections and shoreline.", "wide"),
       image("traika-tilburg", 8, "Two rowers moving beside the bank with a long oar crossing the frame.", "wide"),
       image("traika-tilburg", 9, "A yellow shell with a crew rowing in profile across calm water.", "wide"),
-      image("traika-tilburg", 10, "A close profile of a rowing crew in a yellow shell under soft winter light.", "wide")
+      image("traika-tilburg", 10, "A close profile of a rowing crew in a yellow shell under soft winter light.", "tall", 1800, 2700)
     ]
   }
 ];
@@ -79,17 +81,17 @@ export const galleries = [
 export const portfolioSequence = [
   {
     image: galleries[2].images[1],
-    layout: "poster"
+    layout: "feature"
   },
   {
     image: galleries[0].images[1],
-    layout: "landscape",
+    layout: "wide",
     href: galleries[0].href,
     label: galleries[0].title
   },
   {
     image: galleries[1].images[6],
-    layout: "poster"
+    layout: "feature"
   },
   {
     image: galleries[1].images[4],
@@ -97,11 +99,11 @@ export const portfolioSequence = [
   },
   {
     image: galleries[0].images[9],
-    layout: "landscape"
+    layout: "wide"
   },
   {
     image: galleries[2].images[5],
-    layout: "diptych"
+    layout: "square"
   },
   {
     image: galleries[1].images[11],
@@ -109,23 +111,55 @@ export const portfolioSequence = [
   },
   {
     image: galleries[1].images[8],
-    layout: "landscape",
+    layout: "wide",
     href: galleries[1].href,
     label: galleries[1].title
   },
   {
     image: galleries[2].images[7],
-    layout: "poster"
+    layout: "feature"
   },
   {
     image: galleries[1].images[1],
-    layout: "landscape",
+    layout: "wide",
     href: galleries[2].href,
     label: galleries[2].title
+  },
+  {
+    image: galleries[0].images[0],
+    layout: "wide"
+  },
+  {
+    image: galleries[0].images[5],
+    layout: "square"
+  },
+  {
+    image: galleries[1].images[2],
+    layout: "wide"
+  },
+  {
+    image: galleries[1].images[10],
+    layout: "tall"
+  },
+  {
+    image: galleries[2].images[4],
+    layout: "wide"
+  },
+  {
+    image: galleries[2].images[8],
+    layout: "wide"
+  },
+  {
+    image: galleries[0].images[3],
+    layout: "wide"
+  },
+  {
+    image: galleries[0].images[7],
+    layout: "wide"
   }
 ];
 
-export const storyTeasers = [galleries[0], galleries[1]];
+export const storyTeasers = galleries;
 
 export function getGalleryBySlug(slug) {
   return galleries.find((gallery) => gallery.slug === slug);

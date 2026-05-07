@@ -4,8 +4,8 @@ const {
   class: className = "",
   loading = "lazy",
   sizes = "(min-width: 900px) 50vw, 100vw",
-  width = 1400,
-  height = 950,
+  width = image.width ?? 1400,
+  height = image.height ?? 950,
   sourceWidth = image.src === "/images/hero.jpg" ? 2200 : 1800
 } = Astro.props;
 

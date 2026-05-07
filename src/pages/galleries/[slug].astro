@@ -16,25 +16,25 @@ const { gallery } = Astro.props;
 
 <BaseLayout title={`${gallery.title} | Jamie Kazemier Photography`} description={gallery.summary}>
   <article class="story-page">
-    <section class="story-hero section">
+    <section class="story-hero story-hero--editorial section">
       <p class="eyebrow">Selected story</p>
       <div class="story-hero__top">
+        <a class="inline-link" href={withBase("/portfolio/")}>Back to portfolio</a>
         <div>
           <span class="story-hero__meta">{gallery.location} / {gallery.date}</span>
           <h1>{gallery.title}</h1>
           <p>{gallery.summary}</p>
         </div>
-        <a class="inline-link" href={withBase("/portfolio/")}>Back to portfolio</a>
       </div>
     </section>
 
     <section class="story-lead" aria-label={`${gallery.title} lead image`}>
-      <ResponsiveImage image={gallery.lead} class="story-lead__image" sizes="100vw" width="1800" height="1100" />
+      <ResponsiveImage image={gallery.lead} class="story-lead__image" sizes="100vw" width="1800" height="1100" loading="eager" />
     </section>
 
-    <section class="section story-grid" aria-label={`${gallery.title} image sequence`}>
+    <section class="section section--tight story-masonry" aria-label={`${gallery.title} image sequence`}>
       {gallery.images.map((image) => (
-        <figure class:list={["story-grid__item", `story-grid__item--${image.span}`]}>
+        <figure class:list={["story-masonry__item", `story-masonry__item--${image.span}`, image.height > image.width && "story-masonry__item--portrait"]}>
           <ResponsiveImage image={image} class="story-grid__image" sizes="(min-width: 1000px) 33vw, 100vw" />
         </figure>
       ))}

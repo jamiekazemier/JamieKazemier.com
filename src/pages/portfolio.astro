@@ -2,38 +2,26 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ResponsiveImage from "../components/ResponsiveImage.astro";
 import { portfolioSequence } from "../data/galleries.mjs";
-import { withBase } from "../utils/urls.mjs";
+import { site } from "../data/site.mjs";
 ---
 
 <BaseLayout title="Portfolio | Jamie Kazemier Photography" description="Curated rowing photography by Jamie Kazemier.">
-  <section class="page-hero section">
+  <section class="page-hero page-hero--portfolio section">
     <p class="eyebrow">Portfolio</p>
-    <h1>Ten selected frames, with only a few exits into deeper stories.</h1>
-    <p>No captions unless a page earns them. No archive grid. Just the strongest rowing photographs in sequence.</p>
+    <h1>Selected regatta frames, held close to the catch, the spray, and the pressure.</h1>
+    <p>{site.portfolioStatement}</p>
   </section>
 
-  <section class="section portfolio-sequence" aria-label="Curated portfolio sequence">
-    {portfolioSequence.map((entry) =>
-      entry.href ? (
-        <a class:list={["sequence-item", `sequence-item--${entry.layout}`, "is-linked"]} href={withBase(entry.href)}>
-          <ResponsiveImage
-            image={entry.image}
-            class="sequence-item__image"
-            sizes="(min-width: 960px) 80vw, 100vw"
-            loading="eager"
-          />
-          <span class="sequence-item__label">Story / {entry.label}</span>
-        </a>
-      ) : (
-        <figure class:list={["sequence-item", `sequence-item--${entry.layout}`]}>
-          <ResponsiveImage
-            image={entry.image}
-            class="sequence-item__image"
-            sizes="(min-width: 960px) 80vw, 100vw"
-            loading="eager"
-          />
-        </figure>
-      )
-    )}
+  <section class="section section--tight portfolio-bento" aria-label="Curated portfolio image masonry">
+    {portfolioSequence.map((entry, index) => (
+      <figure class:list={["bento-item", entry.image.height > entry.image.width && "bento-item--portrait"]}>
+        <ResponsiveImage
+          image={entry.image}
+          class="bento-item__image"
+          sizes="(min-width: 1200px) 30vw, (min-width: 720px) 45vw, 100vw"
+          loading={index < 2 ? "eager" : "lazy"}
+        />
+      </figure>
+    ))}
   </section>
 </BaseLayout>

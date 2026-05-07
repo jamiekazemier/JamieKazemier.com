@@ -3,12 +3,13 @@ import { galleries, portfolioSequence, storyTeasers } from "../src/data/gallerie
 import { site } from "../src/data/site.mjs";
 
 describe("site content contract", () => {
-  it("uses the agreed brand, contact, and subtle external shop config", () => {
+  it("uses the agreed brand, contact, and a truthful sales handoff config", () => {
     expect(site.name).toBe("Jamie Kazemier Photography");
     expect(site.email).toBe("jamiekaazz@gmail.com");
     expect(site.instagramHandle).toBe("@jamie.kazemier");
-    expect(site.shopLabel).toBe("Shop");
-    expect(site.shopHref).toMatch(/^https?:\/\//);
+    expect(site.shopLabel).toBe("Find race photos");
+    expect(site.shopHref).toBe("/contact/#sales");
+    expect(site.shopExternal).toBe(false);
     expect(site.description).toMatch(/rowing photography/i);
     expect(site.tagline).toMatch(/rowing/i);
   });
@@ -32,7 +33,7 @@ describe("site content contract", () => {
   });
 
   it("defines a curated portfolio sequence with only a few linked story exits", () => {
-    expect(portfolioSequence).toHaveLength(10);
+    expect(portfolioSequence).toHaveLength(18);
 
     const uniqueImages = new Set(portfolioSequence.map((entry) => entry.image.src));
     expect(uniqueImages.size).toBe(portfolioSequence.length);
@@ -43,7 +44,7 @@ describe("site content contract", () => {
 
     for (const entry of portfolioSequence) {
       expect(entry.image.alt.length).toBeGreaterThan(20);
-      expect(["poster", "landscape", "tall", "diptych"]).toContain(entry.layout);
+      expect(["feature", "wide", "tall", "square"]).toContain(entry.layout);
 
       if (entry.href) {
         expect(entry.href).toMatch(/^\/galleries\/.+\/$/);
@@ -52,7 +53,7 @@ describe("site content contract", () => {
   });
 
   it("surfaces a sparse set of homepage story teasers", () => {
-    expect(storyTeasers).toHaveLength(2);
+    expect(storyTeasers).toHaveLength(3);
 
     for (const teaser of storyTeasers) {
       expect(teaser.href).toMatch(/^\/galleries\/.+\/$/);

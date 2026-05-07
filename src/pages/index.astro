@@ -10,7 +10,8 @@ const hero = {
   alt: "Low-angle rowing shell racing across dark Dutch water with warm light."
 };
 
-const openingFrames = portfolioSequence.slice(0, 3);
+const openingFrames = portfolioSequence.slice(0, 6);
+const [leadStory, ...secondaryStories] = storyTeasers;
 ---
 
 <BaseLayout title="Jamie Kazemier Photography | Rowing Photography" description={site.description} heroHeader>
@@ -26,33 +27,28 @@ const openingFrames = portfolioSequence.slice(0, 3);
       <p class="home-hero__statement">{site.heroStatement}</p>
       <div class="home-hero__actions">
         <a class="button button--solid" href={withBase("/portfolio/")}>Enter portfolio</a>
-        <a class="button button--outline" href={site.shopHref} target="_blank" rel="noreferrer">{site.shopLabel}</a>
+        <a class="button button--outline" href={withBase(site.shopHref)}>{site.shopLabel}</a>
       </div>
     </div>
   </section>
 
-  <section class="section manifesto" aria-labelledby="manifesto-title">
-    <div class="section-heading">
-      <p class="eyebrow">Portfolio first</p>
-      <h2 id="manifesto-title">The site behaves like a wall of selected frames, not an event archive.</h2>
-    </div>
-    <p class="manifesto__text">{site.intro}</p>
-  </section>
-
-  <section class="section home-sequence" aria-labelledby="home-sequence-title">
-    <div class="section-heading">
-      <p class="eyebrow">Opening frames</p>
-      <h2 id="home-sequence-title">Pressure. Rhythm. Water that looks almost metallic.</h2>
+  <section class="section section--tight home-sequence" aria-labelledby="home-sequence-title">
+    <div class="home-sequence__intro">
+      <div class="section-heading">
+        <p class="eyebrow">Portfolio first</p>
+        <h2 id="home-sequence-title">The work stays edited, selected, and close to the race.</h2>
+      </div>
+      <p class="manifesto__text">{site.intro}</p>
     </div>
 
-    <div class="home-sequence__grid">
-      {openingFrames.map((entry) => (
-        <figure class:list={["home-frame", `home-frame--${entry.layout}`]}>
+    <div class="home-bento" aria-label="Opening rowing image masonry">
+      {openingFrames.map((entry, index) => (
+        <figure class:list={["home-bento__item", `home-bento__item--${entry.layout}`]}>
           <ResponsiveImage
             image={entry.image}
-            class="home-frame__image"
-            sizes="(min-width: 960px) 33vw, 100vw"
-            loading="eager"
+            class="home-bento__image"
+            sizes="(min-width: 960px) 33vw, (min-width: 720px) 50vw, 100vw"
+            loading={index < 2 ? "eager" : "lazy"}
           />
         </figure>
       ))}
@@ -61,36 +57,47 @@ const openingFrames = portfolioSequence.slice(0, 3);
     <a class="inline-link" href={withBase("/portfolio/")}>View the full sequence</a>
   </section>
 
-  <section class="section story-teasers" aria-labelledby="story-teasers-title">
+  <section class="section section--tight story-teasers" aria-labelledby="story-teasers-title">
     <div class="section-heading">
       <p class="eyebrow">Selected stories</p>
-      <h2 id="story-teasers-title">A few regattas earn more than a single frame.</h2>
+      <h2 id="story-teasers-title">A few regattas hold long enough to earn a fuller sequence.</h2>
     </div>
 
-    <div class="story-teasers__grid">
-      {storyTeasers.map((story) => (
-        <a class="story-card" href={withBase(story.href)}>
-          <ResponsiveImage image={story.cover} class="story-card__image" sizes="(min-width: 960px) 44vw, 100vw" />
-          <div class="story-card__body">
-            <span>{story.location} / {story.date}</span>
-            <strong>{story.title}</strong>
-            <p>{story.summary}</p>
-          </div>
-        </a>
-      ))}
+    <div class="story-teasers__layout">
+      <a class="story-card story-card--lead" href={withBase(leadStory.href)}>
+        <ResponsiveImage image={leadStory.cover} class="story-card__image" sizes="(min-width: 960px) 52vw, 100vw" />
+        <div class="story-card__body">
+          <span>{leadStory.location} / {leadStory.date}</span>
+          <strong>{leadStory.title}</strong>
+          <p>{leadStory.summary}</p>
+        </div>
+      </a>
+
+      <div class="story-teasers__stack">
+        {secondaryStories.map((story) => (
+          <a class="story-card story-card--compact" href={withBase(story.href)}>
+            <ResponsiveImage image={story.cover} class="story-card__image" sizes="(min-width: 960px) 25vw, 100vw" />
+            <div class="story-card__body">
+              <span>{story.location} / {story.date}</span>
+              <strong>{story.title}</strong>
+              <p>{story.summary}</p>
+            </div>
+          </a>
+        ))}
+      </div>
     </div>
   </section>
 
-  <section class="section contact-strip" aria-labelledby="contact-strip-title">
+  <section class="section section--tight contact-strip" aria-labelledby="contact-strip-title">
     <div class="section-heading">
       <p class="eyebrow">Contact</p>
-      <h2 id="contact-strip-title">Light contact only. The work stays in front.</h2>
+      <h2 id="contact-strip-title">Direct contact, quick guidance, and a clear route to race images.</h2>
     </div>
     <p class="contact-strip__text">{site.contactLine}</p>
     <div class="contact-strip__actions">
       <a class="inline-link" href={`mailto:${site.email}`}>{site.email}</a>
       <a class="inline-link" href={site.instagramUrl} target="_blank" rel="noreferrer">{site.instagramHandle}</a>
-      <a class="inline-link" href={site.shopHref} target="_blank" rel="noreferrer">{site.shopLabel}</a>
+      <a class="inline-link" href={withBase(site.shopHref)}>{site.shopLabel}</a>
     </div>
   </section>
 </BaseLayout>

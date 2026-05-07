@@ -4,27 +4,34 @@ import { site } from "../data/site.mjs";
 ---
 
 <BaseLayout title="Contact | Jamie Kazemier Photography" description="Minimal contact details for Jamie Kazemier Photography.">
-  <section class="page-hero section">
-    <p class="eyebrow">Contact</p>
-    <h1>Instagram for quick contact. Email for the practical bits.</h1>
+  <section class="page-hero page-hero--contact section">
+    <p class="eyebrow">Find race photos</p>
+    <h1>Tell me the regatta, the crew, and the date, and I will point you to the right images.</h1>
     <p>{site.contactLine}</p>
   </section>
 
-  <section class="section contact-methods" aria-label="Contact methods">
-    <a class="contact-method" href={site.instagramUrl} target="_blank" rel="noreferrer">
+  <section class="section section--tight contact-methods" aria-label="Contact methods">
+    <a class="contact-method contact-method--feature" href={site.instagramUrl} target="_blank" rel="noreferrer">
       <span class="eyebrow">Instagram</span>
       <strong>{site.instagramHandle}</strong>
-      <p>Direct messages and recent work.</p>
+      <p>Fastest route for direct messages, recent frames, and quick questions from the bank.</p>
     </a>
-    <a class="contact-method" href={`mailto:${site.email}`}>
+    <a class="contact-method contact-method--practical" href={`mailto:${site.email}`}>
       <span class="eyebrow">Email</span>
       <strong>{site.email}</strong>
-      <p>For image questions and anything practical.</p>
+      <p>Best for image requests, crew details, and anything that needs a practical answer.</p>
     </a>
-    <a class="contact-method contact-method--shop" href={site.shopHref} target="_blank" rel="noreferrer">
-      <span class="eyebrow">Shop</span>
-      <strong>{site.shopLabel}</strong>
-      <p>External gallery sales will live off-site.</p>
-    </a>
+  </section>
+
+  <section class="section section--tight contact-shop-note" id="sales" aria-labelledby="contact-shop-title">
+    <p class="eyebrow">How it works</p>
+    <h2 id="contact-shop-title">Race-photo access is direct now, third-party checkout follows when the gallery is live.</h2>
+    <p>{site.salesNote}</p>
+    <ol class="contact-shop-note__steps">
+      <li>Send the regatta name, date, and crew.</li>
+      <li>Jamie confirms the right gallery or the nearest matching sequence.</li>
+      <li>When the sales platform is ready, buying moves there, not through this site.</li>
+    </ol>
+    <a class="inline-link" href={`mailto:${site.email}`}>Ask about race images</a>
   </section>
 </BaseLayout>

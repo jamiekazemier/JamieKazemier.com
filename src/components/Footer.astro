@@ -7,14 +7,15 @@ const year = new Date().getFullYear();
 
 <footer class="site-footer">
   <div class="site-footer__identity">
+    <p class="site-footer__eyebrow">Jamie Kazemier Photography</p>
     <a class="footer-brand" href={withBase("/")}>Jamie Kazemier</a>
-    <p>Rowing photography. Netherlands. Portfolio first.</p>
+    <p>Rowing photography from Dutch regattas, edited for crews, families, and rowers looking for race images that still feel authored.</p>
   </div>
 
   <nav class="site-footer__nav" aria-label="Footer navigation">
     <a href={withBase("/portfolio/")}>Portfolio</a>
     <a href={withBase("/contact/")}>Contact</a>
-    <a href={site.shopHref} target="_blank" rel="noreferrer">{site.shopLabel}</a>
+    <a href={withBase(site.shopHref)}>{site.shopLabel}</a>
     <a href={`mailto:${site.email}`}>{site.email}</a>
     <a href={site.instagramUrl} target="_blank" rel="noreferrer">{site.instagramHandle}</a>
   </nav>
