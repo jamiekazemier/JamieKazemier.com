@@ -1,11 +1,10 @@
 import { defineConfig } from "astro/config";
 
-const repositoryName = process.env.GITHUB_REPOSITORY?.split("/")[1];
-const base = process.env.SITE_BASE ?? (repositoryName ? `/${repositoryName}/` : "/");
+const base = process.env.SITE_BASE ?? "/";
 
 export default defineConfig({
   base,
+  site: "https://jamiekazemier.com",
   output: "static",
   trailingSlash: "always"
 });
-
